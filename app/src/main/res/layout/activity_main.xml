@@ -21,27 +21,30 @@
             android:orientation="horizontal">
 
             <Button
+                android:id="@+id/shuffle_btn"
                 android:layout_width="wrap_content"
                 android:layout_height="match_parent"
                 android:layout_weight="1"
                 android:text="@string/shuffle_btn"
-                android:textColor="@color/black"
+                android:textColor="@color/gold"
                 android:drawableTop="@drawable/shuffle_icon" />
 
             <Button
+                android:id="@+id/favorite_btn"
                 android:layout_width="wrap_content"
                 android:layout_height="match_parent"
                 android:layout_weight="1"
                 android:text="@string/favourites_btn"
-                android:textColor="@color/black"
+                android:textColor="@color/gold"
                 android:drawableTop="@drawable/favourite_full_icon" />
 
             <Button
+                android:id="@+id/playlist_btn"
                 android:layout_width="wrap_content"
                 android:layout_height="match_parent"
                 android:layout_weight="1"
                 android:text="@string/playlist_btn"
-                android:textColor="@color/black"
+                android:textColor="@color/gold"
 
                 android:drawableTop="@drawable/playlist_icon" />
 
@@ -59,6 +62,7 @@
 
     <com.google.android.material.navigation.NavigationView
         android:id="@+id/navView"
+        android:visibility="gone"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_gravity="start"

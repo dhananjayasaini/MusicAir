@@ -1,5 +1,6 @@
 package com.dhananjaysaini.musicplayerapp
 
+import android.content.Intent
 import android.os.Bundle
 import android.view.MenuItem
 import android.widget.Toast
@@ -19,18 +20,21 @@ class MainActivity : AppCompatActivity() {
         binding = ActivityMainBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
-        // for navigation drawer
+        initializationBinding()
+
+// for navigation drawer
+
         toggle = ActionBarDrawerToggle(this, binding.root, R.string.open, R.string.close)
         binding.root.addDrawerListener(toggle)
         toggle.syncState()
         supportActionBar?.setDisplayHomeAsUpEnabled(true)
 
 
+        binding.navView.setNavigationItemSelectedListener {
+            when (it.itemId) {
+                R.id.navFeedback -> Toast.makeText(baseContext, "Feedback", Toast.LENGTH_SHORT)
+                    .show()
 
-        binding.navView.setNavigationItemSelectedListener{
-            when(it.itemId)
-            {
-                R.id.navFeedback -> Toast.makeText(baseContext, "Feedback", Toast.LENGTH_SHORT).show()
                 R.id.navSetting -> Toast.makeText(baseContext, "Setting", Toast.LENGTH_SHORT).show()
                 R.id.navAbout -> Toast.makeText(baseContext, "About", Toast.LENGTH_SHORT).show()
                 R.id.navExit -> exitProcess(1)
@@ -43,8 +47,28 @@ class MainActivity : AppCompatActivity() {
 // to start the navigation drawer
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
-        if(toggle.onOptionsItemSelected(item))
+        if (toggle.onOptionsItemSelected(item))
             return true
         return super.onOptionsItemSelected(item)
+    }
+
+// initialize the binding
+
+    private fun initializationBinding() {
+        binding.shuffleBtn.setOnClickListener {
+            val intent = Intent(this, PlayerActivity::class.java)
+            startActivity(intent)
+        }
+
+        binding.favoriteBtn.setOnClickListener {
+            val intent = Intent(this, FavouriteActivity::class.java)
+            startActivity(intent)
+        }
+
+        binding.playlistBtn.setOnClickListener {
+            val intent = Intent(this, PlaylistActivity::class.java)
+            startActivity(intent)
+        }
+
     }
 }
