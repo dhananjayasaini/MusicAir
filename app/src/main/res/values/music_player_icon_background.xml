@@ -1,4 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
+    <color name="music_player_icon_background1">#F6F6F6</color>
     <color name="music_player_icon_background">#10D5C3</color>
+    <color name="music_player_icon_background2">#000000</color>
 </resources>

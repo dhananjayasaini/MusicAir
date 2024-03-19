@@ -2,6 +2,13 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools">
 
+    <uses-permission
+        android:name="android.permission.WRITE_EXTERNAL_STORAGE"
+        tools:ignore="ScopedStorage" />
+    <uses-permission
+        android:name="android.permission.READ_EXTERNAL_STORAGE"
+        tools:ignore="ScopedStorage" />
+
     <application
         android:allowBackup="true"
         android:dataExtractionRules="@xml/data_extraction_rules"
@@ -11,18 +18,20 @@
         android:roundIcon="@mipmap/music_player_icon_round"
         android:supportsRtl="true"
         android:theme="@style/splash_screen"
+        android:requestLegacyExternalStorage="true"
         tools:targetApi="31">
+
         <activity
-            android:name=".FavouriteActivity"
+            android:name=".activities.FavouriteActivity"
             android:exported="false" />
         <activity
-            android:name=".PlaylistActivity"
+            android:name=".activities.PlaylistActivity"
             android:exported="false" />
         <activity
-            android:name=".PlayerActivity"
+            android:name=".activities.PlayerActivity"
             android:exported="false" />
         <activity
-            android:name=".MainActivity"
+            android:name=".activities.MainActivity"
             android:exported="true">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
