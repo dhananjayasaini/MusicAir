@@ -1,5 +1,7 @@
 package com.dhananjaysaini.musicplayerapp.modal
 
+import android.annotation.SuppressLint
+import java.io.Serializable
 import java.util.concurrent.TimeUnit
 
 data class Music(
@@ -10,8 +12,9 @@ data class Music(
     val duration: Long,
     val path: String,
     val artUri: String
-)
+) : Serializable
 
+@SuppressLint("DefaultLocale")
 fun formatDuration (duration: Long):String {
 
     val hours = TimeUnit.MILLISECONDS.toHours(duration)

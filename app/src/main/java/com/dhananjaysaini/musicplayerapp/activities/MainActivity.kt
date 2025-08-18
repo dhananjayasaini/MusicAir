@@ -1,9 +1,11 @@
 package com.dhananjaysaini.musicplayerapp.activities
 
+import android.Manifest
 import android.annotation.SuppressLint
 import android.content.Intent
 import android.content.pm.PackageManager
 import android.net.Uri
+import android.os.Build
 import android.os.Bundle
 import android.provider.MediaStore
 import android.util.Log
@@ -12,11 +14,16 @@ import android.widget.Toast
 import androidx.appcompat.app.ActionBarDrawerToggle
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.app.ActivityCompat
+import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.dhananjaysaini.musicplayerapp.R
 import com.dhananjaysaini.musicplayerapp.adapter.MusicAdapter
+import com.dhananjaysaini.musicplayerapp.constants.Constants
 import com.dhananjaysaini.musicplayerapp.databinding.ActivityMainBinding
 import com.dhananjaysaini.musicplayerapp.modal.Music
+import com.dhananjaysaini.musicplayerapp.service.MusicService
+import com.dhananjaysaini.musicplayerapp.utils.FavoritesManager
+import com.dhananjaysaini.musicplayerapp.utils.PlaylistManager.addToPlaylist
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
@@ -31,7 +38,7 @@ class MainActivity : AppCompatActivity() {
     private lateinit var musicAdapter: MusicAdapter
 
     companion object {
-       var MusicListMA : ArrayList<Music> = ArrayList()
+       var musicListMA : ArrayList<Music> = ArrayList()
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -40,19 +47,11 @@ class MainActivity : AppCompatActivity() {
         binding = ActivityMainBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
+        FavoritesManager.init(applicationContext)
         initializeLayout()
         requestRunTimePermission()
-    }
-
-    private fun requestRunTimePermission() {
-        if (ActivityCompat.checkSelfPermission(this, android.Manifest.permission.WRITE_EXTERNAL_STORAGE)
-            !=PackageManager.PERMISSION_GRANTED) {
-            ActivityCompat.requestPermissions(
-                this, arrayOf(android.Manifest.permission.WRITE_EXTERNAL_STORAGE), 11)
-        }
 
     }
-
 
 // to start the navigation drawer
 
@@ -64,12 +63,16 @@ class MainActivity : AppCompatActivity() {
 
     @SuppressLint("SetTextI18n", "NotifyDataSetChanged", "SuspiciousIndentation")
     private fun initializeLayout() {
-        binding.shuffleBtn.setOnClickListener {
-          val intent = Intent(this@MainActivity, PlayerActivity::class.java)
 
-            intent.putExtra("index", 0)
-            intent.putExtra("class", "MainActivity")
-            startActivity(intent)
+        binding.shuffleBtn.setOnClickListener {
+            if (musicListMA.size > 0) {
+                val intent = Intent(this@MainActivity, PlayerActivity::class.java)
+                intent.putExtra("index", 0)
+                intent.putExtra("class", "MainActivity")
+                startActivity(intent)
+            } else {
+                Toast.makeText(this, "No songs available to play", Toast.LENGTH_SHORT).show()
+            }
         }
 
         binding.favoriteBtn.setOnClickListener {
@@ -90,7 +93,6 @@ class MainActivity : AppCompatActivity() {
             true
         }
 
-//navigation drawer
         val drawerLayout = binding.drawerBtn
         toggle = ActionBarDrawerToggle(this, drawerLayout, R.string.open, R.string.close)
         drawerLayout.addDrawerListener(toggle)
@@ -100,17 +102,32 @@ class MainActivity : AppCompatActivity() {
         supportActionBar?.setDisplayHomeAsUpEnabled(true)
 
         CoroutineScope(Dispatchers.IO).launch {
-            MusicListMA = getAllAudio()
-            withContext(Dispatchers.Main){
-                musicAdapter = MusicAdapter(this@MainActivity, MusicListMA)
-                binding.musicRV.adapter = musicAdapter
-                musicAdapter.notifyDataSetChanged()
-                binding.totalSongs.text = "Total Songs : "+musicAdapter.itemCount
+            musicListMA = getAllAudio()
+            withContext(Dispatchers.Main) {
+                if (musicListMA.isNotEmpty()) {
 
+                    musicAdapter = MusicAdapter(
+                        this@MainActivity,
+                        musicListMA,
+                        onAddToPlaylist = { song ->
+                            addToPlaylist(this@MainActivity, "MyPlaylist", song)
+                        },
+                        adapterClass = "MusicAdapter",
+                    )
+
+                    binding.musicRV.adapter = musicAdapter
+                    musicAdapter.notifyDataSetChanged()
+                    binding.totalSongs.text = musicAdapter.itemCount.toString() + " Songs"
+
+                    notificationBuilder()
+                }
+                else {
+                    Toast.makeText(this@MainActivity, "No songs found", Toast.LENGTH_SHORT).show()
+                }
             }
         }
 
-        Log.d("AudioTag", "initialSize: "+ MusicListMA.size)
+        Log.d("AudioTag", "initialSize: "+ musicListMA.size)
 
         binding.musicRV.setHasFixedSize(true)
         binding.musicRV.setItemViewCacheSize(10)
@@ -167,17 +184,96 @@ class MainActivity : AppCompatActivity() {
 
     }
 
+    private fun requestRunTimePermission() {
+        val permissions = mutableListOf<String>()
+
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
+            if (ContextCompat.checkSelfPermission(this, Manifest.permission.READ_MEDIA_AUDIO)
+                != PackageManager.PERMISSION_GRANTED)
+            {
+                permissions.add(Manifest.permission.READ_MEDIA_AUDIO)
+            }
+
+            else if (ContextCompat.checkSelfPermission(this, Manifest.permission.POST_NOTIFICATIONS)
+                != PackageManager.PERMISSION_GRANTED) {
+
+                ActivityCompat.requestPermissions(
+                    this,
+                    arrayOf(Manifest.permission.POST_NOTIFICATIONS),
+                    1001
+                )
+            }
+        } else {
+            if (ContextCompat.checkSelfPermission(this, Manifest.permission.READ_EXTERNAL_STORAGE)
+                != PackageManager.PERMISSION_GRANTED
+            ) {
+                permissions.add(Manifest.permission.READ_EXTERNAL_STORAGE)
+            }
+        }
+
+        if (permissions.isNotEmpty()) {
+            ActivityCompat.requestPermissions(this, permissions.toTypedArray(), 11)
+        } else {
+            initializeLayout()
+        }
+    }
+
     override fun onRequestPermissionsResult(requestCode: Int, permissions: Array<out String>, grantResults: IntArray) {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults)
         if(requestCode==11){
-            if(grantResults.isNotEmpty() && grantResults[0]== PackageManager.PERMISSION_GRANTED) {
+            if((grantResults.isNotEmpty() && grantResults[0] ==  PackageManager.PERMISSION_GRANTED )) {
                 Toast.makeText(this, "Permission Granted", Toast.LENGTH_SHORT).show()
+                initializeLayout()
             }
             else {
-                ActivityCompat.requestPermissions(
-                    this, arrayOf(android.Manifest.permission.WRITE_EXTERNAL_STORAGE), 11)
+                Toast.makeText(this, "Permission Denied", Toast.LENGTH_SHORT).show()
             }
         }
+    }
+
+    private fun notificationBuilder(){
+
+        if (musicListMA.isEmpty()) {
+            Toast.makeText(this, "No songs found for notification", Toast.LENGTH_SHORT).show()
+            return
+        }
+
+        val position = 0
+        val song = musicListMA[position]
+
+        val serviceIntent = Intent(this, MusicService::class.java).apply {
+            action = Constants.ACTION_PLAY
+            action = Constants.ACTION_PAUSE
+            action = Constants.ACTION_NEXT
+            action = Constants.ACTION_PREVIOUS
+            action = Constants.CHANNEL_ID
+            action = Constants.NOTIFICATION_ID.toString()
+
+            putExtra("SONG_ID", song.id)
+            putExtra("SONG_TITLE", song.title)
+            putExtra("SONG_ALBUM", song.album)
+            putExtra("SONG_ARTIST", song.artist)
+            putExtra("SONG_DURATION", song.duration)
+            putExtra("SONG_PATH", song.path)
+            putExtra("SONG_ART_URI", song.artUri)
+            }
+
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+                startForegroundService(serviceIntent)
+            }
+        ContextCompat.startForegroundService(this, serviceIntent) // safe for API 26+
+
+        val playerIntent = Intent(this, PlayerActivity::class.java).apply {
+            putExtra("SONG_ID", song.id)
+            putExtra("SONG_TITLE", song.title)
+            putExtra("SONG_ALBUM", song.album)
+            putExtra("SONG_ARTIST", song.artist)
+            putExtra("SONG_DURATION", song.duration)
+            putExtra("SONG_PATH", song.path)
+            putExtra("SONG_ART_URI", song.artUri)
+        }
+        this.startActivity(playerIntent)
+
     }
 
 

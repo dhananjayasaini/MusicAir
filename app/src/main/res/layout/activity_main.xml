@@ -5,6 +5,8 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:layout_centerHorizontal="true"
+    android:layout_centerInParent="true"
     tools:context=".activities.MainActivity"
     android:id="@+id/drawer_btn">
 
@@ -26,7 +28,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="match_parent"
                 android:text="@string/shuffle_btn"
-                android:textColor="@color/gold"
+                android:textColor="@color/bright_yellow"
                 android:background="@color/white"
                 android:gravity="center"
                 android:layout_weight="1"
@@ -37,23 +39,22 @@
                 android:layout_width="wrap_content"
                 android:layout_height="match_parent"
                 android:text="@string/favourites_btn"
-                android:textColor="@color/gold"
+                android:textColor="@color/bright_yellow"
                 android:background="@color/white"
                 android:gravity="center"
                 android:layout_weight="1"
-                android:drawableTop="@drawable/favourite_full_icon" />
+                android:drawableTop="@drawable/favourite_filled_icon" />
 
             <androidx.appcompat.widget.AppCompatButton
                 android:id="@+id/playlist_btn"
                 android:layout_width="wrap_content"
                 android:layout_height="match_parent"
                 android:text="@string/playlist_btn"
-                android:textColor="@color/gold"
+                android:textColor="@color/bright_yellow"
                 android:background="@color/white"
                 android:gravity="center"
                 android:layout_weight="1"
                 android:drawableTop="@drawable/playlist_icon" />
-
         </LinearLayout>
 
         <TextView
@@ -62,6 +63,7 @@
             android:layout_height="wrap_content"
             android:text="@string/total_songs"
             android:textSize="20sp"
+            android:textStyle="bold"
             android:textColor="@color/black"
             android:layout_margin="10dp" />
 
@@ -69,6 +71,7 @@
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:id="@+id/musicRV">
+
         </androidx.recyclerview.widget.RecyclerView>
 
 </LinearLayout>
