@@ -8,8 +8,8 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import com.dhananjaysaini.musicplayerapp.R
 import com.dhananjaysaini.musicplayerapp.adapter.MusicAdapter
 import com.dhananjaysaini.musicplayerapp.databinding.ActivityFavouriteBinding
+import com.dhananjaysaini.musicplayerapp.modal.Music
 import com.dhananjaysaini.musicplayerapp.utils.FavoritesManager
-import com.dhananjaysaini.musicplayerapp.utils.PlaylistManager
 
 class FavouriteActivity : AppCompatActivity() {
 
@@ -19,7 +19,7 @@ class FavouriteActivity : AppCompatActivity() {
     companion object {
         val favList = MainActivity.musicListMA.filter {
             FavoritesManager.isFavorite(it.id)
-        }
+        } as ArrayList<Music>
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -35,7 +35,7 @@ class FavouriteActivity : AppCompatActivity() {
 
         adapter = MusicAdapter(
             this, favList as ArrayList, onAddToPlaylist = { song ->
-                PlaylistManager.addToPlaylist(this, "MyPlaylist", song)
+                FavoritesManager.addFavorite( song.id)
                 Toast.makeText(this, "${song.title} ", Toast.LENGTH_SHORT).show()
             },
             adapterClass = "FavouriteActivity"

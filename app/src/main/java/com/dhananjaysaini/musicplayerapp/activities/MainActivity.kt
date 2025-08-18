@@ -23,7 +23,6 @@ import com.dhananjaysaini.musicplayerapp.databinding.ActivityMainBinding
 import com.dhananjaysaini.musicplayerapp.modal.Music
 import com.dhananjaysaini.musicplayerapp.service.MusicService
 import com.dhananjaysaini.musicplayerapp.utils.FavoritesManager
-import com.dhananjaysaini.musicplayerapp.utils.PlaylistManager.addToPlaylist
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
@@ -79,9 +78,9 @@ class MainActivity : AppCompatActivity() {
             startActivity(Intent(this, FavouriteActivity::class.java))
         }
 
-        binding.playlistBtn.setOnClickListener {
-            startActivity(Intent(this, PlaylistActivity::class.java))
-        }
+//        binding.playlistBtn.setOnClickListener {
+//            startActivity(Intent(this, PlaylistActivity::class.java))
+//        }
 
         binding.navView.setNavigationItemSelectedListener {
             when (it.itemId) {
@@ -110,7 +109,7 @@ class MainActivity : AppCompatActivity() {
                         this@MainActivity,
                         musicListMA,
                         onAddToPlaylist = { song ->
-                            addToPlaylist(this@MainActivity, "MyPlaylist", song)
+                           // addToPlaylist(this@MainActivity, "MyPlaylist", song)
                         },
                         adapterClass = "MusicAdapter",
                     )

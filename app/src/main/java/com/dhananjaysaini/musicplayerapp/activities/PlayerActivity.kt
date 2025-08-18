@@ -25,7 +25,6 @@ import com.dhananjaysaini.musicplayerapp.databinding.ActivityPlayerBinding
 import com.dhananjaysaini.musicplayerapp.modal.Music
 import com.dhananjaysaini.musicplayerapp.service.MusicService
 import com.dhananjaysaini.musicplayerapp.utils.FavoritesManager
-import com.dhananjaysaini.musicplayerapp.utils.PlaylistManager
 import java.io.File
 
 
@@ -200,7 +199,7 @@ class PlayerActivity : AppCompatActivity() {
                 }
             }
 
-            "FavoriteAdapter" -> {
+            "FavouriteActivity" -> {
                 musicListPA.clear()
                 musicListPA.addAll(FavouriteActivity.favList)
             }
@@ -498,15 +497,6 @@ class PlayerActivity : AppCompatActivity() {
         if (songPosition < 0 || songPosition >= musicListPA.size) {
             Toast.makeText(this, "Invalid song position", Toast.LENGTH_SHORT).show()
             return
-        }
-
-        val currentSong = musicListPA[songPosition]
-        val oldList = PlaylistManager.getPlaylist(this, playlistName).toMutableList()
-
-        if (!oldList.any { it.id == currentSong.id }) {
-            oldList.add(currentSong)
-            PlaylistManager.savePlaylist(this, playlistName, oldList)
-            Toast.makeText(this, "Added to playlist", Toast.LENGTH_SHORT).show()
         }
 
     }
