@@ -1,10 +1,10 @@
 <resources>
-    <string name="app_name">Music Air</string>
+    <string name="app_name">Music Player</string>
     <string name="shuffle_btn">Shuffle</string>
     <string name="playlist_btn">Playlist</string>
-    <string name="favourites_btn">Favourites</string>
+    <string name="favorites_btn">Favorites</string>
     <string name="total_songs">Total Songs :</string>
-    <string name="music_air">Music Air</string>
+    <string name="music_player">Music Player</string>
     <string name="song_name">Song Name</string>
     <string name="back_btn">Back Button</string>
     <string name="previous_song">Previous Song</string>
@@ -19,7 +19,7 @@
     <string name="open">Open</string>
     <string name="close">Close</string>
     <string name="icon">Icon</string>
-    <string name="nav_text">Welcome to the \nWorld of Music Air</string>
+    <string name="nav_text">Welcome to the \nWorld of Music Player</string>
     <string name="nav_feedback">Feedback</string>
     <string name="nav_setting">Setting</string>
     <string name="nav_about">About</string>

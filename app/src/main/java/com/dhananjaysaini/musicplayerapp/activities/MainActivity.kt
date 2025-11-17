@@ -22,7 +22,7 @@ import com.dhananjaysaini.musicplayerapp.constants.Constants
 import com.dhananjaysaini.musicplayerapp.databinding.ActivityMainBinding
 import com.dhananjaysaini.musicplayerapp.modal.Music
 import com.dhananjaysaini.musicplayerapp.service.MusicService
-import com.dhananjaysaini.musicplayerapp.utils.FavoritesManager
+import com.dhananjaysaini.musicplayerapp.utils.FavoriteManager
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
@@ -36,6 +36,7 @@ class MainActivity : AppCompatActivity() {
     private lateinit var toggle: ActionBarDrawerToggle
     private lateinit var musicAdapter: MusicAdapter
 
+
     companion object {
        var musicListMA : ArrayList<Music> = ArrayList()
     }
@@ -46,9 +47,19 @@ class MainActivity : AppCompatActivity() {
         binding = ActivityMainBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
-        FavoritesManager.init(applicationContext)
         initializeLayout()
         requestRunTimePermission()
+
+        FavoriteManager.init(applicationContext)
+
+
+        binding.favoriteBtn.setOnClickListener {
+            val intent = Intent(this@MainActivity, FavoriteActivity::class.java)
+            intent.putExtra("ALL_SONGS", ArrayList(musicListMA)) // must be Serializable or Parcelable
+
+            startActivity(intent)
+
+        }
 
     }
 
@@ -65,6 +76,7 @@ class MainActivity : AppCompatActivity() {
 
         binding.shuffleBtn.setOnClickListener {
             if (musicListMA.size > 0) {
+                val shuffledList = ArrayList(musicListMA.shuffled())
                 val intent = Intent(this@MainActivity, PlayerActivity::class.java)
                 intent.putExtra("index", 0)
                 intent.putExtra("class", "MainActivity")
@@ -74,13 +86,7 @@ class MainActivity : AppCompatActivity() {
             }
         }
 
-        binding.favoriteBtn.setOnClickListener {
-            startActivity(Intent(this, FavouriteActivity::class.java))
-        }
 
-//        binding.playlistBtn.setOnClickListener {
-//            startActivity(Intent(this, PlaylistActivity::class.java))
-//        }
 
         binding.navView.setNavigationItemSelectedListener {
             when (it.itemId) {
@@ -108,9 +114,6 @@ class MainActivity : AppCompatActivity() {
                     musicAdapter = MusicAdapter(
                         this@MainActivity,
                         musicListMA,
-                        onAddToPlaylist = { song ->
-                           // addToPlaylist(this@MainActivity, "MyPlaylist", song)
-                        },
                         adapterClass = "MusicAdapter",
                     )
 

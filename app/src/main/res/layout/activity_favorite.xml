@@ -7,7 +7,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="horizontal"
-    tools:context=".activities.FavouriteActivity"
+    tools:context=".activities.FavoriteActivity"
     android:id="@+id/favorite_activity">
 
 
@@ -35,7 +35,7 @@
         <TextView
             android:layout_width="0dp"
             android:layout_height="60dp"
-            android:text="@string/favourites_btn"
+            android:text="@string/favorites_btn"
             android:textSize="30sp"
             android:gravity="center"
             android:layout_weight="1"

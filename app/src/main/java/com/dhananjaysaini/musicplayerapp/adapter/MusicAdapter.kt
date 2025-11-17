@@ -7,8 +7,6 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.PopupMenu
 import android.widget.Toast
-import androidx.activity.result.ActivityResultLauncher
-import androidx.activity.result.IntentSenderRequest
 import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
@@ -18,14 +16,20 @@ import com.dhananjaysaini.musicplayerapp.activities.PlayerActivity
 import com.dhananjaysaini.musicplayerapp.databinding.MusicViewBinding
 import com.dhananjaysaini.musicplayerapp.modal.Music
 import com.dhananjaysaini.musicplayerapp.modal.formatDuration
+import java.io.Serializable
 
 class MusicAdapter(
     private val context: Context,
     private val musicList: ArrayList<Music>,
-    private val onAddToPlaylist: (Music) -> Unit,
     private val adapterClass: String
 )
     : RecyclerView.Adapter<MusicAdapter.MyHolder>() {
+
+    // Stores favorite song IDs
+    private val favoriteIds = mutableSetOf<String>()
+
+    // Stores playlists: playlist name -> song IDs
+    private val playlists = mutableMapOf<String, MutableList<String>>()
 
     class MyHolder(binding: MusicViewBinding) : RecyclerView.ViewHolder(binding.root) {
         val title = binding.songNameMV
@@ -34,7 +38,6 @@ class MusicAdapter(
         val image = binding.imageMV
         val menuIcon = binding.menuIcon
         val root = binding.root
-
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): MyHolder {
@@ -49,6 +52,7 @@ class MusicAdapter(
             val intent = Intent(context, PlayerActivity::class.java)
             intent.putExtra("index", position)
             intent.putExtra("class", adapterClass)
+            intent.putExtra("musicList", musicList as Serializable)
             ContextCompat.startActivity(context, intent, null)
         }
 
@@ -68,10 +72,26 @@ class MusicAdapter(
         return musicList.size
     }
 
-    fun updateMusicList(newList: List<Music>) {
-        musicList.clear()
-        musicList.addAll(newList)
+    /** Toggle favorite state */
+    fun toggleFavorite(song: Music) {
+        if (favoriteIds.contains(song.id)) favoriteIds.remove(song.id)
+        else favoriteIds.add(song.id)
         notifyDataSetChanged()
+    }
+
+    /** Get favorite songs */
+    fun getFavoriteSongs(): List<Music> = musicList.filter { favoriteIds.contains(it.id) }
+
+    /** Add song to a playlist */
+    fun addToPlaylist(playlistName: String, song: Music) {
+        val list = playlists.getOrPut(playlistName) { mutableListOf() }
+        if (!list.contains(song.id)) list.add(song.id)
+    }
+
+    /** Get songs from a playlist */
+    fun getPlaylistSongs(playlistName: String): List<Music> {
+        val ids = playlists[playlistName] ?: return emptyList()
+        return musicList.filter { ids.contains(it.id) }
     }
 
     private fun showPopupMenu(view: View, song: Music, position: Int) {
@@ -83,63 +103,12 @@ class MusicAdapter(
                 R.id.add_to_playlist -> {
                     Toast.makeText(view.context, "${song.title} Added", Toast.LENGTH_SHORT).show()
 
-                    onAddToPlaylist(song)
                     true
                 }
 
                 R.id.delete -> {
-                  //  onDeleteSong(song, position)
                     true
                 }
-
-
-//                R.id.delete -> {
-//                    val uri = ContentUris.withAppendedId(
-//                        MediaStore.Audio.Media.EXTERNAL_CONTENT_URI,
-//                        song.id.toLong()
-//                    )
-//                    val contentResolver = context.contentResolver
-//
-//                    try {
-//                        val rowsDeleted = contentResolver.delete(uri, null, null)
-//                        if (rowsDeleted > 0) {
-//                            musicList.removeAt(position)
-//                            notifyItemRemoved(position)
-//                            Toast.makeText(
-//                                view.context,
-//                                "${song.title} Deleted",
-//                                Toast.LENGTH_SHORT
-//                            ).show()
-//                        } else {
-//                            Toast.makeText(
-//                                view.context,
-//                                "Failed to delete ${song.title}",
-//                                Toast.LENGTH_SHORT
-//                            ).show()
-//                        }
-//                    } catch (e: SecurityException) {
-//                        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q && e is RecoverableSecurityException) {
-//                            val intentSender = e.userAction.actionIntent.intentSender
-//                            val request = IntentSenderRequest.Builder(intentSender).build()
-//
-//                            // Tell the activity to remember what to delete
-//                            if (context is MainActivity) {
-//                                context.pendingDeleteSong = song
-//                                context.pendingDeletePosition = position
-//                                context.deletePermissionLauncher.launch(request)
-//                            }
-//                           // deletePermissionLauncher.launch(request)
-//                        } else {
-//                            Toast.makeText(
-//                                view.context,
-//                                "Cannot delete ${song.title}",
-//                                Toast.LENGTH_SHORT
-//                            ).show()
-//                        }
-//                    }
-//
-//                    true
-//                }
 
                 else -> true
             }
