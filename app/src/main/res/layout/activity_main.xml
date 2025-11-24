@@ -3,90 +3,95 @@
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/drawer_btn"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:layout_centerHorizontal="true"
-    android:layout_centerInParent="true"
-    tools:context=".activities.MainActivity"
-    android:id="@+id/drawer_btn">
+    tools:context=".activities.MainActivity">
 
+    <!-- MAIN CONTENT AREA -->
     <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
+        android:layout_height="match_parent"
         android:orientation="vertical">
 
+        <!-- Top Buttons -->
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="72dp"
-            android:paddingTop="8dp"
             android:orientation="horizontal"
-            android:background="#F6F6F6"
-            >
+            android:paddingTop="8dp"
+            android:background="#F6F6F6">
 
-        <androidx.appcompat.widget.AppCompatButton
+            <androidx.appcompat.widget.AppCompatButton
                 android:id="@+id/shuffle_btn"
-                android:layout_width="wrap_content"
+                android:layout_width="0dp"
                 android:layout_height="match_parent"
+                android:layout_weight="1"
                 android:text="@string/shuffle_btn"
                 android:textColor="@color/bright_yellow"
                 android:background="@color/white"
                 android:gravity="center"
-                android:layout_weight="1"
                 android:drawableTop="@drawable/shuffle_icon" />
 
             <androidx.appcompat.widget.AppCompatButton
                 android:id="@+id/favorite_btn"
-                android:layout_width="wrap_content"
+                android:layout_width="0dp"
                 android:layout_height="match_parent"
+                android:layout_weight="1"
                 android:text="@string/favorites_btn"
                 android:textColor="@color/bright_yellow"
                 android:background="@color/white"
                 android:gravity="center"
-                android:layout_weight="1"
                 android:drawableTop="@drawable/favourite_filled_icon" />
 
             <androidx.appcompat.widget.AppCompatButton
                 android:id="@+id/playlist_btn"
-                android:layout_width="wrap_content"
+                android:layout_width="0dp"
                 android:layout_height="match_parent"
+                android:layout_weight="1"
                 android:text="@string/playlist_btn"
                 android:textColor="@color/bright_yellow"
                 android:background="@color/white"
                 android:gravity="center"
-                android:layout_weight="1"
                 android:drawableTop="@drawable/playlist_icon" />
         </LinearLayout>
 
+        <!-- Total Songs Label -->
         <TextView
             android:id="@+id/totalSongs"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:layout_margin="10dp"
             android:text="@string/total_songs"
             android:textSize="20sp"
             android:textStyle="bold"
-            android:textColor="@color/black"
-            android:layout_margin="10dp" />
+            android:textColor="@color/black" />
 
+        <!-- RecyclerView -->
         <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/musicRV"
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:id="@+id/musicRV">
+            android:layout_height="0dp"
+            android:layout_weight="1"
+            android:overScrollMode="never" />
 
-        </androidx.recyclerview.widget.RecyclerView>
+        <!-- Mini Player at Bottom -->
+        <FrameLayout
+            android:id="@+id/mini_player_container"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="@color/white"
+            android:elevation="8dp" />
 
-</LinearLayout>
+    </LinearLayout>
 
+    <!-- Navigation Drawer -->
     <com.google.android.material.navigation.NavigationView
         android:id="@+id/navView"
-        android:visibility="visible"
         android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
+        android:layout_height="match_parent"
         android:layout_gravity="start"
-        app:headerLayout = "@layout/navigation_header"
-        app:menu = "@menu/navigation_menu" />
+        app:headerLayout="@layout/navigation_header"
+        app:menu="@menu/navigation_menu" />
 
-    <include
-        layout="@layout/mini_player"
-        android:id="@+id/mini_player_include"
-        android:visibility="gone"/>
 </androidx.drawerlayout.widget.DrawerLayout>

@@ -8,7 +8,9 @@ import android.graphics.BitmapFactory
 import android.media.MediaPlayer
 import android.net.Uri
 import android.os.Build
+import android.os.Handler
 import android.os.IBinder
+import android.os.Looper
 import android.provider.MediaStore
 import android.util.Log
 import androidx.annotation.RequiresApi
@@ -28,6 +30,41 @@ class MusicService : Service() {
         var position: Int = 0
     }
     private lateinit var receiver: BroadcastReceiver
+    private var isServiceStarted = false
+
+
+    private val uiHandler = Handler(Looper.getMainLooper())
+    private val progressRunnable = object : Runnable {
+        override fun run() {
+            try {
+                val cur = mediaPlayer?.currentPosition ?: 0
+                val dur = mediaPlayer?.duration ?: 0
+                // Broadcast current position regularly
+                sendBroadcast(Intent("UPDATE_UI").apply {
+                    putExtra("Index", position)
+                    putExtra("isPlaying", mediaPlayer?.isPlaying == true)
+                    putExtra("currentMs", cur)
+                    putExtra("durationMs", dur)
+                    putExtra("title", playlist.getOrNull(position)?.title)
+                    putExtra("artist", playlist.getOrNull(position)?.artist)
+                    putExtra("artUri", playlist.getOrNull(position)?.artUri)
+                })
+            } catch (e: Exception) { /* ignore*/ }
+            // schedule next update only if still playing
+            if (mediaPlayer?.isPlaying == true) {
+                uiHandler.postDelayed(this, 500) // update every 500ms
+            }
+        }
+    }
+
+    private fun startProgressUpdates() {
+        uiHandler.removeCallbacks(progressRunnable)
+        uiHandler.post(progressRunnable)
+    }
+    private fun stopProgressUpdates() {
+        uiHandler.removeCallbacks(progressRunnable)
+    }
+
 
     @RequiresApi(Build.VERSION_CODES.P)
     override fun onCreate() {
@@ -40,7 +77,15 @@ class MusicService : Service() {
 
     @RequiresApi(Build.VERSION_CODES.P)
     override fun onStartCommand(intent: Intent?, flags: Int, startId: Int): Int {
+
+//        if (!isServiceStarted) {
+//            startForeground(Constants.NOTIFICATION_ID, createStartupNotification())
+//            isServiceStarted = true
+//        }
+
         createNotificationChannel()
+
+
 
         when (intent?.action) {
             // New list coming from Activity
@@ -62,6 +107,7 @@ class MusicService : Service() {
             Constants.ACTION_PLAY -> {
                 if (mediaPlayer?.isPlaying != true) {
                     mediaPlayer?.start()
+                    startProgressUpdates()
                     notifyUIAndUpdateNotification()
                 }
             }
@@ -69,6 +115,7 @@ class MusicService : Service() {
             Constants.ACTION_PAUSE -> {
                 if (mediaPlayer?.isPlaying == true) {
                     mediaPlayer?.pause()
+                    stopProgressUpdates()
                     notifyUIAndUpdateNotification()
                 }
             }
@@ -107,7 +154,7 @@ class MusicService : Service() {
 
             // Optional: refresh notification state externally
             Constants.ACTION_REFRESH_NOTIFICATION -> {
-                showNotification(mediaPlayer?.isPlaying == true)
+                buildNotification(mediaPlayer?.isPlaying == true)
             }
         }
 
@@ -147,14 +194,24 @@ class MusicService : Service() {
                 .getBoolean("isRepeat", false)
             mp.isLooping = isRepeat
             mp.start()
+//
+//            if (startForegroundNow) {
+//                // Ensure we are in foreground when playback begins
+//                showNotification(isPlaying = true)
+//            } else {
+//                // Update the existing foreground notification
+//                showNotification(mp.isPlaying)
+//            }
 
-            if (startForegroundNow) {
-                // Ensure we are in foreground when playback begins
-                showNotification(isPlaying = true)
+
+
+            if (!isServiceStarted) {
+                startForeground(Constants.NOTIFICATION_ID, buildNotification(true))
+                isServiceStarted = true
             } else {
-                // Update the existing foreground notification
-                showNotification(mp.isPlaying)
+                updateNotification(true)
             }
+
 
             broadcastUiUpdateAll()
 
@@ -173,7 +230,7 @@ class MusicService : Service() {
             mediaPlayer?.seekTo(0)
             mediaPlayer?.start()
             broadcastUiUpdateAll()
-            showNotification(true)
+            buildNotification(true)
             return
         }
 
@@ -207,7 +264,7 @@ class MusicService : Service() {
     }
 
     @RequiresApi(Build.VERSION_CODES.P)
-    private fun showNotification(isPlaying: Boolean) {
+    private fun buildNotification(isPlaying: Boolean): Notification {
         val current = playlist.getOrNull(position)
         val playPauseIcon = if (isPlaying) R.drawable.pause_icon else R.drawable.play_icon
         val playPauseAction = if (isPlaying) Constants.ACTION_PAUSE else Constants.ACTION_PLAY
@@ -236,8 +293,7 @@ class MusicService : Service() {
         val artwork = BitmapFactory.decodeResource(resources, R.drawable.itunes)
         val artworkBitmap = getBitmapFromUri(current?.artUri)
 
-
-        val notification = NotificationCompat.Builder(this, Constants.CHANNEL_ID)
+        return NotificationCompat.Builder(this, Constants.CHANNEL_ID)
             .setContentTitle(current?.title ?: getString(R.string.app_name))
             .setContentText(current?.artist ?: "")
             .setSmallIcon(R.drawable.music_player_icon_splash_screen)
@@ -254,8 +310,20 @@ class MusicService : Service() {
             .build()
 
         // If we are already foreground, this updates it; otherwise it starts foreground.
-        startForeground(Constants.NOTIFICATION_ID, notification)
+     //   startForeground(Constants.NOTIFICATION_ID, notification)
     }
+
+    @RequiresApi(Build.VERSION_CODES.P)
+    private fun updateNotification(isPlaying: Boolean) {
+        val nm = getSystemService(NOTIFICATION_SERVICE) as NotificationManager
+        nm.notify(Constants.NOTIFICATION_ID, buildNotification(isPlaying))
+    }
+
+
+
+
+
+
 
     // ------------------ Receiver (buttons from notification) ------------------
 
@@ -268,14 +336,36 @@ class MusicService : Service() {
 //                    PlayerActivity.songPosition = it
 //                }
                 when (intent?.action) {
+
                     Constants.ACTION_PLAY -> {
-                        mediaPlayer?.start()
-                        notifyUIAndUpdateNotification()
+//                        mediaPlayer?.start()
+//                        notifyUIAndUpdateNotification()
+
+                        if (mediaPlayer?.isPlaying == false) {
+                            mediaPlayer?.start()
+                        } else if (mediaPlayer == null) {
+                            playAt(position, false)
+                            return
+                        }
+
+                        // Notification icon update
+                        updateNotification(true)
+                        broadcastUiUpdateAll()
                     }
+
                     Constants.ACTION_PAUSE -> {
-                        mediaPlayer?.pause()
-                        notifyUIAndUpdateNotification()
+//                        mediaPlayer?.pause()
+//                        notifyUIAndUpdateNotification()
+
+                        if (mediaPlayer?.isPlaying == true) {
+                            mediaPlayer!!.pause()
+                        }
+
+                        // Notification icon update
+                        updateNotification(false)
+                        broadcastUiUpdateAll()
                     }
+
                     Constants.ACTION_NEXT -> {
                         if (playlist.isNotEmpty()) {
                             position = (position + 1) % playlist.size
@@ -307,12 +397,22 @@ class MusicService : Service() {
 
         val song = playlist[position]
 
+        val current = playlist.getOrNull(position)
+        val isPlaying = mediaPlayer?.isPlaying == true
+        val currentMs = mediaPlayer?.currentPosition ?: 0
+        val durationMs = mediaPlayer?.duration ?: 0
+
         // Update titles, images, seekbar, etc.
         sendBroadcast(Intent("UPDATE_UI").apply {
             putExtra("Index", position)
             putExtra("title", song.title)
             putExtra("artist", song.artist)
             putExtra("path", song.path)
+
+            putExtra("isPlaying", isPlaying)
+            putExtra("currentMs", currentMs)
+            putExtra("durationMs", durationMs)
+            putExtra("artUri", current?.artUri)
         })
         // Update play/pause icon
         sendBroadcast(Intent("MUSIC_PLAYER_UI_UPDATE").apply {
@@ -323,7 +423,7 @@ class MusicService : Service() {
     @RequiresApi(Build.VERSION_CODES.P)
     private fun notifyUIAndUpdateNotification() {
         broadcastUiUpdateAll()
-        showNotification(mediaPlayer?.isPlaying == true)
+        buildNotification(mediaPlayer?.isPlaying == true)
     }
 
     private fun getBitmapFromUri(uri: String?): Bitmap? {

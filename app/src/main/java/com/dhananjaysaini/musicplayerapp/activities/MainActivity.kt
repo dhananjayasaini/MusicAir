@@ -20,6 +20,7 @@ import com.dhananjaysaini.musicplayerapp.R
 import com.dhananjaysaini.musicplayerapp.adapter.MusicAdapter
 import com.dhananjaysaini.musicplayerapp.constants.Constants
 import com.dhananjaysaini.musicplayerapp.databinding.ActivityMainBinding
+import com.dhananjaysaini.musicplayerapp.fragments.MiniPlayerFragment
 import com.dhananjaysaini.musicplayerapp.modal.Music
 import com.dhananjaysaini.musicplayerapp.service.MusicService
 import com.dhananjaysaini.musicplayerapp.utils.FavoriteManager
@@ -51,6 +52,13 @@ class MainActivity : AppCompatActivity() {
         requestRunTimePermission()
 
         FavoriteManager.init(applicationContext)
+
+
+            if (savedInstanceState == null) {
+                supportFragmentManager.beginTransaction()
+                    .replace(R.id.mini_player_container, MiniPlayerFragment())
+                    .commit()
+            }
 
 
         binding.favoriteBtn.setOnClickListener {

@@ -76,7 +76,9 @@ class PlayerActivity : AppCompatActivity() {
             putExtra("musicList", ArrayList(musicListPA)) // Music must be Serializable or Parcelable
             putExtra("songPosition", songPosition)
         }
-        ContextCompat.startForegroundService(this, serviceIntent)
+//        ContextCompat.startForegroundService(this, serviceIntent)
+
+        startService(serviceIntent)
 
         Log.d("MUSIC_SERVICE", "Service started")
 
