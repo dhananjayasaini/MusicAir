@@ -12,10 +12,13 @@ import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
 import com.bumptech.glide.request.RequestOptions
 import com.dhananjaysaini.musicplayerapp.R
+import com.dhananjaysaini.musicplayerapp.activities.MainActivity
 import com.dhananjaysaini.musicplayerapp.activities.PlayerActivity
+import com.dhananjaysaini.musicplayerapp.constants.Constants
 import com.dhananjaysaini.musicplayerapp.databinding.MusicViewBinding
 import com.dhananjaysaini.musicplayerapp.modal.Music
 import com.dhananjaysaini.musicplayerapp.modal.formatDuration
+import com.dhananjaysaini.musicplayerapp.service.MusicService
 import java.io.Serializable
 
 class MusicAdapter(
@@ -49,11 +52,18 @@ class MusicAdapter(
         holder.album.text = musicList[position].album
         holder.duration.text = formatDuration(musicList[position].duration)
         holder.root.setOnClickListener{
-            val intent = Intent(context, PlayerActivity::class.java)
-            intent.putExtra("index", position)
-            intent.putExtra("class", adapterClass)
-            intent.putExtra("musicList", musicList as Serializable)
-            ContextCompat.startActivity(context, intent, null)
+
+//            val serviceIntent = Intent(context, MusicService::class.java)
+//            serviceIntent.action = Constants.ACTION_PLAY_NEW_LIST
+//            serviceIntent.putExtra("musicList", ArrayList(MainActivity.musicListMA))
+//            serviceIntent.putExtra("songPosition", position)
+//            ContextCompat.startForegroundService(context, serviceIntent)
+
+            val playerIntent = Intent(context, PlayerActivity::class.java)
+            playerIntent.putExtra("index", position)
+            playerIntent.putExtra("class", adapterClass)
+            playerIntent.putExtra("musicList", musicList as Serializable)
+            ContextCompat.startActivity(context, playerIntent, null)
         }
 
         val song = musicList[position]

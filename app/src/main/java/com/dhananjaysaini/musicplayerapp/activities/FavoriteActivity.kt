@@ -15,8 +15,10 @@ class FavoriteActivity : AppCompatActivity() {
     private lateinit var binding: ActivityFavoriteBinding
     private lateinit var musicadapter: MusicAdapter
     private lateinit var recyclerView : RecyclerView
-    private lateinit var allSongs: ArrayList<Music> // Load your main songs list here
 
+    companion object {
+        lateinit var allSongs: ArrayList<Music> // Load your main songs list here
+    }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -34,12 +36,16 @@ class FavoriteActivity : AppCompatActivity() {
     //  val favoriteSongs = musicadapter.getFavoriteSongs()
     //  recyclerView.adapter = MusicAdapter(this, ArrayList(favoriteSongs), "FavoriteAdapter")
 
-        val favoriteSongs = ArrayList(FavoriteManager.getFavorites())
-        recyclerView.adapter = MusicAdapter(this, favoriteSongs, "FavoriteAdapter")
-
         binding.backBtnFav.setOnClickListener{
             onBackPressed()
         }
 
+        favSongs()
+
+    }
+
+    fun favSongs(){
+        val favoriteSongs = ArrayList(FavoriteManager.getFavorites())
+        recyclerView.adapter = MusicAdapter(this, favoriteSongs, "FavoriteAdapter")
     }
 }

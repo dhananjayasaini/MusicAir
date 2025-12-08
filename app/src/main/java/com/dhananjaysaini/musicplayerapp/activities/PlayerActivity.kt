@@ -6,6 +6,7 @@ import android.content.Context
 import android.content.Intent
 import android.content.IntentFilter
 import android.net.Uri
+import android.os.Build
 import android.os.Bundle
 import android.os.Handler
 import android.os.Looper
@@ -14,8 +15,8 @@ import android.view.ViewOutlineProvider
 import android.widget.SeekBar
 import android.widget.TextView
 import android.widget.Toast
+import androidx.annotation.RequiresApi
 import androidx.appcompat.app.AppCompatActivity
-import androidx.core.content.ContextCompat
 import androidx.core.content.FileProvider
 import com.bumptech.glide.Glide
 import com.bumptech.glide.request.RequestOptions
@@ -47,6 +48,7 @@ class PlayerActivity : AppCompatActivity() {
     private lateinit var startTime: TextView
     private lateinit var endTime: TextView
 
+    @RequiresApi(Build.VERSION_CODES.O)
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setTheme(R.style.Theme_MusicPlayerApp)
@@ -58,38 +60,115 @@ class PlayerActivity : AppCompatActivity() {
          endTime = binding.endTimePA
          binding.songAlbumPA.isSelected = true
 
-
         initializeLayout()
-        setMusic()
-        backPress()
-        repeatSong()
-        loadRepeatState()
-        favAudioSet()
+        setupUiCallbacks()
         playerList()
-//      createdMusicService.mediaPlayer()
-//      onStopTrackingTouch(seekBar)
 
 
         // After you’ve built musicListPA and songPosition
-        val serviceIntent = Intent(this, MusicService::class.java).apply {
-            action = Constants.ACTION_PLAY_NEW_LIST
-            putExtra("musicList", ArrayList(musicListPA)) // Music must be Serializable or Parcelable
-            putExtra("songPosition", songPosition)
-        }
-//        ContextCompat.startForegroundService(this, serviceIntent)
-
-        startService(serviceIntent)
+//        val serviceIntent = Intent(this, MusicService::class.java).apply {
+//            action = Constants.ACTION_PLAY_NEW_LIST
+//            putExtra("musicList", ArrayList(musicListPA)) // Music must be Serializable or Parcelable
+//            putExtra("songPosition", songPosition)
+//        }
+//
+//        startService(serviceIntent)
 
         Log.d("MUSIC_SERVICE", "Service started")
 
-        binding.shareBtnPA.setOnClickListener {
-            shareCurrentSong()
-        }
+        safeStartServiceIfNeeded()
 
         MusicService.mediaPlayer?.let {
             seekBar.max = it.duration
             endTime.text = formatTime(it.duration)
         }
+        updateSeekBar()
+
+        binding.songImgPA.outlineProvider = ViewOutlineProvider.BACKGROUND
+        binding.songImgPA.clipToOutline = true
+    }
+
+    @RequiresApi(Build.VERSION_CODES.O)
+    private fun safeStartServiceIfNeeded() {
+        // Start service with playlist only when we launched PlayerActivity to start playback
+        // i.e., incomingSource is MainActivity or MusicAdapter, OR mediaPlayer is null
+        val incomingSource = intent.getStringExtra("class")
+
+        if (incomingSource == "MainActivity" || incomingSource == "MusicAdapter" || incomingSource == "FavouriteActivity" ||
+            MusicService.mediaPlayer == null) {
+
+            // only if we actually have a non-empty playlist to send
+            if (musicListPA.isNotEmpty()) {
+                try {
+                    val serviceIntent = Intent(this, MusicService::class.java).apply {
+                        action = Constants.ACTION_PLAY_NEW_LIST
+                        putExtra("musicList", ArrayList(musicListPA))
+                        putExtra("songPosition", songPosition)
+                    }
+                    startForegroundService(serviceIntent)
+                } catch (e: Exception) {
+                    Log.e("PlayerActivity", "start service failed: ${e.message}", e)
+                }
+            }
+        } else {
+            // Coming from MiniPlayer or service already running: don't restart playback.
+            // Just sync UI with current service state
+            setLayout()
+        }
+    }
+
+    private fun setupUiCallbacks(){
+
+        binding.playPauseBtnPA.setOnClickListener {
+            val isPlaying = MusicService.mediaPlayer?.isPlaying == true
+
+            startService(Intent(this, MusicService::class.java).apply {
+                action = if (isPlaying) Constants.ACTION_PAUSE else Constants.ACTION_PLAY
+            })
+        }
+
+        binding.nextBtnPA.setOnClickListener {
+            updateFavoriteIcon()
+            nextPrevSong(true)
+            startService(Intent(this, MusicService::class.java).apply { action = Constants.ACTION_NEXT })
+        }
+
+        binding.prevBtnPA.setOnClickListener {
+            updateFavoriteIcon()
+            nextPrevSong(false)
+            startService(Intent(this, MusicService::class.java).apply { action = Constants.ACTION_PREVIOUS })
+        }
+
+        binding.shareBtnPA.setOnClickListener {
+            shareCurrentSong()
+        }
+
+        binding.backBtnPA.setOnClickListener {
+            onBackPressed()
+        }
+
+        binding.repeatBtnPA.setOnClickListener {
+            isRepeat = !isRepeat
+            MusicService.mediaPlayer?.isLooping = isRepeat
+
+            if (isRepeat) {
+                binding.repeatBtnPA.setImageResource(R.drawable.repeat_one_icon)
+                Toast.makeText(this, "Current Song", Toast.LENGTH_SHORT).show()
+            } else {
+                binding.repeatBtnPA.setImageResource(R.drawable.repeat_icon)
+                Toast.makeText(this, "Loop All", Toast.LENGTH_SHORT).show()
+            }
+
+            saveRepeatState()
+        }
+
+        loadRepeatState()
+        favAudioSet()
+
+    }
+
+
+    private fun updateSeekBar(){
 
         handler = Handler(Looper.getMainLooper())
 
@@ -107,17 +186,8 @@ class PlayerActivity : AppCompatActivity() {
         handler.post(updateSeekBarRunnable)
         playingSeekBar()
 
-        binding.songImgPA.outlineProvider = ViewOutlineProvider.BACKGROUND
-        binding.songImgPA.clipToOutline = true
-
     }
 
-//    override fun onDestroy() {
-//        super.onDestroy()
-//        handler.removeCallbacks(updateSeekBarRunnable)
-//        MusicService.mediaPlayer?.release()
-//        MusicService.mediaPlayer = null
-//    }
 
     private fun playingSeekBar() {
 
@@ -128,22 +198,6 @@ class PlayerActivity : AppCompatActivity() {
             seekBar.max = mp.duration
             endTime.text = formatTime(mp.duration)
         }
-
-//        seekBar.setOnSeekBarChangeListener(object : SeekBar.OnSeekBarChangeListener {
-//            override fun onProgressChanged(seekBar: SeekBar?, progress: Int, fromUser: Boolean) {
-//                if (fromUser) {
-//                    mp!!.seekTo(progress)
-//                    startTime.text = formatTime(progress)
-//                }
-//            }
-//            override fun onStartTrackingTouch(p0: SeekBar?) {
-//                isUserSeeking = true
-//            }
-//            override fun onStopTrackingTouch(p0: SeekBar?) {
-//                isUserSeeking = false
-//                mp?.seekTo(seekBar.progress ?: 0)
-//            }
-//        })
 
         seekBar.setOnSeekBarChangeListener(object : SeekBar.OnSeekBarChangeListener {
             override fun onProgressChanged(seekBar: SeekBar, progress: Int, fromUser: Boolean) {
@@ -170,7 +224,6 @@ class PlayerActivity : AppCompatActivity() {
                 })
             }
         })
-
     }
 
     @SuppressLint("DefaultLocale")
@@ -188,7 +241,6 @@ class PlayerActivity : AppCompatActivity() {
             binding.songNamePA.text = song.title
             binding.songAlbumPA.text = song.album
 
-           // musicListPA[songPosition]
 
             val isFav = FavoriteManager.isFavorite(song)
             binding.favoriteBtnPA.setImageResource(
@@ -201,16 +253,11 @@ class PlayerActivity : AppCompatActivity() {
                 .apply(RequestOptions().placeholder(R.drawable.itunes).centerCrop())
                 .into(binding.songImgPA)
 
-          //  binding.startTimePA.text = formatTime(MusicService.mediaPlayer!!.currentPosition)
+//            binding.startTimePA.text = formatTime(MusicService.mediaPlayer!!.currentPosition)
             binding.endTimePA.text = formatTime(MusicService.mediaPlayer!!.duration)
             binding.seekBarPA.progress = MusicService.mediaPlayer!!.currentPosition
             binding.seekBarPA.max = MusicService.mediaPlayer!!.duration
 
-//            MusicService.mediaPlayer?.let { player ->
-//                binding.endTimePA.text = formatTime(player.duration)
-//                binding.seekBarPA.max = player.duration
-//                binding.seekBarPA.progress = player.currentPosition // ✅ Keep progress where it is
-//            }
         }
         catch (e: Exception){
             e.printStackTrace()
@@ -247,23 +294,52 @@ class PlayerActivity : AppCompatActivity() {
                 }
             }
 
-            "FavouriteActivity" -> {
+            "FavoriteActivity" -> {
                 musicListPA.clear()
-               // musicListPA.addAll(FavouriteActivity.favList)
+                musicListPA.addAll(FavoriteActivity.allSongs)
             }
 
             "Notification" -> {
-                songPosition = incomingPosition
+                songPosition = MusicService.position
 
                 // Ensure musicListPA is not empty (in case activity was killed and recreated)
                 if (musicListPA.isEmpty()) {
                     musicListPA.addAll(MainActivity.musicListMA)
                 }
             }
+
+            "MiniPlayer" -> {
+                // If sender passed playlist, use it; otherwise fallback to service playlist safely
+                val receivedList = intent.getSerializableExtra("musicList") as? ArrayList<Music>
+                if (receivedList != null && receivedList.isNotEmpty()) {
+                    musicListPA.clear()
+                    musicListPA.addAll(receivedList)
+                } else {
+                    // fallback: if service has playlist, copy that
+                    if (MusicService.playlist.isNotEmpty()) {
+                        musicListPA.clear()
+                        musicListPA.addAll(MusicService.playlist)
+                    }
+                }
+                songPosition = incomingPosition
+            }
+
+//            "MiniPlayer" -> {
+//                musicListPA.clear()
+//                songPosition = incomingPosition
+//
+//                if (musicListPA.isEmpty()) {
+//                    musicListPA.addAll(MainActivity.musicListMA)
+//                }
+//                setLayout()
+//               // ✔ correct current position
+//            }
+
+
         }
 
         if (musicListPA.isEmpty()) {
-           // Toast.makeText(this, "No songs found to play", Toast.LENGTH_LONG).show()
+            Toast.makeText(this, "No songs found to play", Toast.LENGTH_LONG).show()
             finish()
             return
         }
@@ -283,54 +359,6 @@ class PlayerActivity : AppCompatActivity() {
         }
     }
 
-    private fun setMusic(){
-//        binding.playPauseBtnPA.setOnClickListener{
-//            if (MusicService.mediaPlayer?.isPlaying == true){
-//                pauseAudio()
-//            }
-//            else playAudio()
-//        }
-
-//        binding.nextBtnPA.setOnClickListener{
-////            updateFavoriteIcon()
-////            prevNextSong(true)
-//            startService(Intent(this, MusicService::class.java).apply { action = Constants.ACTION_NEXT })
-//
-//        }
-//
-//        binding.prevBtnPA.setOnClickListener{
-////            updateFavoriteIcon()
-////            prevNextSong(false)
-//            startService(Intent(this, MusicService::class.java).apply { action = Constants.ACTION_PREVIOUS })
-//
-//        }
-
-        binding.playPauseBtnPA.setOnClickListener {
-            val isPlaying = MusicService.mediaPlayer?.isPlaying == true
-
-//            if(isPlaying)
-//                pauseAudio()
-//            else
-//                playAudio()
-
-            startService(Intent(this, MusicService::class.java).apply {
-                action = if (isPlaying) Constants.ACTION_PAUSE else Constants.ACTION_PLAY
-            })
-        }
-
-        binding.nextBtnPA.setOnClickListener {
-            updateFavoriteIcon()
-            nextPrevSong(true)
-            startService(Intent(this, MusicService::class.java).apply { action = Constants.ACTION_NEXT })
-        }
-
-        binding.prevBtnPA.setOnClickListener {
-            updateFavoriteIcon()
-            nextPrevSong(false)
-            startService(Intent(this, MusicService::class.java).apply { action = Constants.ACTION_PREVIOUS })
-        }
-
-    }
 
     fun nextPrevSong(increment: Boolean){
         if (increment)
@@ -338,14 +366,11 @@ class PlayerActivity : AppCompatActivity() {
             setSongPosition(true)
             setLayout()
             Log.d("sainiplayeractivity", "songplus")
-            // createdMusicService.mediaPlayer()
         }
         else {
             setSongPosition(false)
             setLayout()
             Log.d("sainiplayeractivity", "songminus")
-
-            //  createdMusicService.mediaPlayer()
         }
     }
 
@@ -362,48 +387,24 @@ class PlayerActivity : AppCompatActivity() {
         }
     }
 
-    private fun backPress(){
-        binding.backBtnPA.setOnClickListener{
-           // onBackPressedDispatcher.onBackPressed()
-          onBackPressed()
-
-        }
-    }
 
     override fun onResume() {
         super.onResume()
-        updateFavoriteIcon()
 
-//        ContextCompat.registerReceiver(
-//            this,
-//            updateReceiver,
-//            IntentFilter("UPDATE_UI"),
-//            ContextCompat.RECEIVER_NOT_EXPORTED
-//        )
+        updateFavoriteIcon()
 
         val filter = IntentFilter().apply {
             addAction("UPDATE_UI")
             addAction("MUSIC_PLAYER_UI_UPDATE")
         }
         registerReceiver(updateReceiver, filter)
+        sendBroadcast(Intent("REQUEST_UI_UPDATE"))
+        updatePlayPauseIcon()
 
-//        ContextCompat.registerReceiver(this, songControlReceiver, IntentFilter().apply {
-//            addAction("ACTION_NEXT_SONG")
-//            addAction("ACTION_PREV_SONG")
-//        }, ContextCompat.RECEIVER_NOT_EXPORTED)
-
-        isPlaying = MusicService.mediaPlayer?.isPlaying == true
-
-        if (isPlaying) {
-            binding.playPauseBtnPA.setImageResource(R.drawable.pause_icon)
-        } else {
-            binding.playPauseBtnPA.setImageResource(R.drawable.play_icon)
-        }
     }
 
     override fun onPause() {
         super.onPause()
-      //  unregisterReceiver(songControlReceiver)
 
         unregisterReceiver(updateReceiver)
     }
@@ -419,59 +420,37 @@ class PlayerActivity : AppCompatActivity() {
 
     private val updateReceiver = object : BroadcastReceiver() {
         override fun onReceive(context: Context?, intent: Intent?) {
-            setLayout()
-            playingSeekBar()
-            Log.d("PlayerActivity1", "UI update received: ${musicListPA[songPosition].title}")
 
-        }
-    }
+            val idx = intent?.getIntExtra("Index", songPosition) ?: songPosition
+            songPosition = idx.coerceAtLeast(0)
 
-    private val uiUpdateReceiver = object : BroadcastReceiver() {
-        override fun onReceive(context: Context?, intent: Intent?) {
-//            setLayout()
-//            playingSeekBar()
-//            when (intent?.getStringExtra("action")) {
-//                "playPause" -> updatePlayPauseIcon()
-//
-//            }
-//        }
-
-            when (intent?.action) {
-                "UPDATE_UI" -> {
-                    songPosition = intent.getIntExtra("Index", songPosition)
-                    setLayout()
-                    playingSeekBar()
-                }
-
-                "MUSIC_PLAYER_UI_UPDATE" -> {
-                    updatePlayPauseIcon()
-                }
+            runOnUiThread {
+                setLayout()
+                playingSeekBar()
+                updatePlayPauseIcon()
             }
         }
     }
 
+
     @SuppressLint("UnspecifiedRegisterReceiverFlag")
     override fun onStart() {
         super.onStart()
-//        val filter = IntentFilter("MUSIC_PLAYER_UI_UPDATE")
-//        val filter1 = IntentFilter("UPDATE_UI")
-//
-//        registerReceiver(uiUpdateReceiver, filter)
-//        registerReceiver(updateReceiver, filter1)
 
         val filter = IntentFilter().apply {
             addAction("UPDATE_UI")
             addAction("MUSIC_PLAYER_UI_UPDATE")
         }
-        registerReceiver(uiUpdateReceiver, filter)
+        registerReceiver(updateReceiver, filter)
+
 
     }
 
     override fun onStop() {
         super.onStop()
         try {
-        //    unregisterReceiver(updateReceiver)
-            unregisterReceiver(uiUpdateReceiver)
+            unregisterReceiver(updateReceiver)
+         //   unregisterReceiver(uiUpdateReceiver)
         }
         catch (_: Exception) { }
     }

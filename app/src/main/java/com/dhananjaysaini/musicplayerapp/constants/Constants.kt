@@ -24,5 +24,7 @@ object Constants {
     const val EXTRA_ARTIST: String = "extra_artist"
     const val EXTRA_IS_PLAYING: String = "extra_is_playing"
 
+    const val ACTION_TOGGLE_PLAY = "ACTION_TOGGLE_PLAY"
+
 
 }

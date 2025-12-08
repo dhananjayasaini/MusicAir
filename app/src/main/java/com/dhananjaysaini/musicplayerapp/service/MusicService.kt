@@ -29,9 +29,9 @@ class MusicService : Service() {
         var playlist: ArrayList<Music> = arrayListOf()
         var position: Int = 0
     }
+
     private lateinit var receiver: BroadcastReceiver
     private var isServiceStarted = false
-
 
     private val uiHandler = Handler(Looper.getMainLooper())
     private val progressRunnable = object : Runnable {
@@ -39,6 +39,7 @@ class MusicService : Service() {
             try {
                 val cur = mediaPlayer?.currentPosition ?: 0
                 val dur = mediaPlayer?.duration ?: 0
+
                 // Broadcast current position regularly
                 sendBroadcast(Intent("UPDATE_UI").apply {
                     putExtra("Index", position)
@@ -73,23 +74,37 @@ class MusicService : Service() {
         registerReceiver()
         if (mediaPlayer == null) mediaPlayer = MediaPlayer()
         mediaPlayer?.setOnCompletionListener { handleCompletion() }
+
     }
 
     @RequiresApi(Build.VERSION_CODES.P)
     override fun onStartCommand(intent: Intent?, flags: Int, startId: Int): Int {
 
 //        if (!isServiceStarted) {
-//            startForeground(Constants.NOTIFICATION_ID, createStartupNotification())
+//            startForeground(Constants.NOTIFICATION_ID, buildNotification(false))
 //            isServiceStarted = true
 //        }
 
+        when(intent?.action) {
+            Constants.ACTION_TOGGLE_PLAY -> {
+                if (mediaPlayer?.isPlaying == true) {
+                    mediaPlayer?.pause()
+                } else {
+                    mediaPlayer?.start()
+                    sendBroadcast(Intent("SHOW_MINI_PLAYER"))
+                    sendBroadcast(Intent("UPDATE_UI"))
+// <-- ADD HERE
+                }
+                notifyUIAndUpdateNotification()
+            }
+        }
+
         createNotificationChannel()
-
-
 
         when (intent?.action) {
             // New list coming from Activity
             Constants.ACTION_PLAY_NEW_LIST -> {
+
                 // Expecting: "musicList" (ArrayList<Music>) and "songPosition" (Int)
                 @Suppress("UNCHECKED_CAST")
                 val list = intent.getSerializableExtra("musicList") as? ArrayList<Music>
@@ -99,6 +114,8 @@ class MusicService : Service() {
                     playlist = list
                     position = pos.coerceIn(0, playlist.lastIndex)
                     playAt(position, startForegroundNow = true)
+                   // sendBroadcast(Intent("REQUEST_UI_UPDATE"))
+
                 } else {
                     Log.w("MusicService", "Received empty playlist in ACTION_PLAY_NEW_LIST")
                 }
@@ -107,6 +124,9 @@ class MusicService : Service() {
             Constants.ACTION_PLAY -> {
                 if (mediaPlayer?.isPlaying != true) {
                     mediaPlayer?.start()
+                    sendBroadcast(Intent("SHOW_MINI_PLAYER"))
+                    sendBroadcast(Intent("UPDATE_UI"))
+
                     startProgressUpdates()
                     notifyUIAndUpdateNotification()
                 }
@@ -179,6 +199,14 @@ class MusicService : Service() {
         if (playlist.isEmpty()) return
         val track = playlist[index]
 
+        if (!isServiceStarted) {
+            startForeground(Constants.NOTIFICATION_ID, buildNotification(true))
+            isServiceStarted = true
+        } else {
+            updateNotification(true)
+        }
+
+
         try {
             val mp = mediaPlayer ?: MediaPlayer().also {
                 mediaPlayer = it
@@ -194,6 +222,13 @@ class MusicService : Service() {
                 .getBoolean("isRepeat", false)
             mp.isLooping = isRepeat
             mp.start()
+
+            sendBroadcast(Intent("SHOW_MINI_PLAYER"))
+            sendBroadcast(Intent("UPDATE_UI"))
+          //  sendBroadcast(Intent("REQUEST_UI_UPDATE"))
+
+// <-- ADD HERE
+
 //
 //            if (startForegroundNow) {
 //                // Ensure we are in foreground when playback begins
@@ -212,7 +247,6 @@ class MusicService : Service() {
                 updateNotification(true)
             }
 
-
             broadcastUiUpdateAll()
 
         } catch (e: Exception) {
@@ -229,6 +263,9 @@ class MusicService : Service() {
         if (isRepeat) {
             mediaPlayer?.seekTo(0)
             mediaPlayer?.start()
+            sendBroadcast(Intent("SHOW_MINI_PLAYER"))
+            sendBroadcast(Intent("UPDATE_UI"))
+
             broadcastUiUpdateAll()
             buildNotification(true)
             return
@@ -237,6 +274,9 @@ class MusicService : Service() {
         // next
         if (playlist.isNotEmpty()) {
             position = (position + 1) % playlist.size
+            sendBroadcast(Intent("SHOW_MINI_PLAYER"))
+            sendBroadcast(Intent("UPDATE_UI"))
+// <-- ADD HERE
             playAt(position, startForegroundNow = false)
             Log.d("musicservice1", "songPlus $position")
             broadcastUiUpdateAll()
@@ -265,7 +305,7 @@ class MusicService : Service() {
 
     @RequiresApi(Build.VERSION_CODES.P)
     private fun buildNotification(isPlaying: Boolean): Notification {
-        val current = playlist.getOrNull(position)
+        val currentPosition = playlist.getOrNull(position)
         val playPauseIcon = if (isPlaying) R.drawable.pause_icon else R.drawable.play_icon
         val playPauseAction = if (isPlaying) Constants.ACTION_PAUSE else Constants.ACTION_PLAY
 
@@ -291,11 +331,11 @@ class MusicService : Service() {
         )
 
         val artwork = BitmapFactory.decodeResource(resources, R.drawable.itunes)
-        val artworkBitmap = getBitmapFromUri(current?.artUri)
+        val artworkBitmap = getBitmapFromUri(currentPosition?.artUri)
 
         return NotificationCompat.Builder(this, Constants.CHANNEL_ID)
-            .setContentTitle(current?.title ?: getString(R.string.app_name))
-            .setContentText(current?.artist ?: "")
+            .setContentTitle(currentPosition?.title ?: getString(R.string.app_name))
+            .setContentText(currentPosition?.artist ?: "")
             .setSmallIcon(R.drawable.music_player_icon_splash_screen)
             .setLargeIcon(artworkBitmap)
             .setPriority(NotificationCompat.PRIORITY_LOW)
@@ -310,7 +350,7 @@ class MusicService : Service() {
             .build()
 
         // If we are already foreground, this updates it; otherwise it starts foreground.
-     //   startForeground(Constants.NOTIFICATION_ID, notification)
+        //   startForeground(Constants.NOTIFICATION_ID, notification)
     }
 
     @RequiresApi(Build.VERSION_CODES.P)
@@ -335,6 +375,11 @@ class MusicService : Service() {
 //                intent?.getIntExtra("index", -1)?.takeIf { it >= 0 }?.let {
 //                    PlayerActivity.songPosition = it
 //                }
+
+                if (intent?.action == "REQUEST_UI_UPDATE") {
+                    broadcastUiUpdateAll()    // send fresh UI data
+                }
+
                 when (intent?.action) {
 
                     Constants.ACTION_PLAY -> {
@@ -343,6 +388,9 @@ class MusicService : Service() {
 
                         if (mediaPlayer?.isPlaying == false) {
                             mediaPlayer?.start()
+                            sendBroadcast(Intent("SHOW_MINI_PLAYER"))
+                            sendBroadcast(Intent("UPDATE_UI"))
+
                         } else if (mediaPlayer == null) {
                             playAt(position, false)
                             return
@@ -370,8 +418,11 @@ class MusicService : Service() {
                         if (playlist.isNotEmpty()) {
                             position = (position + 1) % playlist.size
                             playAt(position, startForegroundNow = false)
+                            sendBroadcast(Intent("SHOW_MINI_PLAYER"))
+                            sendBroadcast(Intent("UPDATE_UI"))
                         }
                     }
+
                     Constants.ACTION_PREVIOUS -> {
                         if (playlist.isNotEmpty()) {
                             position = if (position == 0) playlist.lastIndex else position - 1
@@ -439,18 +490,5 @@ class MusicService : Service() {
         }
     }
 
-//    @RequiresApi(Build.VERSION_CODES.P)
-//    private fun getBitmapFromUri(uri: String?): Bitmap? {
-//        return try {
-//            uri?.let {
-//                val source = ImageDecoder.createSource(applicationContext.contentResolver, it)
-//                ImageDecoder.decodeBitmap(source)
-//            }
-//        } catch (e: IOException) {
-//            e.printStackTrace()
-//            null
-//        }
-//    }
-
-
 }
+
