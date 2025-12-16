@@ -301,6 +301,7 @@ class MainActivity : AppCompatActivity() {
     private lateinit var binding: ActivityMainBinding
     private lateinit var toggle: ActionBarDrawerToggle
     private lateinit var musicAdapter: MusicAdapter
+    private lateinit var voiceControl: VoiceControlManager
 
     companion object {
         var musicListMA = ArrayList<Music>()
@@ -320,6 +321,14 @@ class MainActivity : AppCompatActivity() {
         observeViewModel()
 
         requestPermission()
+
+        checkAudioPermission()
+
+        voiceControl = VoiceControlManager(this)
+        binding.voiceControlMa.btnMic.setOnClickListener {
+            voiceControl.startListening()
+        }
+
     }
 
     private fun observeViewModel() {
@@ -353,7 +362,7 @@ class MainActivity : AppCompatActivity() {
             }
         }
 
-        binding.favoriteBtn.setOnClickListener {
+        binding.favouriteBtn.setOnClickListener {
             val intent = Intent(this, FavoriteActivity::class.java)
             intent.putExtra("ALL_SONGS", ArrayList(musicListMA))
             startActivity(intent)
@@ -492,5 +501,17 @@ class MainActivity : AppCompatActivity() {
             binding.miniPlayerContainer.visibility = View.VISIBLE
         }
     }
+
+
+    private fun checkAudioPermission() {
+        if (checkSelfPermission(android.Manifest.permission.RECORD_AUDIO)
+            != PackageManager.PERMISSION_GRANTED)
+        {
+            requestPermissions(arrayOf(android.Manifest.permission.RECORD_AUDIO), 101)
+        }
+
+        }
+
+
 
 }

@@ -5,6 +5,7 @@ import android.content.BroadcastReceiver
 import android.content.Context
 import android.content.Intent
 import android.content.IntentFilter
+import android.content.pm.PackageManager
 import android.net.Uri
 import android.os.Build
 import android.os.Bundle
@@ -17,7 +18,9 @@ import android.widget.TextView
 import android.widget.Toast
 import androidx.annotation.RequiresApi
 import androidx.appcompat.app.AppCompatActivity
+import androidx.core.app.ActivityCompat.requestPermissions
 import androidx.core.content.FileProvider
+import androidx.core.content.PermissionChecker.checkSelfPermission
 import com.bumptech.glide.Glide
 import com.bumptech.glide.request.RequestOptions
 import com.dhananjaysaini.musicplayerapp.R
@@ -33,13 +36,13 @@ class PlayerActivity : AppCompatActivity() {
 
     companion object {
         var musicListPA = ArrayList<Music>()
-        var songPosition : Int = 0
+        var songPosition: Int = 0
         var isRepeat: Boolean = false
         var isUserSeeking = false
     }
 
     private lateinit var binding: ActivityPlayerBinding
-    private var isPlaying : Boolean = false
+    private var isPlaying: Boolean = false
 
     private lateinit var handler: Handler
     private lateinit var updateSeekBarRunnable: Runnable
@@ -47,6 +50,7 @@ class PlayerActivity : AppCompatActivity() {
     private lateinit var seekBar: SeekBar
     private lateinit var startTime: TextView
     private lateinit var endTime: TextView
+    private lateinit var voiceControl: VoiceControlManager
 
     @RequiresApi(Build.VERSION_CODES.O)
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -55,14 +59,21 @@ class PlayerActivity : AppCompatActivity() {
         binding = ActivityPlayerBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
-         seekBar = binding.seekBarPA
-         startTime = binding.startTimePA
-         endTime = binding.endTimePA
-         binding.songAlbumPA.isSelected = true
+        seekBar = binding.seekBarPA
+        startTime = binding.startTimePA
+        endTime = binding.endTimePA
+        binding.songAlbumPA.isSelected = true
 
         initializeLayout()
         setupUiCallbacks()
         playerList()
+
+        checkAudioPermission()
+
+        voiceControl = VoiceControlManager(this)
+        binding.voiceControlPa.btnMic.setOnClickListener{
+            voiceControl.startListening()
+        }
 
 
         // After you’ve built musicListPA and songPosition
@@ -95,7 +106,8 @@ class PlayerActivity : AppCompatActivity() {
         val incomingSource = intent.getStringExtra("class")
 
         if (incomingSource == "MainActivity" || incomingSource == "MusicAdapter" || incomingSource == "FavouriteActivity" ||
-            MusicService.mediaPlayer == null) {
+            MusicService.mediaPlayer == null
+        ) {
 
             // only if we actually have a non-empty playlist to send
             if (musicListPA.isNotEmpty()) {
@@ -117,7 +129,7 @@ class PlayerActivity : AppCompatActivity() {
         }
     }
 
-    private fun setupUiCallbacks(){
+    private fun setupUiCallbacks() {
 
         binding.playPauseBtnPA.setOnClickListener {
             val isPlaying = MusicService.mediaPlayer?.isPlaying == true
@@ -130,13 +142,17 @@ class PlayerActivity : AppCompatActivity() {
         binding.nextBtnPA.setOnClickListener {
             updateFavoriteIcon()
             nextPrevSong(true)
-            startService(Intent(this, MusicService::class.java).apply { action = Constants.ACTION_NEXT })
+            startService(Intent(this, MusicService::class.java).apply {
+                action = Constants.ACTION_NEXT
+            })
         }
 
         binding.prevBtnPA.setOnClickListener {
             updateFavoriteIcon()
             nextPrevSong(false)
-            startService(Intent(this, MusicService::class.java).apply { action = Constants.ACTION_PREVIOUS })
+            startService(Intent(this, MusicService::class.java).apply {
+                action = Constants.ACTION_PREVIOUS
+            })
         }
 
         binding.shareBtnPA.setOnClickListener {
@@ -168,7 +184,7 @@ class PlayerActivity : AppCompatActivity() {
     }
 
 
-    private fun updateSeekBar(){
+    private fun updateSeekBar() {
 
         handler = Handler(Looper.getMainLooper())
 
@@ -209,7 +225,7 @@ class PlayerActivity : AppCompatActivity() {
 
             override fun onStartTrackingTouch(seekBar: SeekBar) {
                 isUserSeeking = true
-        startService(Intent(this@PlayerActivity, MusicService::class.java).apply {
+                startService(Intent(this@PlayerActivity, MusicService::class.java).apply {
                     action = Constants.ACTION_SEEK_TO
                     putExtra("seekToMs", seekBar.progress)
                 })
@@ -243,7 +259,7 @@ class PlayerActivity : AppCompatActivity() {
 
 
             val isFav = FavoriteManager.isFavorite(song)
-            binding.favoriteBtnPA.setImageResource(
+            binding.favouriteBtnPA.setImageResource(
                 if (isFav) R.drawable.favourite_filled_icon
                 else R.drawable.favourite_empty_icon
             )
@@ -258,8 +274,7 @@ class PlayerActivity : AppCompatActivity() {
             binding.seekBarPA.progress = MusicService.mediaPlayer!!.currentPosition
             binding.seekBarPA.max = MusicService.mediaPlayer!!.duration
 
-        }
-        catch (e: Exception){
+        } catch (e: Exception) {
             e.printStackTrace()
         }
     }
@@ -276,11 +291,11 @@ class PlayerActivity : AppCompatActivity() {
         binding.playPauseBtnPA.setImageResource(R.drawable.play_icon)
     }
 
-    private fun initializeLayout(){
+    private fun initializeLayout() {
         val incomingPosition = intent.getIntExtra("index", 0)
         val incomingSource = intent.getStringExtra("class")
 
-        when(incomingSource) {
+        when (incomingSource) {
 
             "MainActivity" -> {
                 musicListPA.clear()
@@ -289,7 +304,7 @@ class PlayerActivity : AppCompatActivity() {
             }
 
             "MusicAdapter" -> {
-                if( musicListPA.isEmpty()) {
+                if (musicListPA.isEmpty()) {
                     musicListPA.addAll(MainActivity.musicListMA)
                 }
             }
@@ -360,29 +375,26 @@ class PlayerActivity : AppCompatActivity() {
     }
 
 
-    fun nextPrevSong(increment: Boolean){
-        if (increment)
-        {
+    fun nextPrevSong(increment: Boolean) {
+        if (increment) {
             setSongPosition(true)
             setLayout()
             Log.d("sainiplayeractivity", "songplus")
-        }
-        else {
+        } else {
             setSongPosition(false)
             setLayout()
             Log.d("sainiplayeractivity", "songminus")
         }
     }
 
-    private fun setSongPosition(increment: Boolean){
-        if(increment) {
+    private fun setSongPosition(increment: Boolean) {
+        if (increment) {
             if (musicListPA.size - 1 == songPosition)
                 songPosition = 0
             else songPosition++
-        }
-            else{
-                if (songPosition==0)
-                    songPosition = musicListPA.size-1
+        } else {
+            if (songPosition == 0)
+                songPosition = musicListPA.size - 1
             else songPosition--
         }
     }
@@ -450,12 +462,12 @@ class PlayerActivity : AppCompatActivity() {
         super.onStop()
         try {
             unregisterReceiver(updateReceiver)
-         //   unregisterReceiver(uiUpdateReceiver)
+            //   unregisterReceiver(uiUpdateReceiver)
+        } catch (_: Exception) {
         }
-        catch (_: Exception) { }
     }
 
-    private fun repeatSong(){
+    private fun repeatSong() {
 
         binding.repeatBtnPA.setOnClickListener {
             isRepeat = !isRepeat
@@ -495,7 +507,10 @@ class PlayerActivity : AppCompatActivity() {
                 type = "audio/*"
                 putExtra(Intent.EXTRA_STREAM, uri)
                 putExtra(Intent.EXTRA_SUBJECT, "Listen to this audio!")
-                putExtra(Intent.EXTRA_TEXT, "Check out this audio:\nTitle: ${song.title}\nArtist: ${song.artist}")
+                putExtra(
+                    Intent.EXTRA_TEXT,
+                    "Check out this audio:\nTitle: ${song.title}\nArtist: ${song.artist}"
+                )
                 addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION)
             }
 
@@ -521,29 +536,28 @@ class PlayerActivity : AppCompatActivity() {
     private fun updatePlayPauseIcon() {
         if (MusicService.mediaPlayer?.isPlaying == true) {
             binding.playPauseBtnPA.setImageResource(R.drawable.pause_icon)
-        }
-        else {
+        } else {
             binding.playPauseBtnPA.setImageResource(R.drawable.play_icon)
         }
     }
 
-    private fun favAudioSet(){
-        binding.favoriteBtnPA.setOnClickListener {
+    private fun favAudioSet() {
+        binding.favouriteBtnPA.setOnClickListener {
 
-                val currentSong = musicListPA[songPosition]
-                val favSongAdded = FavoriteManager.toggleFavorite(currentSong)
+            val currentSong = musicListPA[songPosition]
+            val favSongAdded = FavoriteManager.toggleFavorite(currentSong)
 
-                if (favSongAdded) {
-                    binding.favoriteBtnPA.setImageResource(R.drawable.favourite_filled_icon)
-                    Toast.makeText(this, "Added to Favorites", Toast.LENGTH_SHORT).show()
-                } else {
-                    binding.favoriteBtnPA.setImageResource(R.drawable.favourite_empty_icon)
-                    Toast.makeText(this, "Removed from Favorites", Toast.LENGTH_SHORT).show()
-                }
+            if (favSongAdded) {
+                binding.favouriteBtnPA.setImageResource(R.drawable.favourite_filled_icon)
+                Toast.makeText(this, "Added to Favorites", Toast.LENGTH_SHORT).show()
+            } else {
+                binding.favouriteBtnPA.setImageResource(R.drawable.favourite_empty_icon)
+                Toast.makeText(this, "Removed from Favorites", Toast.LENGTH_SHORT).show()
+            }
         }
     }
 
-    private fun playerList(){
+    private fun playerList() {
         val playlistName = "MyFavSongs"
 
         if (musicListPA.isEmpty()) {
@@ -560,14 +574,21 @@ class PlayerActivity : AppCompatActivity() {
     private fun updateFavoriteIcon() {
         val currentSong = musicListPA[songPosition]
         val isFav = FavoriteManager.isFavorite(currentSong)
-        binding.favoriteBtnPA.setImageResource(
+        binding.favouriteBtnPA.setImageResource(
             if (isFav) R.drawable.favourite_filled_icon
             else R.drawable.favourite_empty_icon
         )
     }
 
+    private fun checkAudioPermission() {
+        if (checkSelfPermission(android.Manifest.permission.RECORD_AUDIO)
+            != PackageManager.PERMISSION_GRANTED
+        ) {
+            requestPermissions(arrayOf(android.Manifest.permission.RECORD_AUDIO), 101)
+        }
+
+    }
+
 }
-
-
 
 

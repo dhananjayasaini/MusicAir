@@ -41,7 +41,7 @@
             android:textColor="@color/red" />
 
         <ImageButton
-            android:id="@+id/favoriteBtnPA"
+            android:id="@+id/favouriteBtnPA"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:src="@drawable/favourite_empty_icon"
@@ -50,6 +50,17 @@
             android:layout_marginEnd="5dp"
             android:contentDescription="@string/favorites_btn"
             app:tint="@color/bright_yellow" />
+
+        <include
+            android:id="@+id/voice_control_pa"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+
+            android:layout_margin="5dp"
+            layout="@layout/voice_control" />
+
+
 
     </LinearLayout>
 
@@ -91,7 +102,7 @@
             android:padding="12dp"
             android:gravity="center"
             android:textStyle="bold"
-             />
+            />
 
         <TextView
             android:id="@+id/songAlbumPA"

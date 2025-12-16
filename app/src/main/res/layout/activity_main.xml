@@ -34,7 +34,7 @@
                 android:drawableTop="@drawable/shuffle_icon" />
 
             <androidx.appcompat.widget.AppCompatButton
-                android:id="@+id/favorite_btn"
+                android:id="@+id/favourite_btn"
                 android:layout_width="0dp"
                 android:layout_height="match_parent"
                 android:layout_weight="1"
@@ -56,16 +56,47 @@
                 android:drawableTop="@drawable/playlist_icon" />
         </LinearLayout>
 
-        <!-- Total Songs Label -->
-        <TextView
-            android:id="@+id/totalSongs"
+
+        <!--        <TextView-->
+        <!--            android:id="@+id/totalSongs"-->
+        <!--            android:layout_width="match_parent"-->
+        <!--            android:layout_height="wrap_content"-->
+        <!--            android:text="@string/total_songs"-->
+        <!--            android:textSize="20sp"-->
+        <!--            android:textStyle="bold"-->
+        <!--            android:textColor="@color/black" />-->
+
+        <!--        <include-->
+        <!--            android:layout_width="match_parent"-->
+        <!--            android:layout_height="wrap_content"-->
+        <!--            layout="@layout/voice_control"/> -->
+
+
+        <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_margin="10dp"
-            android:text="@string/total_songs"
-            android:textSize="20sp"
-            android:textStyle="bold"
-            android:textColor="@color/black" />
+            android:orientation="horizontal"
+            android:gravity="center_vertical"
+            android:paddingHorizontal="8dp">
+
+            <TextView
+                android:id="@+id/totalSongs"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:text="@string/total_songs"
+                android:textSize="20sp"
+                android:textStyle="bold"
+                android:textColor="@color/black" />
+
+            <include
+                android:id="@+id/voice_control_ma"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                layout="@layout/voice_control" />
+
+        </LinearLayout>
+
 
         <!-- RecyclerView -->
         <androidx.recyclerview.widget.RecyclerView
