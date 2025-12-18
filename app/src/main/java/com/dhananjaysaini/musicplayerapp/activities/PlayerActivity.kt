@@ -16,11 +16,13 @@ import android.view.ViewOutlineProvider
 import android.widget.SeekBar
 import android.widget.TextView
 import android.widget.Toast
+import androidx.activity.viewModels
 import androidx.annotation.RequiresApi
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.app.ActivityCompat.requestPermissions
 import androidx.core.content.FileProvider
 import androidx.core.content.PermissionChecker.checkSelfPermission
+import androidx.lifecycle.lifecycleScope
 import com.bumptech.glide.Glide
 import com.bumptech.glide.request.RequestOptions
 import com.dhananjaysaini.musicplayerapp.R
@@ -29,6 +31,8 @@ import com.dhananjaysaini.musicplayerapp.databinding.ActivityPlayerBinding
 import com.dhananjaysaini.musicplayerapp.modal.Music
 import com.dhananjaysaini.musicplayerapp.service.MusicService
 import com.dhananjaysaini.musicplayerapp.utils.FavoriteManager
+import com.dhananjaysaini.musicplayerapp.viewmodal.FavoriteViewModel
+import kotlinx.coroutines.launch
 import java.io.File
 
 
@@ -51,6 +55,8 @@ class PlayerActivity : AppCompatActivity() {
     private lateinit var startTime: TextView
     private lateinit var endTime: TextView
     private lateinit var voiceControl: VoiceControlManager
+    private val favViewModel: FavoriteViewModel by viewModels()
+
 
     @RequiresApi(Build.VERSION_CODES.O)
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -129,6 +135,7 @@ class PlayerActivity : AppCompatActivity() {
         }
     }
 
+
     private fun setupUiCallbacks() {
 
         binding.playPauseBtnPA.setOnClickListener {
@@ -140,7 +147,8 @@ class PlayerActivity : AppCompatActivity() {
         }
 
         binding.nextBtnPA.setOnClickListener {
-            updateFavoriteIcon()
+         //   updateFavoriteIcon()
+            updateFavIcon()
             nextPrevSong(true)
             startService(Intent(this, MusicService::class.java).apply {
                 action = Constants.ACTION_NEXT
@@ -148,7 +156,7 @@ class PlayerActivity : AppCompatActivity() {
         }
 
         binding.prevBtnPA.setOnClickListener {
-            updateFavoriteIcon()
+            updateFavIcon()
             nextPrevSong(false)
             startService(Intent(this, MusicService::class.java).apply {
                 action = Constants.ACTION_PREVIOUS
@@ -403,7 +411,8 @@ class PlayerActivity : AppCompatActivity() {
     override fun onResume() {
         super.onResume()
 
-        updateFavoriteIcon()
+//       updateFavoriteIcon()
+        updateFavIcon()
 
         val filter = IntentFilter().apply {
             addAction("UPDATE_UI")
@@ -542,19 +551,27 @@ class PlayerActivity : AppCompatActivity() {
     }
 
     private fun favAudioSet() {
+//        binding.favouriteBtnPA.setOnClickListener {
+//
+//            val currentSong = musicListPA[songPosition]
+//            val favSongAdded = FavoriteManager.toggleFavorite(currentSong)
+//
+//            if (favSongAdded) {
+//                binding.favouriteBtnPA.setImageResource(R.drawable.favourite_filled_icon)
+//                Toast.makeText(this, "Added to Favorites", Toast.LENGTH_SHORT).show()
+//            } else {
+//                binding.favouriteBtnPA.setImageResource(R.drawable.favourite_empty_icon)
+//                Toast.makeText(this, "Removed from Favorites", Toast.LENGTH_SHORT).show()
+//            }
+//        }
+
         binding.favouriteBtnPA.setOnClickListener {
-
             val currentSong = musicListPA[songPosition]
-            val favSongAdded = FavoriteManager.toggleFavorite(currentSong)
 
-            if (favSongAdded) {
-                binding.favouriteBtnPA.setImageResource(R.drawable.favourite_filled_icon)
-                Toast.makeText(this, "Added to Favorites", Toast.LENGTH_SHORT).show()
-            } else {
-                binding.favouriteBtnPA.setImageResource(R.drawable.favourite_empty_icon)
-                Toast.makeText(this, "Removed from Favorites", Toast.LENGTH_SHORT).show()
-            }
+            favViewModel.toggle(currentSong.id)
+            updateFavIcon()
         }
+
     }
 
     private fun playerList() {
@@ -571,14 +588,27 @@ class PlayerActivity : AppCompatActivity() {
         }
     }
 
-    private fun updateFavoriteIcon() {
+//    private fun updateFavoriteIcon() {
+//        val currentSong = musicListPA[songPosition]
+//        val isFav = FavoriteManager.isFavorite(currentSong)
+//        binding.favouriteBtnPA.setImageResource(
+//            if (isFav) R.drawable.favourite_filled_icon
+//            else R.drawable.favourite_empty_icon
+//        )
+//    }
+
+    private fun updateFavIcon() {
         val currentSong = musicListPA[songPosition]
-        val isFav = FavoriteManager.isFavorite(currentSong)
-        binding.favouriteBtnPA.setImageResource(
-            if (isFav) R.drawable.favourite_filled_icon
-            else R.drawable.favourite_empty_icon
-        )
+
+        lifecycleScope.launch {
+            val isFav = favViewModel.isFavorite(currentSong.id)
+            binding.favouriteBtnPA.setImageResource(
+                if (isFav) R.drawable.favourite_filled_icon
+                else R.drawable.favourite_empty_icon
+            )
+        }
     }
+
 
     private fun checkAudioPermission() {
         if (checkSelfPermission(android.Manifest.permission.RECORD_AUDIO)

@@ -68,7 +68,8 @@ class VoiceControlManager(private val context: Context) {
         if (text.isNullOrEmpty()) return
 
         when {
-            "play" in text -> sendAction(Constants.ACTION_PLAY)
+            "play" in text ->     if (MainActivity.musicListMA.isNotEmpty()) {
+                sendAction(Constants.ACTION_PLAY) }
             "pause" in text -> sendAction(Constants.ACTION_PAUSE)
             "next" in text || "agla" in text -> sendAction(Constants.ACTION_NEXT)
             "back" in text || "pichla" in text -> sendAction(Constants.ACTION_PREVIOUS)
@@ -83,6 +84,11 @@ class VoiceControlManager(private val context: Context) {
     }
 
     private fun sendAction(action: String) {
+        if (MainActivity.musicListMA.isEmpty()) {
+            // Prevent crash
+            return
+        }
+
         val intent = Intent(context, MusicService::class.java)
         intent.action = action
         context.startService(intent)

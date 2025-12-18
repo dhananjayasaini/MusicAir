@@ -12,24 +12,24 @@ import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
 import com.bumptech.glide.request.RequestOptions
 import com.dhananjaysaini.musicplayerapp.R
-import com.dhananjaysaini.musicplayerapp.activities.MainActivity
 import com.dhananjaysaini.musicplayerapp.activities.PlayerActivity
-import com.dhananjaysaini.musicplayerapp.constants.Constants
 import com.dhananjaysaini.musicplayerapp.databinding.MusicViewBinding
 import com.dhananjaysaini.musicplayerapp.modal.Music
 import com.dhananjaysaini.musicplayerapp.modal.formatDuration
-import com.dhananjaysaini.musicplayerapp.service.MusicService
 import java.io.Serializable
 
 class MusicAdapter(
     private val context: Context,
-    private val musicList: ArrayList<Music>,
+    private var musicList: ArrayList<Music>,
     private val adapterClass: String
 )
     : RecyclerView.Adapter<MusicAdapter.MyHolder>() {
 
     // Stores favorite song IDs
     private val favoriteIds = mutableSetOf<String>()
+
+    var onItemClick: ((Int) -> Unit)? = null
+
 
     // Stores playlists: playlist name -> song IDs
     private val playlists = mutableMapOf<String, MutableList<String>>()
@@ -51,6 +51,8 @@ class MusicAdapter(
         holder.title.text = musicList[position].title
         holder.album.text = musicList[position].album
         holder.duration.text = formatDuration(musicList[position].duration)
+
+
         holder.root.setOnClickListener{
 
 //            val serviceIntent = Intent(context, MusicService::class.java)
@@ -71,6 +73,10 @@ class MusicAdapter(
         holder.menuIcon.setOnClickListener{
             showPopupMenu(it, song, position)
         }
+//
+//        holder.itemView.setOnClickListener {
+//            onItemClick?.invoke(position)
+//        }
 
         Glide.with(context)
             .load(musicList[position].artUri)
@@ -90,7 +96,12 @@ class MusicAdapter(
     }
 
     /** Get favorite songs */
-    fun getFavoriteSongs(): List<Music> = musicList.filter { favoriteIds.contains(it.id) }
+    fun getFavoriteSongs(list: ArrayList<Music>): List<Music> = musicList.filter { favoriteIds.contains(it.id) }
+
+//    fun getFavoriteSongs(list: ArrayList<Music>) {
+//        musicList = list
+//        notifyDataSetChanged()
+//    }
 
     /** Add song to a playlist */
     fun addToPlaylist(playlistName: String, song: Music) {

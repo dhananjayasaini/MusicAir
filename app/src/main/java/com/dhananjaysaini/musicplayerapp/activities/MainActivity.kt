@@ -360,6 +360,7 @@ class MainActivity : AppCompatActivity() {
 
                 startActivity(intent)
             }
+
         }
 
         binding.favouriteBtn.setOnClickListener {

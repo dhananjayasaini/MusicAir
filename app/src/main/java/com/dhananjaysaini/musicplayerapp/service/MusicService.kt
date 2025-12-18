@@ -85,6 +85,11 @@ class MusicService : Service() {
 //            isServiceStarted = true
 //        }
 
+        if (playlist.isEmpty()) {
+            return START_NOT_STICKY
+        }
+
+
         when(intent?.action) {
             Constants.ACTION_TOGGLE_PLAY -> {
                 if (mediaPlayer?.isPlaying == true) {
@@ -120,6 +125,7 @@ class MusicService : Service() {
                     Log.w("MusicService", "Received empty playlist in ACTION_PLAY_NEW_LIST")
                 }
             }
+
 
             Constants.ACTION_PLAY -> {
                 if (mediaPlayer?.isPlaying != true) {
@@ -446,12 +452,16 @@ class MusicService : Service() {
 
     private fun broadcastUiUpdateAll() {
 
+
         val song = playlist[position]
 
         val current = playlist.getOrNull(position)
         val isPlaying = mediaPlayer?.isPlaying == true
         val currentMs = mediaPlayer?.currentPosition ?: 0
         val durationMs = mediaPlayer?.duration ?: 0
+
+        if (playlist.isEmpty() || position !in playlist.indices) return
+
 
         // Update titles, images, seekbar, etc.
         sendBroadcast(Intent("UPDATE_UI").apply {
