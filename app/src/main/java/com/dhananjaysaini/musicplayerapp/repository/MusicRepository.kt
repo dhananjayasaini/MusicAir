@@ -3,7 +3,7 @@ package com.dhananjaysaini.musicplayerapp.repository
 import android.content.Context
 import android.net.Uri
 import android.provider.MediaStore
-import com.dhananjaysaini.musicplayerapp.modal.Music
+import com.dhananjaysaini.musicplayerapp.model.Music
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 import java.io.File

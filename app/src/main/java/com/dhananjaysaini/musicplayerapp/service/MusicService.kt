@@ -19,7 +19,7 @@ import androidx.core.net.toUri
 import com.dhananjaysaini.musicplayerapp.R
 import com.dhananjaysaini.musicplayerapp.activities.PlayerActivity
 import com.dhananjaysaini.musicplayerapp.constants.Constants
-import com.dhananjaysaini.musicplayerapp.modal.Music
+import com.dhananjaysaini.musicplayerapp.model.Music
 import java.io.IOException
 
 class MusicService : Service() {
@@ -62,6 +62,7 @@ class MusicService : Service() {
         uiHandler.removeCallbacks(progressRunnable)
         uiHandler.post(progressRunnable)
     }
+
     private fun stopProgressUpdates() {
         uiHandler.removeCallbacks(progressRunnable)
     }
@@ -122,14 +123,18 @@ class MusicService : Service() {
                    // sendBroadcast(Intent("REQUEST_UI_UPDATE"))
 
                 } else {
-                    Log.w("MusicService", "Received empty playlist in ACTION_PLAY_NEW_LIST")
+                    Log.d("MusicService", "Received empty playlist in ACTION_PLAY_NEW_LIST")
                 }
             }
 
-
             Constants.ACTION_PLAY -> {
-                if (mediaPlayer?.isPlaying != true) {
+
+                if (mediaPlayer == null) {
+                    playAt(position, false)   // fresh start
+                }
+                else if (mediaPlayer?.isPlaying != true) {
                     mediaPlayer?.start()
+
                     sendBroadcast(Intent("SHOW_MINI_PLAYER"))
                     sendBroadcast(Intent("UPDATE_UI"))
 
@@ -139,14 +144,22 @@ class MusicService : Service() {
             }
 
             Constants.ACTION_PAUSE -> {
+
                 if (mediaPlayer?.isPlaying == true) {
                     mediaPlayer?.pause()
+
+//                    sendBroadcast(Intent("SHOW_MINI_PLAYER"))
+//                    sendBroadcast(Intent("UPDATE_UI"))
+                    broadcastUiUpdateAll()
+                    updateNotification(false)
+
                     stopProgressUpdates()
                     notifyUIAndUpdateNotification()
                 }
             }
 
             Constants.ACTION_NEXT -> {
+
                 if (playlist.isNotEmpty()) {
                     position = (position + 1) % playlist.size
                     playAt(position, startForegroundNow = false)
@@ -154,6 +167,7 @@ class MusicService : Service() {
             }
 
             Constants.ACTION_PREVIOUS -> {
+
                 if (playlist.isNotEmpty()) {
                     position = if (position == 0) playlist.lastIndex else position - 1
                     playAt(position, startForegroundNow = false)
@@ -216,12 +230,14 @@ class MusicService : Service() {
         try {
             val mp = mediaPlayer ?: MediaPlayer().also {
                 mediaPlayer = it
-                it.setOnCompletionListener { handleCompletion() }
             }
 
+            mp.setOnCompletionListener(null)   // ⭐ FIX
             mp.reset()
             mp.setDataSource(applicationContext, Uri.parse(track.path))
             mp.prepare()
+            mp.setOnCompletionListener { handleCompletion() }
+            mp.start()
 
             // repeat flag comes from PlayerActivity prefs (optional safeguard)
             val isRepeat = getSharedPreferences("settings", MODE_PRIVATE)
@@ -230,7 +246,7 @@ class MusicService : Service() {
             mp.start()
 
             sendBroadcast(Intent("SHOW_MINI_PLAYER"))
-            sendBroadcast(Intent("UPDATE_UI"))
+        //    sendBroadcast(Intent("UPDATE_UI"))
           //  sendBroadcast(Intent("REQUEST_UI_UPDATE"))
 
 // <-- ADD HERE
@@ -254,6 +270,7 @@ class MusicService : Service() {
             }
 
             broadcastUiUpdateAll()
+            startProgressUpdates()
 
         } catch (e: Exception) {
             Log.e("MusicService", "playAt error: ${e.message}", e)

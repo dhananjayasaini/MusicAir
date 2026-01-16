@@ -1,4 +1,4 @@
-package com.dhananjaysaini.musicplayerapp.activities
+package com.dhananjaysaini.musicplayerapp.utils
 
 import android.content.Context
 import android.content.Intent
@@ -7,6 +7,7 @@ import android.speech.RecognitionListener
 import android.speech.RecognizerIntent
 import android.speech.SpeechRecognizer
 import android.util.Log
+import com.dhananjaysaini.musicplayerapp.activities.MainActivity
 import com.dhananjaysaini.musicplayerapp.constants.Constants
 import com.dhananjaysaini.musicplayerapp.service.MusicService
 

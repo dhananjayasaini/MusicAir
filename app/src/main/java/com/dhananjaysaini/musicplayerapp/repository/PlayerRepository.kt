@@ -3,9 +3,9 @@ package com.dhananjaysaini.musicplayerapp.repository
 import android.content.Context
 import android.content.Intent
 import android.content.SharedPreferences
-import com.dhananjaysaini.musicplayerapp.modal.Music
+import com.dhananjaysaini.musicplayerapp.model.Music
 import com.dhananjaysaini.musicplayerapp.service.MusicService
-import com.dhananjaysaini.musicplayerapp.utils.FavoriteManager
+import com.dhananjaysaini.musicplayerapp.utils.FavouriteManager
 
 class PlayerRepository(private val context: Context) {
 
@@ -20,12 +20,12 @@ class PlayerRepository(private val context: Context) {
         context.startService(intent)
     }
 
-    fun toggleFavorite(song: Music): Boolean {
-        return FavoriteManager.toggleFavorite(song)
+    fun toggleFavourite(song: Music): Boolean {
+        return FavouriteManager.toggleFavourite(song)
     }
 
-    fun isFavorite(song: Music): Boolean {
-        return FavoriteManager.isFavorite(song)
+    fun isFavourite(song: Music): Boolean {
+        return FavouriteManager.isFavourite(song)
     }
 
     fun saveRepeatState(isRepeat: Boolean) {

@@ -4,6 +4,7 @@
     android:id="@+id/playerRoot"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:orientation="horizontal"
     android:background="#ffffff"
     tools:context=".activities.PlayerActivity">
 
@@ -48,7 +49,7 @@
             android:background="@android:color/transparent"
             android:layout_gravity="center"
             android:layout_marginEnd="5dp"
-            android:contentDescription="@string/favorites_btn"
+            android:contentDescription="@string/Favourites_btn"
             app:tint="@color/bright_yellow" />
 
         <include

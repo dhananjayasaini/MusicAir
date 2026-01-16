@@ -35,7 +35,7 @@
         </provider>
 
         <activity
-         android:name=".activities.FavoriteActivity"
+         android:name=".activities.FavouriteActivity"
          android:exported="false" />
         <activity
             android:name=".activities.PlayerActivity"

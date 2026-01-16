@@ -6,8 +6,8 @@ import android.os.Looper
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.MutableLiveData
 import com.dhananjaysaini.musicplayerapp.constants.Constants
-import com.dhananjaysaini.musicplayerapp.modal.Music
-import com.dhananjaysaini.musicplayerapp.modal.PlayerUiState
+import com.dhananjaysaini.musicplayerapp.model.Music
+import com.dhananjaysaini.musicplayerapp.model.PlayerUiState
 import com.dhananjaysaini.musicplayerapp.repository.PlayerRepository
 import com.dhananjaysaini.musicplayerapp.service.MusicService
 
@@ -18,14 +18,7 @@ class PlayerViewModel(application: Application) : AndroidViewModel(application) 
 
     val uiState = MutableLiveData<PlayerUiState>()
 
-    var musicList = ArrayList<Music>()
-    var songPosition = 0
-
-    fun initializePlayer(list: ArrayList<Music>, position: Int) {
-        musicList = list
-        songPosition = position
-
-        updateUiState()
+    init {
         startSeekBarUpdates()
     }
 
@@ -36,12 +29,10 @@ class PlayerViewModel(application: Application) : AndroidViewModel(application) 
 
     fun nextSong() {
         repo.sendCommand(Constants.ACTION_NEXT)
-        moveToNextSong(true)
     }
 
-    fun prevSong() {
+    fun previousSong() {
         repo.sendCommand(Constants.ACTION_PREVIOUS)
-        moveToNextSong(false)
     }
 
     fun seekTo(ms: Int) {
@@ -50,42 +41,39 @@ class PlayerViewModel(application: Application) : AndroidViewModel(application) 
         }
     }
 
-    private fun moveToNextSong(next: Boolean) {
-        if (next) {
-            songPosition = (songPosition + 1) % musicList.size
-        } else {
-            songPosition = if (songPosition == 0) musicList.size - 1 else songPosition - 1
-        }
-        updateUiState()
-    }
-
-    fun toggleFavorite() {
-        val current = musicList[songPosition]
-        val fav = repo.toggleFavorite(current)
+    fun toggleFavourite() {
+        val currentSong = currentSong() ?: return
+        repo.toggleFavourite(currentSong)
         updateUiState()
     }
 
     fun toggleRepeat() {
-        val current = uiState.value ?: return
-        val newRepeat = !current.isRepeat
+
+        val newRepeat = !repo.loadRepeatState()
         repo.saveRepeatState(newRepeat)
         updateUiState()
     }
 
     fun updateUiState() {
         val mp = MusicService.mediaPlayer
-        val song = musicList.getOrNull(songPosition)
+        val song = currentSong()
+
+        if (song == null || mp == null) return
 
         uiState.postValue(
             PlayerUiState(
                 currentSong = song,
-                positionMs = mp?.currentPosition ?: 0,
-                durationMs = mp?.duration ?: 0,
-                isPlaying = mp?.isPlaying ?: false,
-                isFavorite = song?.let { repo.isFavorite(it) } ?: false,
+                positionMs = mp.currentPosition ?: 0,
+                durationMs = mp.duration ?: 0,
+                isPlaying = mp.isPlaying ?: false,
+                isFavourite = song.let { repo.isFavourite(it) } ?: false,
                 isRepeat = repo.loadRepeatState()
             )
         )
+    }
+
+    private fun currentSong(): Music? {
+        return MusicService.playlist.getOrNull(MusicService.position)
     }
 
     private fun startSeekBarUpdates() {

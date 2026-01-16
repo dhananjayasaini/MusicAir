@@ -1,4 +1,4 @@
-package com.dhananjaysaini.musicplayerapp.modal
+package com.dhananjaysaini.musicplayerapp.model
 
 import android.annotation.SuppressLint
 import java.io.Serializable

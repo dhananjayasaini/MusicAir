@@ -2,7 +2,7 @@
     <string name="app_name">Music Player</string>
     <string name="shuffle_btn">Shuffle</string>
     <string name="playlist_btn">Playlist</string>
-    <string name="favorites_btn">Favorites</string>
+    <string name="Favourites_btn">Favourites</string>
     <string name="total_songs">Total Songs :</string>
     <string name="music_player">Music Player</string>
     <string name="song_name">Song Name</string>
@@ -30,6 +30,12 @@
 
     <!-- TODO: Remove or change this placeholder text -->
     <string name="hello_blank_fragment">Hello blank fragment</string>
+    <string name="home_fragment">Home Fragment</string>
+    <string name="favourite_fragment">Favourite Fragment</string>
+    <string name="playlist_fragment">Playlist Fragment</string>
+    <string name="folder_fragment">Folder Fragment</string>
+
+    <!-- TODO: Remove or change this placeholder text -->
 
 
 </resources>

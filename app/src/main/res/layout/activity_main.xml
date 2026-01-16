@@ -6,6 +6,7 @@
     android:id="@+id/drawer_btn"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:orientation="horizontal"
     tools:context=".activities.MainActivity">
 
     <!-- MAIN CONTENT AREA -->
@@ -14,62 +15,27 @@
         android:layout_height="match_parent"
         android:orientation="vertical">
 
-        <!-- Top Buttons -->
-        <LinearLayout
+<!--        <include-->
+<!--            android:id="@+id/viewPagerInclude"-->
+<!--            android:layout_width="match_parent"-->
+<!--            android:layout_height="wrap_content"-->
+<!--            layout="@layout/view_pager" />-->
+
+        <com.google.android.material.tabs.TabLayout
+            android:id="@+id/tabLayout"
             android:layout_width="match_parent"
-            android:layout_height="72dp"
-            android:orientation="horizontal"
-            android:paddingTop="8dp"
-            android:background="#F6F6F6">
+            android:layout_height="wrap_content"
+            app:tabMode="scrollable"
+            app:tabGravity="start"
+            app:tabIndicatorFullWidth="false"
+            app:tabRippleColor="@null"/>
 
-            <androidx.appcompat.widget.AppCompatButton
-                android:id="@+id/shuffle_btn"
-                android:layout_width="0dp"
-                android:layout_height="match_parent"
-                android:layout_weight="1"
-                android:text="@string/shuffle_btn"
-                android:textColor="@color/bright_yellow"
-                android:background="@color/white"
-                android:gravity="center"
-                android:drawableTop="@drawable/shuffle_icon" />
-
-            <androidx.appcompat.widget.AppCompatButton
-                android:id="@+id/favourite_btn"
-                android:layout_width="0dp"
-                android:layout_height="match_parent"
-                android:layout_weight="1"
-                android:text="@string/favorites_btn"
-                android:textColor="@color/bright_yellow"
-                android:background="@color/white"
-                android:gravity="center"
-                android:drawableTop="@drawable/favourite_filled_icon" />
-
-            <androidx.appcompat.widget.AppCompatButton
-                android:id="@+id/playlist_btn"
-                android:layout_width="0dp"
-                android:layout_height="match_parent"
-                android:layout_weight="1"
-                android:text="@string/playlist_btn"
-                android:textColor="@color/bright_yellow"
-                android:background="@color/white"
-                android:gravity="center"
-                android:drawableTop="@drawable/playlist_icon" />
-        </LinearLayout>
-
-
-        <!--        <TextView-->
-        <!--            android:id="@+id/totalSongs"-->
-        <!--            android:layout_width="match_parent"-->
-        <!--            android:layout_height="wrap_content"-->
-        <!--            android:text="@string/total_songs"-->
-        <!--            android:textSize="20sp"-->
-        <!--            android:textStyle="bold"-->
-        <!--            android:textColor="@color/black" />-->
-
-        <!--        <include-->
-        <!--            android:layout_width="match_parent"-->
-        <!--            android:layout_height="wrap_content"-->
-        <!--            layout="@layout/voice_control"/> -->
+        <!-- VIEWPAGER -->
+        <androidx.viewpager2.widget.ViewPager2
+            android:id="@+id/viewPager"
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_weight="1"/>
 
 
         <LinearLayout
@@ -79,32 +45,25 @@
             android:gravity="center_vertical"
             android:paddingHorizontal="8dp">
 
-            <TextView
-                android:id="@+id/totalSongs"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_weight="1"
-                android:text="@string/total_songs"
-                android:textSize="20sp"
-                android:textStyle="bold"
-                android:textColor="@color/black" />
+<!--            <TextView-->
+<!--                android:id="@+id/totalSongs"-->
+<!--                android:layout_width="0dp"-->
+<!--                android:layout_height="wrap_content"-->
+<!--                android:layout_weight="1"-->
+<!--                android:text="@string/total_songs"-->
+<!--                android:textSize="20sp"-->
+<!--                android:textStyle="bold"-->
+<!--                android:textColor="@color/black" />-->
 
-            <include
-                android:id="@+id/voice_control_ma"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                layout="@layout/voice_control" />
+
+<!--            <include-->
+<!--                android:id="@+id/voice_control_ma"-->
+<!--                android:layout_width="wrap_content"-->
+<!--                android:layout_height="wrap_content"-->
+<!--                layout="@layout/voice_control" />-->
 
         </LinearLayout>
 
-
-        <!-- RecyclerView -->
-        <androidx.recyclerview.widget.RecyclerView
-            android:id="@+id/musicRV"
-            android:layout_width="match_parent"
-            android:layout_height="0dp"
-            android:layout_weight="1"
-            android:overScrollMode="never" />
 
         <!-- Mini Player at Bottom -->
         <FrameLayout
@@ -116,6 +75,8 @@
             android:elevation="8dp" />
 
     </LinearLayout>
+
+
 
     <!-- Navigation Drawer -->
     <com.google.android.material.navigation.NavigationView
