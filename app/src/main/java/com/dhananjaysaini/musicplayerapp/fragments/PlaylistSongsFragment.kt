@@ -95,9 +95,7 @@ class PlaylistSongsFragment : Fragment(R.layout.fragment_playlist_songs) {
         }
 
         songs.clear()
-        songs.addAll(
-            allSongs.filter { it.id in currentSongIds }
-        )
+        songs.addAll(allSongs.filter { it.id in currentSongIds })
 
         playlistSongsAdapter.updateList(ArrayList(songs))
 
