@@ -13,9 +13,10 @@
 
         <TextView
             android:id="@+id/totalSongsTv"
-            android:layout_width="wrap_content"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="0 Songs"
+            android:text="0 Song"
+            android:textColor="@color/black"
             android:padding="12dp"
             android:textStyle="bold"/>
 

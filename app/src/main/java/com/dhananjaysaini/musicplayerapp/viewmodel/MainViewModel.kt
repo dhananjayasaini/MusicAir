@@ -16,7 +16,7 @@ class MainViewModel(application: Application) : AndroidViewModel(application) {
     private val loadMusicUseCase = LoadMusicUseCase(repo)
 
 
-    val musicListLiveData = MutableLiveData<ArrayList<Music>>()
+    val     musicListLiveData = MutableLiveData<ArrayList<Music>>()
     private val isLoading = MutableLiveData<Boolean>()
     val error = MutableLiveData<String>()
 
@@ -27,7 +27,7 @@ class MainViewModel(application: Application) : AndroidViewModel(application) {
 
         isLoading.postValue(true)
 
-     //   MusicService.playlist = musicListMA
+        //   MusicService.playlist = musicListMA
 
 
         viewModelScope.launch {

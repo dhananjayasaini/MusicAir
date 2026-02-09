@@ -28,12 +28,15 @@ class MusicService : Service() {
         var mediaPlayer: MediaPlayer? = null
         var playlist: ArrayList<Music> = arrayListOf()
         var position: Int = 0
+
+        var allSongs: List<Music> = emptyList()
     }
 
     private lateinit var receiver: BroadcastReceiver
     private var isServiceStarted = false
 
     private val uiHandler = Handler(Looper.getMainLooper())
+
     private val progressRunnable = object : Runnable {
         override fun run() {
             try {
@@ -111,7 +114,6 @@ class MusicService : Service() {
             // New list coming from Activity
             Constants.ACTION_PLAY_NEW_LIST -> {
 
-                // Expecting: "musicList" (ArrayList<Music>) and "songPosition" (Int)
                 @Suppress("UNCHECKED_CAST")
                 val list = intent.getSerializableExtra("musicList") as? ArrayList<Music>
                     ?: playlist // fallback
@@ -468,7 +470,6 @@ class MusicService : Service() {
     // ------------------ UI broadcast helpers ------------------
 
     private fun broadcastUiUpdateAll() {
-
 
         val song = playlist[position]
 

@@ -11,17 +11,17 @@ import com.dhananjaysaini.musicplayerapp.fragments.PlaylistFragment
 
 class ViewPagerAdapter(activity: FragmentActivity) : FragmentStateAdapter(activity) {
 
-    override fun getItemCount(): Int = 5
+    override fun getItemCount(): Int = 4
 
     override fun createFragment(position: Int): Fragment {
 
         return when(position) {
-            0 -> HomeFragment()
-            1 -> AllSongsFragment()
-            2 -> FavouriteFragment()
-            3 -> PlaylistFragment()
-            4 -> FolderFragment()
-            else -> HomeFragment()
+        //    0 -> HomeFragment()
+            0 -> AllSongsFragment()
+            1 -> FavouriteFragment()
+            2 -> PlaylistFragment()
+            3 -> FolderFragment()
+            else -> AllSongsFragment()
         }
     }
 }

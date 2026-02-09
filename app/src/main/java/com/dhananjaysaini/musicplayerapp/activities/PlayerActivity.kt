@@ -7,19 +7,15 @@ import android.widget.SeekBar
 import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.ViewModelProvider
-import androidx.lifecycle.lifecycleScope
 import com.bumptech.glide.Glide
 import com.bumptech.glide.request.RequestOptions
 import com.dhananjaysaini.musicplayerapp.R
-import com.dhananjaysaini.musicplayerapp.database.MusicDatabase
 import com.dhananjaysaini.musicplayerapp.databinding.ActivityPlayerBinding
 import com.dhananjaysaini.musicplayerapp.model.formatDuration
-import com.dhananjaysaini.musicplayerapp.repository.FavouriteRepository
 import com.dhananjaysaini.musicplayerapp.service.MusicService
 import com.dhananjaysaini.musicplayerapp.utils.VoiceControlManager
 import com.dhananjaysaini.musicplayerapp.viewmodel.FavouriteViewModel
 import com.dhananjaysaini.musicplayerapp.viewmodel.PlayerViewModel
-import kotlinx.coroutines.launch
 
 
 class PlayerActivity : AppCompatActivity() {

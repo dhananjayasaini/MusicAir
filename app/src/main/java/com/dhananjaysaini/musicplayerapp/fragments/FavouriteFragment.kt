@@ -34,11 +34,8 @@ class FavouriteFragment : Fragment(R.layout.fragment_favourite) {
         favouriteViewModel = ViewModelProvider(requireActivity()).get(FavouriteViewModel::class.java)
         mainViewModel = ViewModelProvider(requireActivity()).get(MainViewModel::class.java)
 
-
         setupRecyclerView()
         observeFavorites()
-
-
     }
 
     private fun setupRecyclerView() {
@@ -51,7 +48,6 @@ class FavouriteFragment : Fragment(R.layout.fragment_favourite) {
             setHasFixedSize(true)
         }
 
-        // ▶ CLICK → PLAY FAVORITE PLAYLIST
         favAdapter.onItemClick = { list, position ->
 
             if (list.isNotEmpty()) {
@@ -65,11 +61,8 @@ class FavouriteFragment : Fragment(R.layout.fragment_favourite) {
                     putExtra("songPosition", position)
                 }
             )
-
-                startActivity(
-                    Intent(requireContext(), PlayerActivity::class.java)
-                )
-        }
+                startActivity(Intent(requireContext(), PlayerActivity::class.java))
+            }
         }
     }
 
@@ -83,19 +76,17 @@ class FavouriteFragment : Fragment(R.layout.fragment_favourite) {
                 favouriteSongs.addAll(
                     allSongs.filter { it.id in favIds }
                 )
-                Log.d("favsongs", "favsongs1 " + allSongs.toString())
+                Log.d("favSongs", "favSongs1 $allSongs")
                 favAdapter.updateList(ArrayList(favouriteSongs))
 
-                Log.d("favsongs", "favsongs2 " + favouriteSongs)
-                Log.d("favsongs", "favsongs3 " + favAdapter.toString())
+                Log.d("favSongs", "favSongs2 $favouriteSongs")
+                Log.d("favSongs", "favSongs3 $favAdapter")
 
                 if(favouriteSongs.isEmpty())
                     binding.favFragment.visibility = View.VISIBLE
                 else
                     binding.favFragment.visibility = View.GONE
-
             }
-
         }
     }
 

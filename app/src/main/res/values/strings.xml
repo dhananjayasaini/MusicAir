@@ -34,6 +34,7 @@
     <string name="favourite_fragment">Favourite Fragment</string>
     <string name="playlist_fragment">Playlist Fragment</string>
     <string name="folder_fragment">Folder Fragment</string>
+    <string name="create_playlist">Create Playlist</string>
 
     <!-- TODO: Remove or change this placeholder text -->
 

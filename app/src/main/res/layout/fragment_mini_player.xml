@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<RelativeLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
     android:id="@+id/mini_player_root"
     android:layout_width="match_parent"
     android:layout_height="64dp"
@@ -20,6 +21,7 @@
         android:layout_height="wrap_content"
         android:layout_toEndOf="@id/mini_art"
         android:layout_marginStart="8dp"
+        android:textColor="@color/black"
         android:text="Title"
         android:textSize="14sp"
         android:ellipsize="end"
@@ -32,6 +34,7 @@
         android:layout_toEndOf="@id/mini_art"
         android:layout_below="@id/mini_title"
         android:layout_marginStart="8dp"
+        android:textColor="@color/black"
         android:text="Artist"
         android:textSize="12sp"
         android:ellipsize="end"

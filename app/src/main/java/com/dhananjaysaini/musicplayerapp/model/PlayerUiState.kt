@@ -1,6 +1,5 @@
 package com.dhananjaysaini.musicplayerapp.model
 
-
 data class PlayerUiState(
     val currentSong: Music? = null,
     val positionMs: Int = 0,

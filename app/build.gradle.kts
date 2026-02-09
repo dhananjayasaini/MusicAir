@@ -54,6 +54,8 @@ dependencies {
 
     implementation("androidx.room:room-runtime:2.7.1")
     implementation("androidx.activity:activity:1.10.1")
+    implementation("com.google.android.engage:engage-core:1.5.11")
+    implementation("androidx.core:core-ktx:1.13.0")
     kapt("androidx.room:room-compiler:2.7.1")
 
     testImplementation("junit:junit:4.13.2")

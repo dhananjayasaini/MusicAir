@@ -1,12 +1,16 @@
 package com.dhananjaysaini.musicplayerapp.fragments
 
+import android.app.AlertDialog
 import android.content.Intent
 import android.os.Bundle
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.Toast
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
+import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.dhananjaysaini.musicplayerapp.activities.PlayerActivity
 import com.dhananjaysaini.musicplayerapp.adapter.MainAdapter
@@ -15,13 +19,14 @@ import com.dhananjaysaini.musicplayerapp.databinding.FragmentAllSongsBinding
 import com.dhananjaysaini.musicplayerapp.model.Music
 import com.dhananjaysaini.musicplayerapp.service.MusicService
 import com.dhananjaysaini.musicplayerapp.viewmodel.MainViewModel
+import com.dhananjaysaini.musicplayerapp.viewmodel.PlaylistViewModel
 
 class AllSongsFragment : Fragment() {
 
     private lateinit var binding: FragmentAllSongsBinding
     private lateinit var adapter: MainAdapter
 
-    private val viewModel: MainViewModel by activityViewModels()
+    private val mainViewModel: MainViewModel by activityViewModels()
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -35,6 +40,10 @@ class AllSongsFragment : Fragment() {
         super.onViewCreated(view, savedInstanceState)
         setupRecyclerView()
         observeSongs()
+
+        adapter.onAddToPlaylist = { song ->
+            showPlaylistChooser(song)
+        }
     }
 
     private fun setupRecyclerView() {
@@ -52,9 +61,14 @@ class AllSongsFragment : Fragment() {
     }
 
     private fun observeSongs() {
-        viewModel.musicListLiveData.observe(viewLifecycleOwner) { list ->
-            binding.totalSongsTv.text = "${list.size} Songs"
+        mainViewModel.musicListLiveData.observe(viewLifecycleOwner) { list ->
             adapter.updateList(ArrayList(list))
+
+            binding.totalSongsTv.text =
+                if (list.size == 1)
+                    "1 Song"
+                else
+                    "${list.size} Songs"
         }
     }
 
@@ -76,4 +90,35 @@ class AllSongsFragment : Fragment() {
             Intent(requireContext(), PlayerActivity::class.java)
         )
     }
+
+    private fun showPlaylistChooser(song: Music) {
+
+        val playlistVM = ViewModelProvider(requireActivity()).get(PlaylistViewModel::class.java)
+
+        playlistVM.playlists.observe(viewLifecycleOwner) { playlists ->
+
+            if (playlists.isEmpty()) {
+                Toast.makeText(
+                    requireContext(),
+                    "Create a playlist first",
+                    Toast.LENGTH_SHORT
+                ).show()
+                return@observe
+            }
+
+            val names = playlists.map { it.name }.toTypedArray()
+
+            AlertDialog.Builder(requireContext())
+                .setTitle("Add to playlist")
+                .setItems(names) { _, index ->
+                    playlistVM.addSongToPlaylist(
+                        playlists[index].songId,
+                        song.id
+                    )
+
+                    Log.d("PLAYLIST_ADD", "Adding song ${song.id} to playlist ${playlists[index].songId}")
+                }.show()
+        }
+    }
+
 }
