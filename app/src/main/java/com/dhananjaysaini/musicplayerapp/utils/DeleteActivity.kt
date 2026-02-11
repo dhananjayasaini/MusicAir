@@ -11,7 +11,7 @@ import android.provider.MediaStore
 import android.widget.Toast
 import androidx.activity.result.ActivityResultLauncher
 import androidx.activity.result.IntentSenderRequest
-import com.dhananjaysaini.musicplayerapp.modal.Music
+import com.dhananjaysaini.musicplayerapp.model.Music
 
 class DeleteHandler(
     private val activity: Activity,

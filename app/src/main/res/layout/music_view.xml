@@ -25,6 +25,7 @@
         android:layout_alignParentEnd="true"
         android:layout_centerVertical="true"
         app:menu = "@menu/music_item_menu"
+
         android:clickable="true"
         android:focusable="true"
         android:padding="4dp" />

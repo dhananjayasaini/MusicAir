@@ -8,7 +8,7 @@
     android:layout_height="match_parent"
     android:orientation="horizontal"
     tools:context=".activities.FavouriteActivity"
-    android:id="@+id/favorite_activity">
+    android:id="@+id/Favourite_activity">
 
 
     <LinearLayout
@@ -35,7 +35,7 @@
         <TextView
             android:layout_width="0dp"
             android:layout_height="60dp"
-            android:text="@string/favourites_btn"
+            android:text="@string/Favourites_btn"
             android:textSize="30sp"
             android:gravity="center"
             android:layout_weight="1"

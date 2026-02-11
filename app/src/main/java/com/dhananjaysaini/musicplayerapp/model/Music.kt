@@ -1,4 +1,4 @@
-package com.dhananjaysaini.musicplayerapp.modal
+package com.dhananjaysaini.musicplayerapp.model
 
 import android.annotation.SuppressLint
 import java.io.Serializable
@@ -26,4 +26,5 @@ fun formatDuration (duration: Long):String {
     } else {
         String.format("%02d:%02d", minutes, seconds)
     }
+
 }

@@ -4,6 +4,7 @@
     android:id="@+id/playerRoot"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:orientation="horizontal"
     android:background="#ffffff"
     tools:context=".activities.PlayerActivity">
 
@@ -30,7 +31,7 @@
         <TextView
             android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:text="@string/music_air"
+            android:text="@string/music_player"
             android:layout_gravity="center"
             android:gravity="center"
             android:textSize="20sp"
@@ -41,15 +42,26 @@
             android:textColor="@color/red" />
 
         <ImageButton
-            android:id="@+id/favoriteBtnPA"
+            android:id="@+id/favouriteBtnPA"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:src="@drawable/favourite_empty_icon"
             android:background="@android:color/transparent"
             android:layout_gravity="center"
             android:layout_marginEnd="5dp"
-            android:contentDescription="@string/favourites_btn"
+            android:contentDescription="@string/Favourites_btn"
             app:tint="@color/bright_yellow" />
+
+        <include
+            android:id="@+id/voice_control_pa"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+
+            android:layout_margin="5dp"
+            layout="@layout/voice_control" />
+
+
 
     </LinearLayout>
 
@@ -91,7 +103,7 @@
             android:padding="12dp"
             android:gravity="center"
             android:textStyle="bold"
-             />
+            />
 
         <TextView
             android:id="@+id/songAlbumPA"
@@ -131,6 +143,7 @@
                 app:tint="@color/bright_yellow" />
 
             <ImageButton
+                android:id="@+id/btnEqualizer"
                 android:layout_width="48dp"
                 android:layout_height="48dp"
                 android:src="@drawable/equalizer_icon"

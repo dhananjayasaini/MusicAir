@@ -2,42 +2,43 @@ package com.dhananjaysaini.musicplayerapp.activities
 
 import android.Manifest
 import android.annotation.SuppressLint
+import android.content.BroadcastReceiver
+import android.content.Context
 import android.content.Intent
+import android.content.IntentFilter
 import android.content.pm.PackageManager
-import android.net.Uri
 import android.os.Build
 import android.os.Bundle
-import android.provider.MediaStore
-import android.util.Log
 import android.view.MenuItem
+import android.view.View
 import android.widget.Toast
+import androidx.activity.viewModels
 import androidx.appcompat.app.ActionBarDrawerToggle
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
-import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.lifecycle.ViewModelProvider
 import com.dhananjaysaini.musicplayerapp.R
-import com.dhananjaysaini.musicplayerapp.adapter.MusicAdapter
-import com.dhananjaysaini.musicplayerapp.constants.Constants
+import com.dhananjaysaini.musicplayerapp.adapter.ViewPagerAdapter
 import com.dhananjaysaini.musicplayerapp.databinding.ActivityMainBinding
-import com.dhananjaysaini.musicplayerapp.modal.Music
+import com.dhananjaysaini.musicplayerapp.fragments.MiniPlayerFragment
+import com.dhananjaysaini.musicplayerapp.model.Music
 import com.dhananjaysaini.musicplayerapp.service.MusicService
-import com.dhananjaysaini.musicplayerapp.utils.FavoritesManager
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.launch
-import kotlinx.coroutines.withContext
-import java.io.File
+import com.dhananjaysaini.musicplayerapp.utils.FavouriteManager
+import com.dhananjaysaini.musicplayerapp.utils.VoiceControlManager
+import com.dhananjaysaini.musicplayerapp.viewmodel.MainViewModel
+import com.google.android.material.tabs.TabLayoutMediator
 import kotlin.system.exitProcess
 
 class MainActivity : AppCompatActivity() {
 
     private lateinit var binding: ActivityMainBinding
     private lateinit var toggle: ActionBarDrawerToggle
-    private lateinit var musicAdapter: MusicAdapter
+    private lateinit var voiceControl: VoiceControlManager
+     private val mainViewModel: MainViewModel by viewModels()
 
     companion object {
-       var musicListMA : ArrayList<Music> = ArrayList()
+        var musicListMA = ArrayList<Music>()
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -46,234 +47,158 @@ class MainActivity : AppCompatActivity() {
         binding = ActivityMainBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
-        FavoritesManager.init(applicationContext)
-        initializeLayout()
-        requestRunTimePermission()
+        FavouriteManager.init(applicationContext)
+
+        setupViewPager()
+        setupDrawerMenu()
+        setupMiniPlayer()
+        observeViewModel()
+        requestPermission()
+        checkAudioPermission()
+        //voiceControllerMa()
+        mainSongsVM()
 
     }
 
-// to start the navigation drawer
+    // -------------------- ViewPager --------------------
+
+    private fun setupViewPager() {
+        binding.viewPager.adapter = ViewPagerAdapter(this)
+        binding.viewPager.offscreenPageLimit = 4
+
+        TabLayoutMediator(binding.tabLayout, binding.viewPager) { tab, position ->
+            tab.text = when (position) {
+           //     0 -> "Home"
+                0 -> "Songs"
+                1 -> "Favourite"
+                2 -> "Playlists"
+                3 -> "Folder"
+                else -> "Songs"
+            }
+        }.attach()
+    }
+
+    // -------------------- ViewModel --------------------
+
+    private fun observeViewModel() {
+        mainViewModel.error.observe(this) {
+            Toast.makeText(this, it, Toast.LENGTH_SHORT).show()
+        }
+    }
+
+    // -------------------- Mini Player --------------------
+
+    @SuppressLint("UnspecifiedRegisterReceiverFlag")
+    private fun setupMiniPlayer() {
+        supportFragmentManager.beginTransaction()
+            .replace(R.id.mini_player_container, MiniPlayerFragment())
+            .commit()
+
+        registerReceiver(
+            showMiniReceiver,
+            IntentFilter("SHOW_MINI_PLAYER")
+        )
+    }
+
+    private val showMiniReceiver = object : BroadcastReceiver() {
+        override fun onReceive(context: Context?, intent: Intent?) {
+            binding.miniPlayerContainer.visibility = View.VISIBLE
+        }
+    }
+
+    // -------------------- Drawer --------------------
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
-        return if (toggle.onOptionsItemSelected(item))
-            true
-        else super.onOptionsItemSelected(item)
+        return toggle.onOptionsItemSelected(item) || super.onOptionsItemSelected(item)
     }
 
-    @SuppressLint("SetTextI18n", "NotifyDataSetChanged", "SuspiciousIndentation")
-    private fun initializeLayout() {
+    private fun setupDrawerMenu() {
+        val drawer = binding.drawerBtn
+        toggle = ActionBarDrawerToggle(this, drawer, R.string.open, R.string.close)
+        drawer.addDrawerListener(toggle)
+        toggle.syncState()
 
-        binding.shuffleBtn.setOnClickListener {
-            if (musicListMA.size > 0) {
-                val intent = Intent(this@MainActivity, PlayerActivity::class.java)
-                intent.putExtra("index", 0)
-                intent.putExtra("class", "MainActivity")
-                startActivity(intent)
-            } else {
-                Toast.makeText(this, "No songs available to play", Toast.LENGTH_SHORT).show()
-            }
-        }
-
-        binding.favoriteBtn.setOnClickListener {
-            startActivity(Intent(this, FavouriteActivity::class.java))
-        }
-
-//        binding.playlistBtn.setOnClickListener {
-//            startActivity(Intent(this, PlaylistActivity::class.java))
-//        }
+        supportActionBar?.setDisplayHomeAsUpEnabled(true)
 
         binding.navView.setNavigationItemSelectedListener {
             when (it.itemId) {
-                R.id.navFeedback -> Toast.makeText(baseContext, "Feedback", Toast.LENGTH_SHORT).show()
-                R.id.navSetting -> Toast.makeText(baseContext, "Setting", Toast.LENGTH_SHORT).show()
-                R.id.navAbout -> Toast.makeText(baseContext, "About", Toast.LENGTH_SHORT).show()
+                R.id.navFeedback -> toast("Feedback")
+                R.id.navSetting -> toast("Setting")
+                R.id.navAbout -> toast("About")
                 R.id.navExit -> exitProcess(1)
             }
             true
         }
-
-        val drawerLayout = binding.drawerBtn
-        toggle = ActionBarDrawerToggle(this, drawerLayout, R.string.open, R.string.close)
-        drawerLayout.addDrawerListener(toggle)
-        toggle.syncState()
-        toggle.onDrawerOpened(drawerLayout)
-        toggle.onDrawerClosed(drawerLayout)
-        supportActionBar?.setDisplayHomeAsUpEnabled(true)
-
-        CoroutineScope(Dispatchers.IO).launch {
-            musicListMA = getAllAudio()
-            withContext(Dispatchers.Main) {
-                if (musicListMA.isNotEmpty()) {
-
-                    musicAdapter = MusicAdapter(
-                        this@MainActivity,
-                        musicListMA,
-                        onAddToPlaylist = { song ->
-                           // addToPlaylist(this@MainActivity, "MyPlaylist", song)
-                        },
-                        adapterClass = "MusicAdapter",
-                    )
-
-                    binding.musicRV.adapter = musicAdapter
-                    musicAdapter.notifyDataSetChanged()
-                    binding.totalSongs.text = musicAdapter.itemCount.toString() + " Songs"
-
-                    notificationBuilder()
-                }
-                else {
-                    Toast.makeText(this@MainActivity, "No songs found", Toast.LENGTH_SHORT).show()
-                }
-            }
-        }
-
-        Log.d("AudioTag", "initialSize: "+ musicListMA.size)
-
-        binding.musicRV.setHasFixedSize(true)
-        binding.musicRV.setItemViewCacheSize(10)
-        binding.musicRV.layoutManager = LinearLayoutManager(this)
-
     }
 
-    @SuppressLint("Recycle", "Range", "SuspiciousIndentation")
-    private fun getAllAudio() : ArrayList<Music>{
+    // -------------------- Permissions --------------------
 
-        val audioList = ArrayList<Music>()
-        val selection = MediaStore.Audio.Media.IS_MUSIC + " != 0 "
-        val uri = MediaStore.Audio.Media.EXTERNAL_CONTENT_URI
-
-        val projection = arrayOf(
-            MediaStore.Audio.Media._ID,
-            MediaStore.Audio.Media.TITLE,
-            MediaStore.Audio.Media.ALBUM,
-            MediaStore.Audio.Media.ARTIST,
-            MediaStore.Audio.Media.DURATION,
-            MediaStore.Audio.Media.DATE_ADDED,
-            MediaStore.Audio.Media.DATA,
-            MediaStore.Audio.Media.ALBUM_ID
-        )
-
-        val sortOrder = "${MediaStore.Audio.Media.DATE_ADDED} DESC"
-        val cursor = this.contentResolver.query(uri, projection, selection, null , sortOrder)
-        if (cursor!=null) {
-            if (cursor.moveToFirst())
-                do {
-                    val titleC= cursor.getString(cursor.getColumnIndex(MediaStore.Audio.Media.TITLE))
-                    val idC= cursor.getString(cursor.getColumnIndex(MediaStore.Audio.Media._ID))
-                    val albumC= cursor.getString(cursor.getColumnIndex(MediaStore.Audio.Media.ALBUM))
-                    val artistC= cursor.getString(cursor.getColumnIndex(MediaStore.Audio.Media.ARTIST))
-                    val pathC= cursor.getString(cursor.getColumnIndex(MediaStore.Audio.Media.DATA))
-                    val durationC= cursor.getLong(cursor.getColumnIndex(MediaStore.Audio.Media.DURATION))
-                    val albumIdC= cursor.getLong(cursor.getColumnIndex(MediaStore.Audio.Media.ALBUM_ID)).toString()
-                    val uri = Uri.parse("content://media/external/audio/albumart")
-                    val artUriC = Uri.withAppendedPath(uri, albumIdC).toString()
-                    val music = Music(id = idC, title = titleC, album = albumC, artist = artistC, path = pathC,
-                        duration = durationC, artUri = artUriC)
-                    val file = File(music.path)
-                    Log.d("AudioTag", "getAllAudio: " + file.exists())
-
-                    if (file.exists())
-                        audioList.add(music)
-                }
-                while (cursor.moveToNext())
-                cursor.close()
-        }
-
-        Log.d("AudioTag", "audioSize: "+ audioList.size)
-        return audioList
-
-    }
-
-    private fun requestRunTimePermission() {
-        val permissions = mutableListOf<String>()
+    private fun requestPermission() {
+        val permissionsToRequest = mutableListOf<String>()
 
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
-            if (ContextCompat.checkSelfPermission(this, Manifest.permission.READ_MEDIA_AUDIO)
-                != PackageManager.PERMISSION_GRANTED)
-            {
-                permissions.add(Manifest.permission.READ_MEDIA_AUDIO)
-            }
+            if (!hasPermission(Manifest.permission.READ_MEDIA_AUDIO))
+                permissionsToRequest.add(Manifest.permission.READ_MEDIA_AUDIO)
 
-            else if (ContextCompat.checkSelfPermission(this, Manifest.permission.POST_NOTIFICATIONS)
-                != PackageManager.PERMISSION_GRANTED) {
-
-                ActivityCompat.requestPermissions(
-                    this,
-                    arrayOf(Manifest.permission.POST_NOTIFICATIONS),
-                    1001
-                )
-            }
+            if (!hasPermission(Manifest.permission.POST_NOTIFICATIONS))
+                permissionsToRequest.add(Manifest.permission.POST_NOTIFICATIONS)
         } else {
-            if (ContextCompat.checkSelfPermission(this, Manifest.permission.READ_EXTERNAL_STORAGE)
-                != PackageManager.PERMISSION_GRANTED
-            ) {
-                permissions.add(Manifest.permission.READ_EXTERNAL_STORAGE)
-            }
+            if (!hasPermission(Manifest.permission.READ_EXTERNAL_STORAGE))
+                permissionsToRequest.add(Manifest.permission.READ_EXTERNAL_STORAGE)
         }
 
-        if (permissions.isNotEmpty()) {
-            ActivityCompat.requestPermissions(this, permissions.toTypedArray(), 11)
+        if (permissionsToRequest.isNotEmpty()) {
+            ActivityCompat.requestPermissions(this, permissionsToRequest.toTypedArray(), 500)
         } else {
-            initializeLayout()
+            mainViewModel.loadMusic()
         }
     }
 
-    override fun onRequestPermissionsResult(requestCode: Int, permissions: Array<out String>, grantResults: IntArray) {
+    private fun hasPermission(perm: String) =
+        ContextCompat.checkSelfPermission(this, perm) == PackageManager.PERMISSION_GRANTED
+
+    override fun onRequestPermissionsResult(
+        requestCode: Int,
+        permissions: Array<out String>,
+        grantResults: IntArray
+    ) {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults)
-        if(requestCode==11){
-            if((grantResults.isNotEmpty() && grantResults[0] ==  PackageManager.PERMISSION_GRANTED )) {
-                Toast.makeText(this, "Permission Granted", Toast.LENGTH_SHORT).show()
-                initializeLayout()
-            }
-            else {
-                Toast.makeText(this, "Permission Denied", Toast.LENGTH_SHORT).show()
-            }
+        if (requestCode == 500 && grantResults.all { it == PackageManager.PERMISSION_GRANTED }) {
+            mainViewModel.loadMusic()
+        } else {
+            toast("Permission Denied")
         }
     }
 
-    private fun notificationBuilder(){
-
-        if (musicListMA.isEmpty()) {
-            Toast.makeText(this, "No songs found for notification", Toast.LENGTH_SHORT).show()
-            return
+    private fun checkAudioPermission() {
+        if (checkSelfPermission(Manifest.permission.RECORD_AUDIO)
+            != PackageManager.PERMISSION_GRANTED
+        ) {
+            requestPermissions(arrayOf(Manifest.permission.RECORD_AUDIO), 101)
         }
-
-        val position = 0
-        val song = musicListMA[position]
-
-        val serviceIntent = Intent(this, MusicService::class.java).apply {
-            action = Constants.ACTION_PLAY
-            action = Constants.ACTION_PAUSE
-            action = Constants.ACTION_NEXT
-            action = Constants.ACTION_PREVIOUS
-            action = Constants.CHANNEL_ID
-            action = Constants.NOTIFICATION_ID.toString()
-
-            putExtra("SONG_ID", song.id)
-            putExtra("SONG_TITLE", song.title)
-            putExtra("SONG_ALBUM", song.album)
-            putExtra("SONG_ARTIST", song.artist)
-            putExtra("SONG_DURATION", song.duration)
-            putExtra("SONG_PATH", song.path)
-            putExtra("SONG_ART_URI", song.artUri)
-            }
-
-            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-                startForegroundService(serviceIntent)
-            }
-        ContextCompat.startForegroundService(this, serviceIntent) // safe for API 26+
-
-        val playerIntent = Intent(this, PlayerActivity::class.java).apply {
-            putExtra("SONG_ID", song.id)
-            putExtra("SONG_TITLE", song.title)
-            putExtra("SONG_ALBUM", song.album)
-            putExtra("SONG_ARTIST", song.artist)
-            putExtra("SONG_DURATION", song.duration)
-            putExtra("SONG_PATH", song.path)
-            putExtra("SONG_ART_URI", song.artUri)
-        }
-        this.startActivity(playerIntent)
-
     }
 
+    // -------------------- Voice --------------------
 
+    private fun voiceControllerMa() {
+        voiceControl = VoiceControlManager(this)
+//        binding.voiceControlMa.btnMic.setOnClickListener {
+//            voiceControl.startListening()
+//        }
+    }
+
+    private fun toast(msg: String) {
+        Toast.makeText(this, msg, Toast.LENGTH_SHORT).show()
+    }
+
+     private fun mainSongsVM(){
+//        val mainViewModel = ViewModelProvider(this).get(MainViewModel::class.java)
+//        mainViewModel.loadMusic()
+
+         mainViewModel.musicListLiveData.observe(this) { songs ->
+             MusicService.allSongs = songs
+         }
+
+
+     }
 }
