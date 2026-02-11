@@ -34,9 +34,7 @@ class FolderSongsFragment : Fragment(R.layout.fragment_folder_songs) {
 
         binding.folderTitle.text = folderName
 
-        // 🔥 Use global song cache
-        songs.addAll(
-            MusicService.allSongs.filter {
+        songs.addAll(MusicService.allSongs.filter {
                 it.path.startsWith(folderPath)
             }
         )
@@ -63,7 +61,6 @@ class FolderSongsFragment : Fragment(R.layout.fragment_folder_songs) {
         binding.btnBack.setOnClickListener{
             requireActivity().finish()
         }
-
         updateSongs(folderPath)
     }
 

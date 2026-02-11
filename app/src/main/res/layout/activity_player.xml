@@ -143,6 +143,7 @@
                 app:tint="@color/bright_yellow" />
 
             <ImageButton
+                android:id="@+id/btnEqualizer"
                 android:layout_width="48dp"
                 android:layout_height="48dp"
                 android:src="@drawable/equalizer_icon"

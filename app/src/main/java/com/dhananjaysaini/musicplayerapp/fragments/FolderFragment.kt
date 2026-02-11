@@ -39,8 +39,6 @@ class FolderFragment : Fragment(R.layout.fragment_folder) {
         recycler.layoutManager = LinearLayoutManager(requireContext())
         recycler.adapter = folderAdapter
 
-            openFolderSongs()
-
             folderViewModel.folders.observe(viewLifecycleOwner) {
                 folderAdapter.update(it)
 
@@ -51,7 +49,9 @@ class FolderFragment : Fragment(R.layout.fragment_folder) {
                 }
             }
             folderViewModel.loadFolders(requireContext())
-        }
+
+        openFolderSongs()
+    }
 
     private fun openFolderSongs() {
 

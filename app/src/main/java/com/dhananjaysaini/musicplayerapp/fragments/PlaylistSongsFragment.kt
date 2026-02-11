@@ -4,7 +4,6 @@ import android.content.Intent
 import android.os.Bundle
 import android.util.Log
 import android.view.View
-import androidx.activity.addCallback
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -90,7 +89,6 @@ class PlaylistSongsFragment : Fragment(R.layout.fragment_playlist_songs) {
 
         if (currentSongIds.isEmpty()) {
             songs.clear()
-    //        playlistSongsAdapter.updateList(ArrayList(songs))
             return
         }
 

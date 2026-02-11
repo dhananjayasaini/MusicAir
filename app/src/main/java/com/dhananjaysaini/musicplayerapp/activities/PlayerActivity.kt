@@ -13,6 +13,7 @@ import com.dhananjaysaini.musicplayerapp.R
 import com.dhananjaysaini.musicplayerapp.databinding.ActivityPlayerBinding
 import com.dhananjaysaini.musicplayerapp.model.formatDuration
 import com.dhananjaysaini.musicplayerapp.service.MusicService
+import com.dhananjaysaini.musicplayerapp.utils.EqualizerManager
 import com.dhananjaysaini.musicplayerapp.utils.VoiceControlManager
 import com.dhananjaysaini.musicplayerapp.viewmodel.FavouriteViewModel
 import com.dhananjaysaini.musicplayerapp.viewmodel.PlayerViewModel
@@ -23,11 +24,15 @@ class PlayerActivity : AppCompatActivity() {
     private lateinit var binding: ActivityPlayerBinding
     private val viewModel: PlayerViewModel by viewModels()
     private lateinit var voiceControl: VoiceControlManager
+    private lateinit var musicService: MusicService
+    private lateinit var equalizerManager: EqualizerManager
 
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setTheme(R.style.Theme_MusicPlayerApp)
+
+        musicService = MusicService()
 
         binding = ActivityPlayerBinding.inflate(layoutInflater)
         setContentView(binding.root)
@@ -36,13 +41,14 @@ class PlayerActivity : AppCompatActivity() {
             finish()
             return
         }
+
         observeViewModel()
         setupClicks()
         checkAudioPermission()
+        setToEqualizer()
         voiceControllerPa()
 
         sendBroadcast(Intent("REQUEST_UI_UPDATE"))
-
     }
 
     private fun observeViewModel() {
@@ -139,6 +145,20 @@ class PlayerActivity : AppCompatActivity() {
             requestPermissions(arrayOf(android.Manifest.permission.RECORD_AUDIO), 101)
         }
 
+    }
+
+    private fun setToEqualizer(){
+        equalizerManager = EqualizerManager(this)
+
+        binding.btnEqualizer.setOnClickListener {
+            val sessionId = musicService.getAudioSessionId()
+            equalizerManager.showEqualizer(sessionId)
+        }
+    }
+
+    override fun onDestroy() {
+        super.onDestroy()
+        equalizerManager?.release()
     }
 }
 

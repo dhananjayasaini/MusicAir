@@ -40,15 +40,15 @@ class MusicService : Service() {
     private val progressRunnable = object : Runnable {
         override fun run() {
             try {
-                val cur = mediaPlayer?.currentPosition ?: 0
-                val dur = mediaPlayer?.duration ?: 0
+                val currentPosition = mediaPlayer?.currentPosition ?: 0
+                val duration = mediaPlayer?.duration ?: 0
 
                 // Broadcast current position regularly
                 sendBroadcast(Intent("UPDATE_UI").apply {
                     putExtra("Index", position)
                     putExtra("isPlaying", mediaPlayer?.isPlaying == true)
-                    putExtra("currentMs", cur)
-                    putExtra("durationMs", dur)
+                    putExtra("currentMs", currentPosition)
+                    putExtra("durationMs", duration)
                     putExtra("title", playlist.getOrNull(position)?.title)
                     putExtra("artist", playlist.getOrNull(position)?.artist)
                     putExtra("artUri", playlist.getOrNull(position)?.artUri)
@@ -70,7 +70,6 @@ class MusicService : Service() {
         uiHandler.removeCallbacks(progressRunnable)
     }
 
-
     @RequiresApi(Build.VERSION_CODES.P)
     override fun onCreate() {
         super.onCreate()
@@ -78,6 +77,8 @@ class MusicService : Service() {
         registerReceiver()
         if (mediaPlayer == null) mediaPlayer = MediaPlayer()
         mediaPlayer?.setOnCompletionListener { handleCompletion() }
+
+        mediaPlayer?.setAudioStreamType(android.media.AudioManager.STREAM_MUSIC)
 
     }
 
@@ -107,7 +108,6 @@ class MusicService : Service() {
                 notifyUIAndUpdateNotification()
             }
         }
-
         createNotificationChannel()
 
         when (intent?.action) {
@@ -150,8 +150,6 @@ class MusicService : Service() {
                 if (mediaPlayer?.isPlaying == true) {
                     mediaPlayer?.pause()
 
-//                    sendBroadcast(Intent("SHOW_MINI_PLAYER"))
-//                    sendBroadcast(Intent("UPDATE_UI"))
                     broadcastUiUpdateAll()
                     updateNotification(false)
 
@@ -306,11 +304,6 @@ class MusicService : Service() {
             Log.d("musicservice1", "songPlus $position")
             broadcastUiUpdateAll()
         }
-
-//        Handler(Looper.getMainLooper()).postDelayed({
-//            broadcastUiUpdateAll()
-//        }, 500)  // 500ms is safe
-
     }
 
 
@@ -385,11 +378,6 @@ class MusicService : Service() {
     }
 
 
-
-
-
-
-
     // ------------------ Receiver (buttons from notification) ------------------
 
     @SuppressLint("UnspecifiedRegisterReceiverFlag")
@@ -397,9 +385,6 @@ class MusicService : Service() {
         receiver = object : BroadcastReceiver() {
             @RequiresApi(Build.VERSION_CODES.P)
             override fun onReceive(context: Context?, intent: Intent?) {
-//                intent?.getIntExtra("index", -1)?.takeIf { it >= 0 }?.let {
-//                    PlayerActivity.songPosition = it
-//                }
 
                 if (intent?.action == "REQUEST_UI_UPDATE") {
                     broadcastUiUpdateAll()    // send fresh UI data
@@ -408,8 +393,6 @@ class MusicService : Service() {
                 when (intent?.action) {
 
                     Constants.ACTION_PLAY -> {
-//                        mediaPlayer?.start()
-//                        notifyUIAndUpdateNotification()
 
                         if (mediaPlayer?.isPlaying == false) {
                             mediaPlayer?.start()
@@ -427,8 +410,6 @@ class MusicService : Service() {
                     }
 
                     Constants.ACTION_PAUSE -> {
-//                        mediaPlayer?.pause()
-//                        notifyUIAndUpdateNotification()
 
                         if (mediaPlayer?.isPlaying == true) {
                             mediaPlayer!!.pause()
@@ -517,6 +498,17 @@ class MusicService : Service() {
             null
         }
     }
+
+    fun getAudioSessionId(): Int {
+        return mediaPlayer?.audioSessionId ?: -1
+    }
+
+    fun applyReverbEffect(reverbId: Int) {
+        mediaPlayer?.attachAuxEffect(reverbId)
+        mediaPlayer?.setAuxEffectSendLevel(1.0f)
+    }
+
+
 
 }
 
