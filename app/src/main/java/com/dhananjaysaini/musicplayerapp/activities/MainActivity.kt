@@ -7,6 +7,7 @@ import android.content.Context
 import android.content.Intent
 import android.content.IntentFilter
 import android.content.pm.PackageManager
+import android.net.Uri
 import android.os.Build
 import android.os.Bundle
 import android.view.MenuItem
@@ -17,7 +18,6 @@ import androidx.appcompat.app.ActionBarDrawerToggle
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
-import androidx.lifecycle.ViewModelProvider
 import com.dhananjaysaini.musicplayerapp.R
 import com.dhananjaysaini.musicplayerapp.adapter.ViewPagerAdapter
 import com.dhananjaysaini.musicplayerapp.databinding.ActivityMainBinding
@@ -122,7 +122,7 @@ class MainActivity : AppCompatActivity() {
 
         binding.navView.setNavigationItemSelectedListener {
             when (it.itemId) {
-                R.id.navFeedback -> toast("Feedback")
+                R.id.navFeedback -> sendFeedback(this)
                 R.id.navSetting -> toast("Setting")
                 R.id.navAbout -> toast("About")
                 R.id.navExit -> exitProcess(1)
@@ -201,4 +201,36 @@ class MainActivity : AppCompatActivity() {
 
 
      }
+
+    private fun sendFeedback(context: Context) {
+        val intent = Intent(Intent.ACTION_SENDTO).apply {
+            data = Uri.parse("mailto:") // only email apps will open
+            putExtra(Intent.EXTRA_EMAIL, arrayOf("support@musicplayer.com"))
+            putExtra(Intent.EXTRA_SUBJECT, "Feedback - Music Player App")
+            putExtra(Intent.EXTRA_TEXT,
+                "Write your feedback here...\n\n" +
+                        "---- Device Info ----\n" +
+                        "Device: ${Build.MANUFACTURER} ${Build.MODEL}\n" +
+                        "Android Version: ${Build.VERSION.RELEASE}\n" +
+                        "App Version: ${getAppVersion(context)}\n"
+            )
+        }
+
+        try {
+            context.startActivity(Intent.createChooser(intent, "Send Feedback"))
+        } catch (e: Exception) {
+            Toast.makeText(context, "No email app found!", Toast.LENGTH_SHORT).show()
+        }
+    }
+
+    private fun getAppVersion(context: Context): String {
+        return try {
+            val versionInfo = context.packageManager.getPackageInfo(context.packageName, 0)
+            versionInfo.versionName ?: "Unknown"
+        } catch (e: Exception) {
+            "Unknown"
+        }
+    }
+
+
 }

@@ -1,16 +1,16 @@
 <?xml version="1.0" encoding="utf-8"?>
 <paths xmlns:android="http://schemas.android.com/apk/res/android">
 
-    <!-- for internal storage -->
-    <files-path name="internal" path="." />
-
     <!-- for cache -->
     <cache-path name="cache" path="." />
 
-    <!-- for external storage app folder -->
-    <external-files-path name="external_files" path="." />
+    <!-- for internal storage -->
+    <files-path name="internal" path="." />
 
     <!-- IMPORTANT: for /storage/emulated/0/ -->
     <external-path name="external" path="." />
+
+    <!-- for external storage app folder -->
+    <external-files-path name="external_files" path="." />
 
 </paths>
