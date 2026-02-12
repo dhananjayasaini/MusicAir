@@ -5,6 +5,7 @@ import android.content.Context
 import android.content.Intent
 import android.content.IntentFilter
 import android.content.pm.PackageManager
+import android.net.Uri
 import android.os.Bundle
 import android.view.View
 import android.widget.SeekBar
@@ -18,6 +19,7 @@ import com.bumptech.glide.request.RequestOptions
 import com.dhananjaysaini.musicplayerapp.R
 import com.dhananjaysaini.musicplayerapp.constants.Constants
 import com.dhananjaysaini.musicplayerapp.databinding.ActivityPlayerBinding
+import com.dhananjaysaini.musicplayerapp.model.Music
 import com.dhananjaysaini.musicplayerapp.model.formatDuration
 import com.dhananjaysaini.musicplayerapp.service.MusicService
 import com.dhananjaysaini.musicplayerapp.utils.EqualizerManager
@@ -61,6 +63,10 @@ class PlayerActivity : AppCompatActivity() {
         setToEqualizer()
         voiceControllerPa()
         sleepTimerBottomSheet()
+
+        binding.shareBtnPA.setOnClickListener {
+            shareAudioFile()
+        }
 
         sendBroadcast(Intent("REQUEST_UI_UPDATE"))
     }
@@ -122,8 +128,7 @@ class PlayerActivity : AppCompatActivity() {
                 ?: return@setOnClickListener
 
             // 🔥 SAME ViewModel jo Fragment use kar raha hai
-            ViewModelProvider(this)
-                .get(FavouriteViewModel::class.java)
+            ViewModelProvider(this)[FavouriteViewModel::class.java]
                 .toggle(song.id)
         }
 
@@ -230,27 +235,40 @@ class PlayerActivity : AppCompatActivity() {
         return String.format("%02d:%02d:%02d", hours, minutes, seconds)
     }
 
-//    private fun shareAudio(){
-//        binding.shareBtnPA.setOnClickListener{
-//
-//                try {
-//                    val file = File("pathOfFile")
-//                    if(file.exists()) {
-//                        val uri = FileProvider.getUriForFile(this, file)
-//                        val intent = Intent(Intent.ACTION_SEND)
-//                        intent.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION)
-//                        intent.setType("*/*")
-//                        intent.putExtra(Intent.EXTRA_STREAM, uri)
-//                        intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-//                        startActivity(intent)
-//                    }
-//                } catch (e: java.lang.Exception) {
-//                    e.printStackTrace()
-//                    Toast.makeText("Error", "")
-//                }
-//            }
-//
-//    }
+    private fun shareAudioFile() {
+
+        try {
+            val audio = MusicService.playlist[MusicService.position]
+            val file = File(audio.path)
+
+            if (!file.exists()) {
+                Toast.makeText(this, "File not found!", Toast.LENGTH_SHORT).show()
+                return
+            }
+
+            val uri: Uri = FileProvider.getUriForFile(
+                this,
+                "${applicationContext.packageName}.provider", file
+            )
+
+            val shareIntent = Intent(Intent.ACTION_SEND).apply {
+                type = "audio/*"
+                putExtra(Intent.EXTRA_STREAM, uri)
+                setFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
+                putExtra(Intent.EXTRA_SUBJECT, "Listen to this audio!")
+                putExtra(
+                    Intent.EXTRA_TEXT,
+                    "Check out this audio:\nTitle: ${audio.title}\nArtist: ${audio.artist}"
+                )
+                addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION)
+            }
+            startActivity(Intent.createChooser(shareIntent, "Share audio file via"))
+        }
+        catch (e: Exception) {
+            Toast.makeText(this, "Error sharing file", Toast.LENGTH_SHORT).show()
+            e.printStackTrace()
+        }
+    }
 
 }
 
