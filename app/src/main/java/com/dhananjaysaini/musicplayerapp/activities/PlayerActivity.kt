@@ -1,22 +1,32 @@
 package com.dhananjaysaini.musicplayerapp.activities
 
+import android.content.BroadcastReceiver
+import android.content.Context
 import android.content.Intent
+import android.content.IntentFilter
 import android.content.pm.PackageManager
 import android.os.Bundle
+import android.view.View
 import android.widget.SeekBar
+import android.widget.Toast
 import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
+import androidx.core.content.FileProvider
 import androidx.lifecycle.ViewModelProvider
 import com.bumptech.glide.Glide
 import com.bumptech.glide.request.RequestOptions
 import com.dhananjaysaini.musicplayerapp.R
+import com.dhananjaysaini.musicplayerapp.constants.Constants
 import com.dhananjaysaini.musicplayerapp.databinding.ActivityPlayerBinding
 import com.dhananjaysaini.musicplayerapp.model.formatDuration
 import com.dhananjaysaini.musicplayerapp.service.MusicService
 import com.dhananjaysaini.musicplayerapp.utils.EqualizerManager
+import com.dhananjaysaini.musicplayerapp.utils.SleepTimerBottomSheet
 import com.dhananjaysaini.musicplayerapp.utils.VoiceControlManager
 import com.dhananjaysaini.musicplayerapp.viewmodel.FavouriteViewModel
 import com.dhananjaysaini.musicplayerapp.viewmodel.PlayerViewModel
+import java.io.File
+import kotlin.text.*
 
 
 class PlayerActivity : AppCompatActivity() {
@@ -26,6 +36,9 @@ class PlayerActivity : AppCompatActivity() {
     private lateinit var voiceControl: VoiceControlManager
     private lateinit var musicService: MusicService
     private lateinit var equalizerManager: EqualizerManager
+
+    private var timerReceiver: BroadcastReceiver? = null
+    private var currentRemainingTime: Long = 0L
 
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -47,6 +60,7 @@ class PlayerActivity : AppCompatActivity() {
         checkAudioPermission()
         setToEqualizer()
         voiceControllerPa()
+        sleepTimerBottomSheet()
 
         sendBroadcast(Intent("REQUEST_UI_UPDATE"))
     }
@@ -108,7 +122,7 @@ class PlayerActivity : AppCompatActivity() {
                 ?: return@setOnClickListener
 
             // 🔥 SAME ViewModel jo Fragment use kar raha hai
-                 ViewModelProvider(this)
+            ViewModelProvider(this)
                 .get(FavouriteViewModel::class.java)
                 .toggle(song.id)
         }
@@ -144,10 +158,9 @@ class PlayerActivity : AppCompatActivity() {
         ) {
             requestPermissions(arrayOf(android.Manifest.permission.RECORD_AUDIO), 101)
         }
-
     }
 
-    private fun setToEqualizer(){
+    private fun setToEqualizer() {
         equalizerManager = EqualizerManager(this)
 
         binding.btnEqualizer.setOnClickListener {
@@ -156,9 +169,88 @@ class PlayerActivity : AppCompatActivity() {
         }
     }
 
+    private fun sleepTimerBottomSheet() {
+        binding.btnSleepTimer.setOnClickListener {
+
+            val bottomSheet = SleepTimerBottomSheet()
+            bottomSheet.show(supportFragmentManager, "SleepTimerBottomSheet")
+        }
+    }
+
+    override fun onResume() {
+        super.onResume()
+
+        timerReceiver = object : BroadcastReceiver() {
+            override fun onReceive(context: Context?, intent: Intent?) {
+
+                if (intent?.action == Constants.ACTION_TIMER_UPDATE) {
+
+                    currentRemainingTime =
+                        intent.getLongExtra(Constants.EXTRA_REMAINING_TIME, 0L)
+
+                    if (currentRemainingTime > 0) {
+                        binding.txtTimerStatus.visibility = View.VISIBLE
+                        binding.txtTimerStatus.text = formatTime(currentRemainingTime)
+                    } else {
+                        binding.playPauseBtnPA.setImageResource(R.drawable.play_icon)
+                        binding.txtTimerStatus.visibility = View.GONE
+                        binding.txtTimerStatus.text = "Timer: Off"
+                    }
+                } else if (intent?.action == Constants.ACTION_MUSIC_STOPPED_BY_TIMER) {
+                    binding.playPauseBtnPA.setImageResource(R.drawable.play_icon)
+
+                }
+            }
+        }
+
+        val filter = IntentFilter().apply {
+            addAction(Constants.ACTION_TIMER_UPDATE)
+            addAction(Constants.ACTION_MUSIC_STOPPED_BY_TIMER)
+        }
+        registerReceiver(timerReceiver, filter)
+    }
+
     override fun onDestroy() {
         super.onDestroy()
-        equalizerManager?.release()
+        equalizerManager.release()
     }
+
+    override fun onPause() {
+        super.onPause()
+        timerReceiver?.let { unregisterReceiver(it) }
+    }
+
+    private fun formatTime(millis: Long): String {
+        val totalSeconds = millis / 1000
+
+        val hours = totalSeconds / 3600
+        val minutes = (totalSeconds % 3600) / 60
+        val seconds = totalSeconds % 60
+
+        return String.format("%02d:%02d:%02d", hours, minutes, seconds)
+    }
+
+//    private fun shareAudio(){
+//        binding.shareBtnPA.setOnClickListener{
+//
+//                try {
+//                    val file = File("pathOfFile")
+//                    if(file.exists()) {
+//                        val uri = FileProvider.getUriForFile(this, file)
+//                        val intent = Intent(Intent.ACTION_SEND)
+//                        intent.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION)
+//                        intent.setType("*/*")
+//                        intent.putExtra(Intent.EXTRA_STREAM, uri)
+//                        intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+//                        startActivity(intent)
+//                    }
+//                } catch (e: java.lang.Exception) {
+//                    e.printStackTrace()
+//                    Toast.makeText("Error", "")
+//                }
+//            }
+//
+//    }
+
 }
 

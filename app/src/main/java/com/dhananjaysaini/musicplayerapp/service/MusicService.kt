@@ -8,6 +8,7 @@ import android.graphics.BitmapFactory
 import android.media.MediaPlayer
 import android.net.Uri
 import android.os.Build
+import android.os.CountDownTimer
 import android.os.Handler
 import android.os.IBinder
 import android.os.Looper
@@ -28,12 +29,18 @@ class MusicService : Service() {
         var mediaPlayer: MediaPlayer? = null
         var playlist: ArrayList<Music> = arrayListOf()
         var position: Int = 0
-
         var allSongs: List<Music> = emptyList()
+
+        var musicService: MusicService? = null
     }
 
     private lateinit var receiver: BroadcastReceiver
     private var isServiceStarted = false
+
+    private var sleepTimer: CountDownTimer? = null
+    var remainingTime: Long = 0L
+    var isTimerRunning: Boolean = false
+
 
     private val uiHandler = Handler(Looper.getMainLooper())
 
@@ -73,8 +80,12 @@ class MusicService : Service() {
     @RequiresApi(Build.VERSION_CODES.P)
     override fun onCreate() {
         super.onCreate()
+
+        musicService = this
+
         createNotificationChannel()
         registerReceiver()
+
         if (mediaPlayer == null) mediaPlayer = MediaPlayer()
         mediaPlayer?.setOnCompletionListener { handleCompletion() }
 
@@ -195,6 +206,18 @@ class MusicService : Service() {
             // Optional: refresh notification state externally
             Constants.ACTION_REFRESH_NOTIFICATION -> {
                 buildNotification(mediaPlayer?.isPlaying == true)
+            }
+        }
+
+        when (intent?.action) {
+
+            Constants.ACTION_START_TIMER -> {
+                val time = intent.getLongExtra(Constants.EXTRA_TIMER_TIME, 0L)
+                if (time > 0) startSleepTimer(time)
+            }
+
+            Constants.ACTION_CANCEL_TIMER -> {
+                cancelSleepTimer()
             }
         }
 
@@ -508,7 +531,53 @@ class MusicService : Service() {
         mediaPlayer?.setAuxEffectSendLevel(1.0f)
     }
 
+     fun startSleepTimer(timeInMillis: Long) {
 
+        sleepTimer?.cancel()
+        remainingTime = timeInMillis
+
+        sleepTimer = object : CountDownTimer(timeInMillis, 1000) {
+
+            override fun onTick(ms: Long) {
+                remainingTime = ms
+                sendTimerUpdateBroadcast(ms)
+            }
+
+            override fun onFinish() {
+                remainingTime = 0L
+                sendTimerUpdateBroadcast(0L)
+                stopMusicBySleepTimer()
+            }
+
+        }.start()
+    }
+
+     fun cancelSleepTimer() {
+        sleepTimer?.cancel()
+        sleepTimer = null
+        remainingTime = 0L
+        sendTimerUpdateBroadcast(0L)
+    }
+
+    private fun stopMusicBySleepTimer() {
+
+        try {
+            mediaPlayer?.pause()
+
+            stopForeground(false)
+            sendTimerUpdateBroadcast(0)
+            sendBroadcast(Intent(Constants.ACTION_MUSIC_STOPPED_BY_TIMER))
+
+        } catch (e: Exception) {
+            e.printStackTrace()
+        }
+    }
+
+    private fun sendTimerUpdateBroadcast(time: Long) {
+        val intent = Intent(Constants.ACTION_TIMER_UPDATE)
+        intent.putExtra(Constants.EXTRA_REMAINING_TIME, time)
+        sendBroadcast(intent)
+    }
 
 }
 

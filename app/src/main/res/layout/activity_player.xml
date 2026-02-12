@@ -152,14 +152,35 @@
                 android:background="@android:color/transparent"
                 app:tint="@color/bright_yellow"/>
 
-            <ImageButton
-                android:layout_width="48dp"
-                android:layout_height="48dp"
-                android:src="@drawable/timer_icon"
-                android:contentDescription="@string/timer_btn"
-                android:layout_weight="1"
-                android:background="@android:color/transparent"
-                app:tint="@color/bright_yellow"/>
+            <LinearLayout
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:gravity="center"
+                android:layout_weight="1">
+
+                <ImageButton
+                    android:id="@+id/btnSleepTimer"
+                    android:layout_width="48dp"
+                    android:layout_height="48dp"
+                    android:src="@drawable/timer_icon"
+                    android:contentDescription="@string/timer_btn"
+                    android:background="@android:color/transparent"
+                    app:tint="@color/bright_yellow"/>
+
+                <TextView
+                    android:id="@+id/txtTimerStatus"
+                    android:layout_width="wrap_content"
+                    android:layout_height="12dp"
+                    android:text="00:00"
+                    android:textColor="@color/black"
+                    android:textSize="9sp"
+                    android:textStyle="bold"
+                    android:visibility="gone"
+                    android:gravity="center"
+                    android:layout_marginTop="-4dp"/>
+
+            </LinearLayout>
 
             <ImageButton
                 android:id="@+id/shareBtnPA"
