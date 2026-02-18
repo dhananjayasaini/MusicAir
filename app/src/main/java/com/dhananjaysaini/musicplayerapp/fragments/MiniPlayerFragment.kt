@@ -64,7 +64,7 @@ class MiniPlayerFragment : Fragment(R.layout.fragment_mini_player) {
 
             Glide.with(this@MiniPlayerFragment)
                 .load(artUri)
-                .placeholder(R.drawable.itunes)
+                .placeholder(R.drawable.ic_music)
                 .into(binding.miniArt)
         }
     }

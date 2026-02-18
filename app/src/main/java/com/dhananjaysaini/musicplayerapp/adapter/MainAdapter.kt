@@ -31,7 +31,7 @@ class MainAdapter(
 
         Glide.with(context)
             .load(song.artUri)
-            .apply(RequestOptions().placeholder(R.drawable.itunes))
+            .apply(RequestOptions().placeholder(R.drawable.ic_music))
             .into(holder.image)
 
         bindClick(holder, position)

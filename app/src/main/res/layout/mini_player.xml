@@ -24,7 +24,7 @@
                 android:scaleType="centerCrop"
                 android:layout_alignParentStart="true"
                 android:layout_centerVertical="true"
-                android:src="@drawable/itunes"/>
+                android:src="@drawable/ic_music"/>
 
             <TextView
                 android:id="@+id/mini_title"

@@ -31,7 +31,7 @@ class FavouriteAdapter(
 
         Glide.with(context)
             .load(song.artUri)
-            .apply(RequestOptions().placeholder(R.drawable.itunes))
+            .apply(RequestOptions().placeholder(R.drawable.ic_music).centerCrop())
             .into(holder.image)
 
         holder.root.setOnClickListener {

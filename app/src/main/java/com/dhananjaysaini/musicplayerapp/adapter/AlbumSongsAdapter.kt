@@ -10,7 +10,7 @@ import com.dhananjaysaini.musicplayerapp.databinding.MusicViewBinding
 import com.dhananjaysaini.musicplayerapp.model.Music
 import com.dhananjaysaini.musicplayerapp.model.formatDuration
 
-class FolderSongsAdapter(
+class AlbumSongsAdapter(
     context: Context,
     list: ArrayList<Music>
 ) : BaseMusicAdapter(context, list) {
@@ -38,7 +38,8 @@ class FolderSongsAdapter(
             .apply(RequestOptions().placeholder(R.drawable.ic_music).centerCrop())
             .into(holder.image)
 
-        // 🔥 SAME click logic as Main / Player adapters
+        // 🔥 SAME click logic as all other adapters
         bindClick(holder, position)
     }
 }
+

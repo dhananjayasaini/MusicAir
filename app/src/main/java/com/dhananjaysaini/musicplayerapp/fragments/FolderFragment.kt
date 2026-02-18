@@ -35,7 +35,7 @@ class FolderFragment : Fragment(R.layout.fragment_folder) {
 
         folderAdapter = FolderAdapter(mutableListOf())
 
-        val recycler = view.findViewById<RecyclerView>(R.id.folderRecycler)
+        val recycler = binding.folderRecycler
         recycler.layoutManager = LinearLayoutManager(requireContext())
         recycler.adapter = folderAdapter
 

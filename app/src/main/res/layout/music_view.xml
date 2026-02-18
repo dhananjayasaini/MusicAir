@@ -5,6 +5,7 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:padding="8dp"
+    android:background="@color/white"
     android:layout_marginBottom="4dp">
 
     <!-- Song Thumbnail -->
@@ -12,7 +13,7 @@
         android:id="@+id/imageMV"
         android:layout_width="50dp"
         android:layout_height="50dp"
-        android:src="@drawable/itunes"
+        android:src="@drawable/ic_music"
         app:shapeAppearanceOverlay="@style/curved"
         android:layout_alignParentStart="true" />
 

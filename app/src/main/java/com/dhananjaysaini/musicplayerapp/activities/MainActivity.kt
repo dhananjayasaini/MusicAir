@@ -16,6 +16,7 @@ import android.widget.Toast
 import androidx.activity.viewModels
 import androidx.appcompat.app.ActionBarDrawerToggle
 import androidx.appcompat.app.AppCompatActivity
+import androidx.appcompat.app.AppCompatDelegate
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
 import com.dhananjaysaini.musicplayerapp.R
@@ -44,6 +45,8 @@ class MainActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setTheme(R.style.Theme_MusicPlayerApp)
+        AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_NO)
+
         binding = ActivityMainBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
@@ -64,7 +67,7 @@ class MainActivity : AppCompatActivity() {
 
     private fun setupViewPager() {
         binding.viewPager.adapter = ViewPagerAdapter(this)
-        binding.viewPager.offscreenPageLimit = 4
+        binding.viewPager.offscreenPageLimit = 6
 
         TabLayoutMediator(binding.tabLayout, binding.viewPager) { tab, position ->
             tab.text = when (position) {
@@ -72,7 +75,9 @@ class MainActivity : AppCompatActivity() {
                 0 -> "Songs"
                 1 -> "Favourite"
                 2 -> "Playlists"
-                3 -> "Folder"
+                3 -> "Artist"
+                4 -> "Albums"
+                5 -> "Folder"
                 else -> "Songs"
             }
         }.attach()
