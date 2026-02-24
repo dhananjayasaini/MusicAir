@@ -16,8 +16,7 @@ abstract class BaseMusicAdapter(
     var onRemoveFromPlaylist: ((Music) -> Unit)? = null
 
 
-    class MyHolder(binding: MusicViewBinding) :
-        RecyclerView.ViewHolder(binding.root) {
+    class MyHolder(binding: MusicViewBinding) : RecyclerView.ViewHolder(binding.root) {
         val title = binding.songNameMV
         val album = binding.songAlbumMV
         val duration = binding.songDuration

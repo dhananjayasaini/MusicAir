@@ -9,7 +9,7 @@
 
     <!-- Playlist Icon -->
     <ImageView
-        android:id="@+id/artistIcon"
+        android:id="@+id/artistImage"
         android:layout_width="50dp"
         android:layout_height="50dp"
         android:src="@drawable/playlist_icon"
@@ -29,7 +29,7 @@
         android:ellipsize="end"
         android:textColor="@android:color/black"
         android:layout_marginStart="12dp"
-        app:layout_constraintStart_toEndOf="@id/artistIcon"
+        app:layout_constraintStart_toEndOf="@id/artistImage"
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintEnd_toStartOf="@id/artistMenuIcon"/>
 
@@ -43,7 +43,7 @@
         android:layout_marginStart="12dp"
         android:layout_marginTop="4dp"
         android:paddingBottom="4dp"
-        app:layout_constraintStart_toEndOf="@id/artistIcon"
+        app:layout_constraintStart_toEndOf="@id/artistImage"
         app:layout_constraintTop_toBottomOf="@id/artistName"
         app:layout_constraintEnd_toStartOf="@id/artistMenuIcon"/>
 

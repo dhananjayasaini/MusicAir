@@ -10,7 +10,7 @@ import com.dhananjaysaini.musicplayerapp.databinding.MusicViewBinding
 import com.dhananjaysaini.musicplayerapp.model.Music
 import com.dhananjaysaini.musicplayerapp.model.formatDuration
 
-class MainAdapter(
+class AllSongsAdapter(
     context: Context,
     list: ArrayList<Music>
 ) : BaseMusicAdapter(context, list) {

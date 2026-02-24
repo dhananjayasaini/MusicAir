@@ -6,7 +6,6 @@ import androidx.fragment.app.Fragment
 import android.view.View
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.GridLayoutManager
-import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.dhananjaysaini.musicplayerapp.R
 import com.dhananjaysaini.musicplayerapp.activities.AlbumSongsActivity
@@ -32,7 +31,7 @@ class AlbumFragment : Fragment(R.layout.fragment_album) {
             mainViewModel = ViewModelProvider(requireActivity()).get(MainViewModel::class.java)
 
             val recycler = view.findViewById<RecyclerView>(R.id.artistRecycler)
-            recycler.layoutManager = GridLayoutManager(requireContext(), 3)
+            recycler.layoutManager = GridLayoutManager(requireContext(), 2)
             recycler.adapter = albumAdapter
 
             albumAdapter.onItemClick = { artist ->
@@ -46,19 +45,19 @@ class AlbumFragment : Fragment(R.layout.fragment_album) {
 
             mainViewModel.musicListLiveData.observe(viewLifecycleOwner) { songs ->
 
-                val artists = songs
-                    .groupBy { it.album ?: "Unknown Artist" }
+                val albums = songs
+                    .groupBy { it.album ?: "Unknown Album" }
                     .map { (name, list) ->
-                        MusicArtist(name, list.size)
+                        MusicArtist(name, list.size, list.firstOrNull()?.artUri)
                     }
                     .sortedBy { it.name.lowercase() }
 
-                albumAdapter.update(artists)
+                albumAdapter.update(albums)
 
-                binding.totalArtist.text = when (artists.size) {
+                binding.totalArtist.text = when (albums.size) {
                     0 -> "0 Album"
                     1 -> "1 Album"
-                    else ->  "${artists.size} Albums"
+                    else ->  "${albums.size} Albums"
                 }
             }
         }

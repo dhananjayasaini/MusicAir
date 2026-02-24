@@ -1,60 +1,133 @@
 package com.dhananjaysaini.musicplayerapp.fragments
 
+import android.content.Intent
 import android.os.Bundle
-import androidx.fragment.app.Fragment
-import android.view.LayoutInflater
+import android.util.Log
 import android.view.View
-import android.view.ViewGroup
+import androidx.fragment.app.Fragment
+import androidx.lifecycle.ViewModelProvider
+import androidx.recyclerview.widget.LinearLayoutManager
 import com.dhananjaysaini.musicplayerapp.R
+import com.dhananjaysaini.musicplayerapp.activities.PlayerActivity
+import com.dhananjaysaini.musicplayerapp.adapter.HomeAdapter
+import com.dhananjaysaini.musicplayerapp.constants.Constants
+import com.dhananjaysaini.musicplayerapp.dao.PlayHistoryDao
+import com.dhananjaysaini.musicplayerapp.database.MusicDatabase
+import com.dhananjaysaini.musicplayerapp.databinding.FragmentHomeBinding
+import com.dhananjaysaini.musicplayerapp.model.Music
+import com.dhananjaysaini.musicplayerapp.service.MusicService
+import com.dhananjaysaini.musicplayerapp.viewmodel.MainViewModel
 
-// TODO: Rename parameter arguments, choose names that match
-// the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
-private const val ARG_PARAM1 = "param1"
-private const val ARG_PARAM2 = "param2"
+class HomeFragment : Fragment(R.layout.fragment_home) {
 
-/**
- * A simple [Fragment] subclass.
- * Use the [HomeFragment.newInstance] factory method to
- * create an instance of this fragment.
- */
-class HomeFragment : Fragment() {
-    // TODO: Rename and change types of parameters
-    private var param1: String? = null
-    private var param2: String? = null
+    private lateinit var binding: FragmentHomeBinding
+    private lateinit var recentlyPlayedAdapter: HomeAdapter
+    private lateinit var topTracksAdapter: HomeAdapter
+    private lateinit var recentlyAddedAdapter: HomeAdapter
+    private lateinit var mainVM: MainViewModel
+    private lateinit var playHistoryDao: PlayHistoryDao
 
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-        arguments?.let {
-            param1 = it.getString(ARG_PARAM1)
-            param2 = it.getString(ARG_PARAM2)
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
+
+        binding = FragmentHomeBinding.bind(view)
+
+        mainVM = ViewModelProvider(requireActivity()).get(MainViewModel::class.java)
+
+        playHistoryDao = MusicDatabase
+            .getDatabase(requireContext())
+            .playHistoryDao()
+
+        setupRecyclerViews()
+        observeData()
+    }
+
+    private fun setupRecyclerViews() {
+
+        recentlyPlayedAdapter = HomeAdapter(requireContext(), arrayListOf())
+        topTracksAdapter = HomeAdapter(requireContext(), arrayListOf())
+        recentlyAddedAdapter = HomeAdapter(requireContext(), arrayListOf())
+
+        binding.recentRecycler.layoutManager =
+            LinearLayoutManager(
+                requireContext(),
+                LinearLayoutManager.HORIZONTAL, false
+            )
+
+        binding.topRecycler.layoutManager =
+            LinearLayoutManager(
+                requireContext(),
+                LinearLayoutManager.HORIZONTAL, false
+            )
+
+        binding.recentAddedRecycler.layoutManager =
+            LinearLayoutManager(
+                requireContext(),
+                LinearLayoutManager.HORIZONTAL, false
+            )
+
+        binding.recentRecycler.adapter = recentlyPlayedAdapter
+        binding.topRecycler.adapter = topTracksAdapter
+        binding.recentAddedRecycler.adapter = recentlyAddedAdapter
+
+        recentlyPlayedAdapter.onItemClick = { list, position ->
+            playSong(list, position)
+        }
+
+        topTracksAdapter.onItemClick = { list, position ->
+            playSong(list, position)
+        }
+
+        recentlyAddedAdapter.onItemClick = { list, position ->
+            playSong(list, position)
         }
     }
 
-    override fun onCreateView(
-        inflater: LayoutInflater, container: ViewGroup?,
-        savedInstanceState: Bundle?
-    ): View? {
-        // Inflate the layout for this fragment
-        return inflater.inflate(R.layout.fragment_home, container, false)
+    private fun observeData() {
+
+        mainVM.musicListLiveData.observe(viewLifecycleOwner) { allSongs ->
+
+            playHistoryDao.getRecentlyPlayed()
+                .observe(viewLifecycleOwner) { historyList ->
+
+                    val recentSongs = historyList.mapNotNull { history ->
+                        allSongs.find { it.id == history.songId }
+                    }
+
+                    recentlyPlayedAdapter.updateList(ArrayList(recentSongs))
+                }
+
+            playHistoryDao.getTopPlayed()
+                .observe(viewLifecycleOwner) { historyList ->
+
+                    val topSongs = historyList.mapNotNull { history ->
+                        allSongs.find { it.id == history.songId }
+                    }
+
+                    topTracksAdapter.updateList(ArrayList(topSongs))
+                }
+        }
+
+        mainVM.musicListLiveData.observe(viewLifecycleOwner) { allSongs ->
+
+            val recentlyAdded = allSongs
+                .sortedByDescending { it.date }
+                .take(20)
+
+            recentlyAddedAdapter.updateList(ArrayList(recentlyAdded))
+        }
     }
 
-    companion object {
-        /**
-         * Use this factory method to create a new instance of
-         * this fragment using the provided parameters.
-         *
-         * @param param1 Parameter 1.
-         * @param param2 Parameter 2.
-         * @return A new instance of fragment HomeFragment.
-         */
-        // TODO: Rename and change types and number of parameters
-        @JvmStatic
-        fun newInstance(param1: String, param2: String) =
-            HomeFragment().apply {
-                arguments = Bundle().apply {
-                    putString(ARG_PARAM1, param1)
-                    putString(ARG_PARAM2, param2)
-                }
-            }
+    private fun playSong(list: ArrayList<Music>, position: Int) {
+
+        MusicService.playlist = ArrayList(list)
+        MusicService.position = position
+
+        requireContext().startService(
+            Intent(requireContext(), MusicService::class.java)
+                .setAction(Constants.ACTION_PLAY_AT)
+                .putExtra("songPosition", position)
+        )
+        startActivity(Intent(requireContext(), PlayerActivity::class.java))
     }
 }

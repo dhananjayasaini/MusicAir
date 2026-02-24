@@ -17,11 +17,7 @@ class AlbumSongsAdapter(
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): MyHolder {
         return MyHolder(
-            MusicViewBinding.inflate(
-                LayoutInflater.from(context),
-                parent,
-                false
-            )
+            MusicViewBinding.inflate(LayoutInflater.from(context), parent, false)
         )
     }
 

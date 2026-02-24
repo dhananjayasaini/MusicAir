@@ -13,7 +13,7 @@ import androidx.fragment.app.activityViewModels
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.dhananjaysaini.musicplayerapp.activities.PlayerActivity
-import com.dhananjaysaini.musicplayerapp.adapter.MainAdapter
+import com.dhananjaysaini.musicplayerapp.adapter.AllSongsAdapter
 import com.dhananjaysaini.musicplayerapp.constants.Constants
 import com.dhananjaysaini.musicplayerapp.databinding.FragmentAllSongsBinding
 import com.dhananjaysaini.musicplayerapp.model.Music
@@ -24,7 +24,7 @@ import com.dhananjaysaini.musicplayerapp.viewmodel.PlaylistViewModel
 class AllSongsFragment : Fragment() {
 
     private lateinit var binding: FragmentAllSongsBinding
-    private lateinit var adapter: MainAdapter
+    private lateinit var adapter: AllSongsAdapter
 
     private val mainViewModel: MainViewModel by activityViewModels()
 
@@ -47,7 +47,7 @@ class AllSongsFragment : Fragment() {
     }
 
     private fun setupRecyclerView() {
-        adapter = MainAdapter(requireContext(), ArrayList())
+        adapter = AllSongsAdapter(requireContext(), ArrayList())
 
         binding.musicRV.apply {
             layoutManager = LinearLayoutManager(requireContext())

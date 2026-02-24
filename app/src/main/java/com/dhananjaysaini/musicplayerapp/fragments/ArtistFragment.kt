@@ -51,11 +51,11 @@ class ArtistFragment : Fragment(R.layout.fragment_artist) {
             val artists = songs
                 .groupBy { it.artist ?: "Unknown Artist" }
                 .map { (name, list) ->
-                    MusicArtist(name, list.size)
+                    MusicArtist(name, list.size, list.firstOrNull()?.artUri)
                 }
                 .sortedBy { it.name.lowercase() }
 
-            artistAdapter.update(artists)
+            artistAdapter.updateList(artists)
 
             binding.totalArtist.text = when (artists.size) {
                 0 -> "0 Artist"
@@ -65,15 +65,4 @@ class ArtistFragment : Fragment(R.layout.fragment_artist) {
         }
     }
 
-//        artistViewModel.artists.observe(viewLifecycleOwner) {
-//            if (it != null) {
-//                artistAdapter.update(it)
-//            }
-//        }
-//
-//       val av = artistViewModel.loadArtists()
-//
-//        Log.d("artist1", "artistAdapter1 " +av)
-//
-//    }
 }

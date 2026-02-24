@@ -76,9 +76,9 @@ class FolderSongsFragment : Fragment(R.layout.fragment_folder_songs) {
         folderSongsAdapter.updateList(ArrayList(songs))
 
         binding.folderSongCount.text = when (songs.size) {
-            0 -> "No songs"
-            1 -> "1 song"
-            else -> "${songs.size} songs"
+            0 -> "No Song"
+            1 -> "1 Song"
+            else -> "${songs.size} Songs"
         }
     }
 

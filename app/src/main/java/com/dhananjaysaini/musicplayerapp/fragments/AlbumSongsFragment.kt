@@ -78,9 +78,9 @@ class AlbumSongsFragment : Fragment(R.layout.fragment_album_songs) {
         albumSongsAdapter.updateList(ArrayList(songs))
 
         binding.albumSongCount.text = when (songs.size) {
-            0 -> "No songs"
-            1 -> "1 song"
-            else -> "${songs.size} songs"
+            0 -> "No Song"
+            1 -> "1 Song"
+            else -> "${songs.size} Songs"
         }
     }
 }

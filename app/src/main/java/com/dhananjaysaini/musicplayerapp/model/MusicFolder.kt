@@ -1,6 +1,6 @@
 package com.dhananjaysaini.musicplayerapp.model
 
-data class MusicFolder(
+data class SongFolder(
     val name: String,
     val path: String,
     val songCount: Int

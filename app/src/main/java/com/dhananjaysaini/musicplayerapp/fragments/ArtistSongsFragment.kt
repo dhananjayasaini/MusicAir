@@ -74,9 +74,9 @@ class ArtistSongsFragment : Fragment(R.layout.fragment_artist_songs) {
         artistSongsAdapter.updateList(ArrayList(songs))
 
         binding.artistSongCount.text = when (songs.size) {
-            0 -> "No songs"
-            1 -> "1 song"
-            else -> "${songs.size} songs"
+            0 -> "No Song"
+            1 -> "1 Song"
+            else -> "${songs.size} Songs"
         }
     }
 }

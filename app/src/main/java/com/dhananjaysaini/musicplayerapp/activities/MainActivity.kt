@@ -67,17 +67,19 @@ class MainActivity : AppCompatActivity() {
 
     private fun setupViewPager() {
         binding.viewPager.adapter = ViewPagerAdapter(this)
-        binding.viewPager.offscreenPageLimit = 6
+        binding.viewPager.offscreenPageLimit = 7
+
+        binding.viewPager.setCurrentItem(1, false)
 
         TabLayoutMediator(binding.tabLayout, binding.viewPager) { tab, position ->
             tab.text = when (position) {
-           //     0 -> "Home"
-                0 -> "Songs"
-                1 -> "Favourite"
-                2 -> "Playlists"
-                3 -> "Artist"
-                4 -> "Albums"
-                5 -> "Folder"
+                0 -> "Home"
+                1 -> "Songs"
+                2 -> "Favourite"
+                3 -> "Playlists"
+                4 -> "Artist"
+                5 -> "Albums"
+                6 -> "Folder"
                 else -> "Songs"
             }
         }.attach()
@@ -87,6 +89,7 @@ class MainActivity : AppCompatActivity() {
 
     private fun observeViewModel() {
         mainViewModel.error.observe(this) {
+
             Toast.makeText(this, it, Toast.LENGTH_SHORT).show()
         }
     }
@@ -175,6 +178,36 @@ class MainActivity : AppCompatActivity() {
         }
     }
 
+//
+//    override fun onRequestPermissionsResult(
+//        requestCode: Int,
+//        permissions: Array<out String>,
+//        grantResults: IntArray
+//    ) {
+//        super.onRequestPermissionsResult(requestCode, permissions, grantResults)
+//
+//        if (requestCode == 500) {
+//
+//            var audioPermissionGranted = false
+//
+//            for (i in permissions.indices) {
+//                if (
+//                    permissions[i] == Manifest.permission.READ_MEDIA_AUDIO ||
+//                    permissions[i] == Manifest.permission.READ_EXTERNAL_STORAGE
+//                ) {
+//                    audioPermissionGranted =
+//                        grantResults[i] == PackageManager.PERMISSION_GRANTED
+//                }
+//            }
+//
+//            if (audioPermissionGranted) {
+//                mainViewModel.loadMusic()
+//            } else {
+//                toast("Storage Permission Denied")
+//            }
+//        }
+//    }
+
     private fun checkAudioPermission() {
         if (checkSelfPermission(Manifest.permission.RECORD_AUDIO)
             != PackageManager.PERMISSION_GRANTED
@@ -197,8 +230,6 @@ class MainActivity : AppCompatActivity() {
     }
 
      private fun mainSongsVM(){
-//        val mainViewModel = ViewModelProvider(this).get(MainViewModel::class.java)
-//        mainViewModel.loadMusic()
 
          mainViewModel.musicListLiveData.observe(this) { songs ->
              MusicService.allSongs = songs

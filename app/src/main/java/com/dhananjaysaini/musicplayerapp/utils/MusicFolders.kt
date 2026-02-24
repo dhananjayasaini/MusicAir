@@ -3,10 +3,10 @@ package com.dhananjaysaini.musicplayerapp.utils
 import android.content.Context
 import android.provider.MediaStore
 import com.dhananjaysaini.musicplayerapp.model.Music
-import com.dhananjaysaini.musicplayerapp.model.MusicFolder
+import com.dhananjaysaini.musicplayerapp.model.SongFolder
 import java.io.File
 
-fun getMusicFolders(context: Context): List<MusicFolder> {
+fun getMusicFolders(context: Context): List<SongFolder> {
 
     val folderMap = HashMap<String, MutableList<Music>>()
 
@@ -44,7 +44,8 @@ fun getMusicFolders(context: Context): List<MusicFolder> {
                 duration = 0L,
                 artUri = null.toString(),
                 artist = "",
-                id = ""
+                id = "",
+                date = 0L
             )
 
             folderMap.getOrPut(folderPath) {
@@ -54,7 +55,7 @@ fun getMusicFolders(context: Context): List<MusicFolder> {
     }
 
     return folderMap.map { (path, songs) ->
-        MusicFolder(
+        SongFolder(
             name = File(path).name,
             path = path,
             songCount = songs.size

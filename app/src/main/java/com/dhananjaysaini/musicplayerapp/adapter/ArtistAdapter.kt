@@ -3,8 +3,11 @@ package com.dhananjaysaini.musicplayerapp.adapter
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.ImageView
 import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
+import com.bumptech.glide.Glide
+import com.bumptech.glide.request.RequestOptions
 import com.dhananjaysaini.musicplayerapp.R
 import com.dhananjaysaini.musicplayerapp.model.MusicArtist
 
@@ -17,6 +20,8 @@ class ArtistAdapter(
     class Holder(view: View) : RecyclerView.ViewHolder(view) {
         val name: TextView = view.findViewById(R.id.artistName)
         val count: TextView = view.findViewById(R.id.artistCount)
+        val artistImage: ImageView = itemView.findViewById(R.id.artistImage)
+
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): Holder {
@@ -35,6 +40,12 @@ class ArtistAdapter(
             else
                 "${artist.songCount} songs"
 
+        Glide.with(holder.itemView.context)
+            .load(artist.artUri)
+            .apply(RequestOptions().placeholder(R.drawable.playlist_icon).centerCrop())
+            .into(holder.artistImage)
+
+
         holder.itemView.setOnClickListener {
             onItemClick?.invoke(artist)
         }
@@ -42,7 +53,7 @@ class ArtistAdapter(
 
     override fun getItemCount() = list.size
 
-    fun update(newList: List<MusicArtist>) {
+    fun updateList(newList: List<MusicArtist>) {
         list.clear()
         list.addAll(newList)
         notifyDataSetChanged()

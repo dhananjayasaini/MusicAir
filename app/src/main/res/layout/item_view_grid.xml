@@ -22,30 +22,28 @@
             android:layout_height="match_parent">
 
             <ImageView
-                android:id="@+id/itemIcon"
+                android:id="@+id/albumImage"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:src="@drawable/ic_music_folder"
-                android:background="#D9D9D9"/>
+                android:background="@color/bright_yellow"/>
 
-            <!-- Song Count -->
             <TextView
-                android:id="@+id/itemCount"
+                android:id="@+id/albumCount"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="18 songs"
-                android:textColor="@android:color/white"
+                android:text="0 song"
                 android:textSize="16sp"
+                android:textColor="@android:color/white"
                 android:layout_gravity="bottom|start"
-                android:padding="10dp"/>
+                android:padding="4dp"/>
 
         </FrameLayout>
 
     </androidx.cardview.widget.CardView>
 
-    <!-- Folder Name -->
     <TextView
-        android:id="@+id/itemName"
+        android:id="@+id/albumName"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:text="Item Name"
@@ -59,18 +57,16 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toStartOf="@id/itemMenu"/>
 
-    <!-- Menu Button -->
     <ImageView
         android:id="@+id/itemMenu"
         android:layout_width="28dp"
         android:layout_height="28dp"
         android:src="@drawable/ic_dots"
-        app:layout_constraintTop_toTopOf="@id/itemName"
+        app:layout_constraintTop_toTopOf="@id/albumName"
         app:layout_constraintBottom_toBottomOf="@id/itemSubName"
         app:layout_constraintEnd_toEndOf="parent"
         app:tint="#808080" />
 
-    <!-- Unknown Artist -->
     <TextView
         android:id="@+id/itemSubName"
         android:layout_width="0dp"
@@ -80,8 +76,8 @@
         android:ellipsize="end"
         android:textSize="12sp"
         android:textColor="#888888"
-        app:layout_constraintTop_toBottomOf="@id/itemName"
-        app:layout_constraintStart_toStartOf="@id/itemName"
-        app:layout_constraintEnd_toEndOf="@id/itemName"/>
+        app:layout_constraintTop_toBottomOf="@id/albumName"
+        app:layout_constraintStart_toStartOf="@id/albumName"
+        app:layout_constraintEnd_toEndOf="@id/albumName"/>
 
 </androidx.constraintlayout.widget.ConstraintLayout>

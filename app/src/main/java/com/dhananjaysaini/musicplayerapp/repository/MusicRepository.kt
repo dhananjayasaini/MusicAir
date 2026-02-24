@@ -3,6 +3,7 @@ package com.dhananjaysaini.musicplayerapp.repository
 import android.content.Context
 import android.net.Uri
 import android.provider.MediaStore
+import android.util.Log
 import com.dhananjaysaini.musicplayerapp.model.Music
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
@@ -21,7 +22,8 @@ class MusicRepository(private val context: Context) {
             MediaStore.Audio.Media.ARTIST,
             MediaStore.Audio.Media.DURATION,
             MediaStore.Audio.Media.DATA,
-            MediaStore.Audio.Media.ALBUM_ID
+            MediaStore.Audio.Media.ALBUM_ID,
+            MediaStore.Audio.Media.DATE_ADDED
         )
 
         val selection = MediaStore.Audio.Media.IS_MUSIC + "!= 0"
@@ -33,31 +35,43 @@ class MusicRepository(private val context: Context) {
         )
 
         cursor?.use {
-            if (cursor.moveToFirst()) {
-                do {
-                    val id = cursor.getString(0)
-                    val title = cursor.getString(1)
-                    val album = cursor.getString(2)
-                    val artist = cursor.getString(3)
-                    val duration = cursor.getLong(4)
-                    val path = cursor.getString(5)
-                    val albumId = cursor.getLong(6).toString()
 
-                    val artUri = Uri
-                        .parse("content://media/external/audio/albumart/$albumId")
-                        .toString()
+            while (cursor.moveToNext()) {
 
-                    val file = File(path)
-                    if (file.exists()) {
-                        audioList.add(
-                            Music(id, title, album, artist, duration, path, artUri)
-                        )
-                    }
+                val idColumn = cursor.getColumnIndexOrThrow(MediaStore.Audio.Media._ID)
+                val titleColumn = cursor.getColumnIndexOrThrow(MediaStore.Audio.Media.TITLE)
+                val albumColumn = cursor.getColumnIndexOrThrow(MediaStore.Audio.Media.ALBUM)
+                val artistColumn = cursor.getColumnIndexOrThrow(MediaStore.Audio.Media.ARTIST)
+                val durationColumn = cursor.getColumnIndexOrThrow(MediaStore.Audio.Media.DURATION)
+                val pathColumn = cursor.getColumnIndexOrThrow(MediaStore.Audio.Media.DATA)
+                val albumIdColumn = cursor.getColumnIndexOrThrow(MediaStore.Audio.Media.ALBUM_ID)
+                val dateAddedColumn = cursor.getColumnIndexOrThrow(MediaStore.Audio.Media.DATE_ADDED)
 
-                } while (cursor.moveToNext())
+                val id = cursor.getString(idColumn)
+                val title = cursor.getString(titleColumn)
+                val album = cursor.getString(albumColumn)
+                val artist = cursor.getString(artistColumn)
+                val duration = cursor.getLong(durationColumn)
+                val path = cursor.getString(pathColumn)
+                val albumId = cursor.getLong(albumIdColumn).toString()
+
+                // MediaStore stores in seconds → convert to millis
+                val dateAddedSeconds = cursor.getLong(dateAddedColumn)
+                val dateAddedMillis = dateAddedSeconds * 1000
+                Log.d("RecentSongs", "Date Added: $dateAddedMillis")
+
+                val artUri = Uri
+                    .parse("content://media/external/audio/albumart/$albumId")
+                    .toString()
+
+                val file = File(path)
+                if (file.exists()) {
+                    audioList.add(
+                        Music(id, title, album, artist, duration, path, artUri, dateAddedMillis)
+                    )
+                }
             }
         }
-
         audioList
     }
 }

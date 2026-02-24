@@ -6,13 +6,13 @@ import android.view.ViewGroup
 import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 import com.dhananjaysaini.musicplayerapp.R
-import com.dhananjaysaini.musicplayerapp.model.MusicFolder
+import com.dhananjaysaini.musicplayerapp.model.SongFolder
 
 class FolderAdapter(
-    private val list: MutableList<MusicFolder>
+    private val list: MutableList<SongFolder>
 ) : RecyclerView.Adapter<FolderAdapter.Holder>() {
 
-    var onItemClick: ((MusicFolder) -> Unit)? = null
+    var onItemClick: ((SongFolder) -> Unit)? = null
 
     class Holder(view: View) : RecyclerView.ViewHolder(view) {
         val name: TextView = view.findViewById(R.id.folderName)
@@ -43,7 +43,7 @@ class FolderAdapter(
 
     override fun getItemCount() = list.size
 
-    fun update(newList: List<MusicFolder>) {
+    fun update(newList: List<SongFolder>) {
         list.clear()
         list.addAll(newList)
         notifyDataSetChanged()

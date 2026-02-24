@@ -25,7 +25,7 @@
             android:id="@+id/totalArtist"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="0 Artist"
+            android:text="0 Album"
             android:textColor="@android:color/black"
             android:textSize="18sp"
             android:textStyle="bold"/>

@@ -18,6 +18,7 @@
             android:text="0 Song"
             android:textColor="@color/black"
             android:padding="12dp"
+            android:textSize="18sp"
             android:textStyle="bold"/>
 
         <androidx.recyclerview.widget.RecyclerView

@@ -20,7 +20,13 @@ import androidx.core.net.toUri
 import com.dhananjaysaini.musicplayerapp.R
 import com.dhananjaysaini.musicplayerapp.activities.PlayerActivity
 import com.dhananjaysaini.musicplayerapp.constants.Constants
+import com.dhananjaysaini.musicplayerapp.database.MusicDatabase
 import com.dhananjaysaini.musicplayerapp.model.Music
+import com.dhananjaysaini.musicplayerapp.model.SongFolder
+import com.dhananjaysaini.musicplayerapp.repository.PlayHistoryRepository
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
 import java.io.IOException
 
 class MusicService : Service() {
@@ -30,8 +36,8 @@ class MusicService : Service() {
         var playlist: ArrayList<Music> = arrayListOf()
         var position: Int = 0
         var allSongs: List<Music> = emptyList()
-
         var musicService: MusicService? = null
+        lateinit var song: Music
     }
 
     private lateinit var receiver: BroadcastReceiver
@@ -101,6 +107,15 @@ class MusicService : Service() {
 //            isServiceStarted = true
 //        }
 
+        song = Music( path = "",
+            title = "",
+            album = "",
+            duration = 0L,
+            artUri = null.toString(),
+            artist = "",
+            id = "",
+            date = 0L)
+
         if (playlist.isEmpty()) {
             return START_NOT_STICKY
         }
@@ -153,6 +168,8 @@ class MusicService : Service() {
 
                     startProgressUpdates()
                     notifyUIAndUpdateNotification()
+
+                    updatePlayHistory(song)
                 }
             }
 
@@ -269,20 +286,6 @@ class MusicService : Service() {
             mp.start()
 
             sendBroadcast(Intent("SHOW_MINI_PLAYER"))
-        //    sendBroadcast(Intent("UPDATE_UI"))
-          //  sendBroadcast(Intent("REQUEST_UI_UPDATE"))
-
-// <-- ADD HERE
-
-//
-//            if (startForegroundNow) {
-//                // Ensure we are in foreground when playback begins
-//                showNotification(isPlaying = true)
-//            } else {
-//                // Update the existing foreground notification
-//                showNotification(mp.isPlaying)
-//            }
-
 
 
             if (!isServiceStarted) {
@@ -298,6 +301,8 @@ class MusicService : Service() {
         } catch (e: Exception) {
             Log.e("MusicService", "playAt error: ${e.message}", e)
         }
+
+        updatePlayHistory(playlist[index])
     }
 
     @RequiresApi(Build.VERSION_CODES.P)
@@ -578,6 +583,21 @@ class MusicService : Service() {
         intent.putExtra(Constants.EXTRA_REMAINING_TIME, time)
         sendBroadcast(intent)
     }
+
+     fun updatePlayHistory(song: Music) {
+
+        CoroutineScope(Dispatchers.IO).launch {
+
+            val dao = MusicDatabase
+                .getDatabase(applicationContext)
+                .playHistoryDao()
+
+            val repo = PlayHistoryRepository(dao)
+
+            repo.updatePlay(song.id)
+        }
+    }
+
 
 }
 
