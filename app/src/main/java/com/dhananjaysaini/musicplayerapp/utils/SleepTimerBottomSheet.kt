@@ -9,7 +9,6 @@ import com.dhananjaysaini.musicplayerapp.databinding.BottomSheetSleepTimerBindin
 import com.dhananjaysaini.musicplayerapp.service.MusicService
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment
 
-
 class SleepTimerBottomSheet : BottomSheetDialogFragment() {
 
     private lateinit var binding: BottomSheetSleepTimerBinding

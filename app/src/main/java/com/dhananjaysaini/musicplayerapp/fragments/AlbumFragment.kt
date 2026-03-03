@@ -25,7 +25,6 @@ class AlbumFragment : Fragment(R.layout.fragment_album) {
 
             binding = FragmentAlbumBinding.bind(view)
 
-
             albumAdapter = AlbumAdapter(mutableListOf())
 
             mainViewModel = ViewModelProvider(requireActivity()).get(MainViewModel::class.java)

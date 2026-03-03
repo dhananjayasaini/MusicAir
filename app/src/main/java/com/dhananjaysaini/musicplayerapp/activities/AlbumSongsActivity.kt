@@ -3,12 +3,8 @@ package com.dhananjaysaini.musicplayerapp.activities
 import android.os.Bundle
 import androidx.activity.enableEdgeToEdge
 import androidx.appcompat.app.AppCompatActivity
-import androidx.core.view.ViewCompat
-import androidx.core.view.WindowInsetsCompat
 import com.dhananjaysaini.musicplayerapp.R
 import com.dhananjaysaini.musicplayerapp.fragments.AlbumSongsFragment
-import com.dhananjaysaini.musicplayerapp.fragments.AllSongsFragment
-import com.dhananjaysaini.musicplayerapp.fragments.ArtistSongsFragment
 
 class AlbumSongsActivity : AppCompatActivity()  {
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -21,10 +17,10 @@ class AlbumSongsActivity : AppCompatActivity()  {
             val fragment = AlbumSongsFragment().apply {
                 arguments = intent.extras
             }
-
             supportFragmentManager.beginTransaction()
                 .replace(R.id.albumSongsContainer, fragment)
                 .commit()
         }
     }
+
 }

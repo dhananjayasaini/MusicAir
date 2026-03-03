@@ -13,16 +13,19 @@ import android.widget.Toast
 import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.FileProvider
+import androidx.core.view.WindowInsetsControllerCompat
 import androidx.lifecycle.ViewModelProvider
 import com.bumptech.glide.Glide
 import com.bumptech.glide.request.RequestOptions
 import com.dhananjaysaini.musicplayerapp.R
 import com.dhananjaysaini.musicplayerapp.constants.Constants
 import com.dhananjaysaini.musicplayerapp.databinding.ActivityPlayerBinding
+import com.dhananjaysaini.musicplayerapp.utils.ThemeSelectionBottomSheet
 import com.dhananjaysaini.musicplayerapp.model.formatDuration
 import com.dhananjaysaini.musicplayerapp.service.MusicService
 import com.dhananjaysaini.musicplayerapp.utils.EqualizerManager
 import com.dhananjaysaini.musicplayerapp.utils.SleepTimerBottomSheet
+import com.dhananjaysaini.musicplayerapp.utils.ThemeManager
 import com.dhananjaysaini.musicplayerapp.utils.VoiceControlManager
 import com.dhananjaysaini.musicplayerapp.viewmodel.FavouriteViewModel
 import com.dhananjaysaini.musicplayerapp.viewmodel.PlayerViewModel
@@ -43,7 +46,10 @@ class PlayerActivity : AppCompatActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setTheme(R.style.Theme_MusicPlayerApp)
+     //   setTheme(R.style.Theme_MusicPlayerApp)
+
+        val controller = WindowInsetsControllerCompat(window, window.decorView)
+        controller.isAppearanceLightStatusBars = true  // dark icons
 
         musicService = MusicService()
 
@@ -53,6 +59,15 @@ class PlayerActivity : AppCompatActivity() {
         if (MusicService.playlist.isEmpty()) {
             finish()
             return
+        }
+
+        ThemeManager.applyThemeToActivity(this)
+
+        binding.themeBtnPA.setOnClickListener{
+            ThemeManager.saveTheme(this, 0)
+
+            val themeSheet = ThemeSelectionBottomSheet()
+            themeSheet.show(supportFragmentManager, "ThemeSheet")
         }
 
         observeViewModel()
@@ -88,8 +103,8 @@ class PlayerActivity : AppCompatActivity() {
             binding.seekBarPA.max = state.durationMs
 
             binding.playPauseBtnPA.setImageResource(
-                if (state.isPlaying) R.drawable.pause_icon
-                else R.drawable.play_icon
+                if (state.isPlaying) R.drawable.ic_pause
+                else R.drawable.ic_play
             )
 
             binding.favouriteBtnPA.setImageResource(
@@ -182,6 +197,7 @@ class PlayerActivity : AppCompatActivity() {
 
     override fun onResume() {
         super.onResume()
+        ThemeManager.applyThemeToActivity(this)
 
         timerReceiver = object : BroadcastReceiver() {
             override fun onReceive(context: Context?, intent: Intent?) {
@@ -195,12 +211,12 @@ class PlayerActivity : AppCompatActivity() {
                         binding.txtTimerStatus.visibility = View.VISIBLE
                         binding.txtTimerStatus.text = formatTime(currentRemainingTime)
                     } else {
-                        binding.playPauseBtnPA.setImageResource(R.drawable.play_icon)
+                        binding.playPauseBtnPA.setImageResource(R.drawable.ic_play)
                         binding.txtTimerStatus.visibility = View.GONE
                         binding.txtTimerStatus.text = "Timer: Off"
                     }
                 } else if (intent?.action == Constants.ACTION_MUSIC_STOPPED_BY_TIMER) {
-                    binding.playPauseBtnPA.setImageResource(R.drawable.play_icon)
+                    binding.playPauseBtnPA.setImageResource(R.drawable.ic_play)
 
                 }
             }

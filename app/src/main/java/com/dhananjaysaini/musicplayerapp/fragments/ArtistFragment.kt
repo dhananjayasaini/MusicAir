@@ -13,6 +13,7 @@ import com.dhananjaysaini.musicplayerapp.activities.ArtistSongsActivity
 import com.dhananjaysaini.musicplayerapp.adapter.ArtistAdapter
 import com.dhananjaysaini.musicplayerapp.databinding.FragmentArtistBinding
 import com.dhananjaysaini.musicplayerapp.model.MusicArtist
+import com.dhananjaysaini.musicplayerapp.utils.ThemeManager
 import com.dhananjaysaini.musicplayerapp.viewmodel.MainViewModel
 
 class ArtistFragment : Fragment(R.layout.fragment_artist) {
@@ -63,6 +64,11 @@ class ArtistFragment : Fragment(R.layout.fragment_artist) {
                 else ->  "${artists.size} Artists"
             }
         }
+    }
+
+    override fun onResume() {
+        super.onResume()
+        ThemeManager.applyThemeToActivity(requireActivity())
     }
 
 }

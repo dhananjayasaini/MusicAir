@@ -8,6 +8,7 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.dhananjaysaini.musicplayerapp.R
+import com.dhananjaysaini.musicplayerapp.activities.AlbumSongsActivity
 import com.dhananjaysaini.musicplayerapp.activities.PlayerActivity
 import com.dhananjaysaini.musicplayerapp.adapter.AlbumSongsAdapter
 import com.dhananjaysaini.musicplayerapp.adapter.ArtistSongsAdapter
@@ -17,6 +18,7 @@ import com.dhananjaysaini.musicplayerapp.databinding.FragmentAlbumSongsBinding
 import com.dhananjaysaini.musicplayerapp.databinding.FragmentArtistSongsBinding
 import com.dhananjaysaini.musicplayerapp.model.Music
 import com.dhananjaysaini.musicplayerapp.service.MusicService
+import com.dhananjaysaini.musicplayerapp.utils.ThemeManager
 
 class AlbumSongsFragment : Fragment(R.layout.fragment_album_songs) {
 
@@ -38,6 +40,8 @@ class AlbumSongsFragment : Fragment(R.layout.fragment_album_songs) {
                 it.album == albumName
             }
         )
+
+        ThemeManager.applyThemeToActivity(requireActivity())
 
         albumSongsAdapter = AlbumSongsAdapter(requireContext(), songs)
 
@@ -82,5 +86,9 @@ class AlbumSongsFragment : Fragment(R.layout.fragment_album_songs) {
             1 -> "1 Song"
             else -> "${songs.size} Songs"
         }
+    }
+    override fun onResume() {
+        super.onResume()
+        ThemeManager.applyThemeToActivity(requireActivity())
     }
 }

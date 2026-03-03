@@ -58,8 +58,8 @@ class MiniPlayerFragment : Fragment(R.layout.fragment_mini_player) {
             binding.miniArtist.text = artist
 
             binding.miniPlayPause.setImageResource(
-                if (isPlaying) R.drawable.pause_icon
-                else R.drawable.play_icon
+                if (isPlaying) R.drawable.ic_pause
+                else R.drawable.ic_play
             )
 
             Glide.with(this@MiniPlayerFragment)

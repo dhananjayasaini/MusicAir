@@ -5,6 +5,10 @@
     android:layout_height="match_parent"
     tools:context=".fragments.AllSongsFragment">
 
+    <androidx.core.widget.NestedScrollView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
     <LinearLayout
         android:orientation="vertical"
         android:layout_width="match_parent"
@@ -26,5 +30,7 @@
             android:layout_width="match_parent"
             android:layout_height="match_parent"/>
     </LinearLayout>
+
+    </androidx.core.widget.NestedScrollView>
 
 </FrameLayout>

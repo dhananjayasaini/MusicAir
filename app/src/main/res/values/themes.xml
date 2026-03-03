@@ -9,9 +9,9 @@
         <item name="android:windowBackground">@drawable/splash_screen</item>
     </style>
 
-        <style name="Theme.MusicPlayerApp" parent="Theme.MaterialComponents.DayNight.DarkActionBar">
+        <style name="Theme.MusicPlayerApp" parent="Theme.Material3.DayNight.NoActionBar">
             <!-- Primary and background colors -->
-            <item name="colorPrimary">@color/bright_yellow</item>
+            <item name="colorPrimary">@color/white</item>
             <item name="colorPrimaryVariant">@color/bright_yellow</item>
             <item name="colorOnPrimary">@color/white</item>
 
@@ -22,10 +22,10 @@
             <item name="colorOnSecondary">@color/white</item>
 
             <!-- Status bar -->
-            <item name="android:statusBarColor">@color/white</item>
+<!--            <item name="android:statusBarColor">@color/white</item>-->
 
             <!-- Customize your theme further here -->
-            <item name="android:windowBackground">@color/white</item>
+<!--            <item name="android:windowBackground">@color/white</item>-->
         </style>
 
 </resources>

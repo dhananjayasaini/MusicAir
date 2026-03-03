@@ -352,7 +352,7 @@ class MusicService : Service() {
     @RequiresApi(Build.VERSION_CODES.P)
     private fun buildNotification(isPlaying: Boolean): Notification {
         val currentPosition = playlist.getOrNull(position)
-        val playPauseIcon = if (isPlaying) R.drawable.pause_icon else R.drawable.play_icon
+        val playPauseIcon = if (isPlaying) R.drawable.ic_pause else R.drawable.ic_play
         val playPauseAction = if (isPlaying) Constants.ACTION_PAUSE else Constants.ACTION_PLAY
 
         val playerIntent = Intent(this, PlayerActivity::class.java).apply {

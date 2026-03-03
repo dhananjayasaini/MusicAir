@@ -6,84 +6,74 @@
     android:id="@+id/drawer_btn"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:orientation="horizontal"
+    android:fitsSystemWindows="false"
     tools:context=".activities.MainActivity">
 
-    <!-- MAIN CONTENT AREA -->
+    <!-- ================= MAIN CONTENT ================= -->
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:orientation="vertical">
 
-<!--        <include-->
-<!--            android:id="@+id/viewPagerInclude"-->
-<!--            android:layout_width="match_parent"-->
-<!--            android:layout_height="wrap_content"-->
-<!--            layout="@layout/view_pager" />-->
-
-        <com.google.android.material.tabs.TabLayout
-            android:id="@+id/tabLayout"
+        <!-- ===== TOOLBAR WITH TABLAYOUT INSIDE ===== -->
+        <com.google.android.material.appbar.AppBarLayout
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            app:tabMode="scrollable"
-            app:tabGravity="start"
-            app:tabIndicatorFullWidth="false"
-            app:tabRippleColor="@null"/>
+            android:layout_height="wrap_content">
 
-        <!-- VIEWPAGER -->
+            <androidx.appcompat.widget.Toolbar
+                android:id="@+id/toolbar"
+                android:layout_width="match_parent"
+                android:layout_height="?attr/actionBarSize"
+                android:background="?attr/colorSurface"
+                android:theme="@style/ThemeOverlay.Material3.ActionBar"
+                app:title=""
+                app:contentInsetStart="0dp" />
+
+            <com.google.android.material.tabs.TabLayout
+                android:id="@+id/tabLayout"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                app:tabGravity="start"
+                app:tabMinWidth="0dp"
+                app:tabPaddingStart="0dp"
+                app:tabPaddingEnd="0dp"
+                app:tabPaddingTop="0dp"
+                app:tabPaddingBottom="0dp"
+                android:background="?attr/colorSurface"
+                app:tabTextColor="?attr/colorOnSurface"
+                app:tabSelectedTextColor="?attr/colorPrimary"
+                app:tabIndicatorColor="?attr/colorPrimary"
+                app:tabIndicatorFullWidth="false"
+                app:tabRippleColor="@null"
+                app:tabMode="scrollable" />
+        </com.google.android.material.appbar.AppBarLayout>
+
+        <!-- ===== VIEWPAGER ===== -->
         <androidx.viewpager2.widget.ViewPager2
             android:id="@+id/viewPager"
             android:layout_width="match_parent"
             android:layout_height="0dp"
             android:layout_weight="1"/>
 
-
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:orientation="horizontal"
-            android:gravity="center_vertical"
-            android:paddingHorizontal="8dp">
-
-<!--            <TextView-->
-<!--                android:id="@+id/totalSongs"-->
-<!--                android:layout_width="0dp"-->
-<!--                android:layout_height="wrap_content"-->
-<!--                android:layout_weight="1"-->
-<!--                android:text="@string/total_songs"-->
-<!--                android:textSize="20sp"-->
-<!--                android:textStyle="bold"-->
-<!--                android:textColor="@color/black" />-->
-
-
-<!--            <include-->
-<!--                android:id="@+id/voice_control_ma"-->
-<!--                android:layout_width="wrap_content"-->
-<!--                android:layout_height="wrap_content"-->
-<!--                layout="@layout/voice_control" />-->
-
-        </LinearLayout>
-
-
-        <!-- Mini Player at Bottom -->
+        <!-- ===== MINI PLAYER ===== -->
         <FrameLayout
             android:id="@+id/mini_player_container"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:background="@color/white"
             android:visibility="gone"
             android:elevation="8dp" />
 
     </LinearLayout>
 
-
-
-    <!-- Navigation Drawer -->
+    <!-- ================= NAVIGATION DRAWER ================= -->
     <com.google.android.material.navigation.NavigationView
         android:id="@+id/navView"
         android:layout_width="wrap_content"
         android:layout_height="match_parent"
         android:layout_gravity="start"
+        android:background="?attr/colorSurface"
+        app:itemTextColor="?attr/colorOnSurface"
+        app:itemIconTint="?attr/colorOnSurface"
         app:headerLayout="@layout/navigation_header"
         app:menu="@menu/navigation_menu" />
 

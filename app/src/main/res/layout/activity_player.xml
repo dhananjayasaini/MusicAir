@@ -5,7 +5,6 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="horizontal"
-    android:background="#ffffff"
     tools:context=".activities.PlayerActivity">
 
     <LinearLayout
@@ -51,6 +50,19 @@
             android:layout_marginEnd="5dp"
             android:contentDescription="@string/Favourites_btn"
             app:tint="@color/bright_yellow" />
+
+        <ImageButton
+            android:id="@+id/themeBtnPA"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:layout_marginStart="5dp"
+            android:background="@android:color/transparent"
+            android:contentDescription="@string/Favourites_btn"
+            android:src="@drawable/ic_theme" />
+
+
+
 
         <include
             android:id="@+id/voice_control_pa"
@@ -250,7 +262,7 @@
                 android:id="@+id/playPauseBtnPA"
                 android:layout_width="64dp"
                 android:layout_height="64dp"
-                android:src="@drawable/play_icon"
+                android:src="@drawable/ic_play"
                 android:background="@android:color/transparent"
                 android:contentDescription="Play/Pause"
                 android:scaleType="fitCenter"
@@ -269,6 +281,11 @@
                 app:tint="@color/bright_yellow" />
 
         </LinearLayout>
+
+        <FrameLayout
+            android:id="@+id/fragmentContainer"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"/>
     </LinearLayout>
 
 </androidx.constraintlayout.widget.ConstraintLayout>

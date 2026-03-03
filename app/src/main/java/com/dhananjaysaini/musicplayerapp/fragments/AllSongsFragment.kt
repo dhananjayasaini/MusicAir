@@ -18,6 +18,7 @@ import com.dhananjaysaini.musicplayerapp.constants.Constants
 import com.dhananjaysaini.musicplayerapp.databinding.FragmentAllSongsBinding
 import com.dhananjaysaini.musicplayerapp.model.Music
 import com.dhananjaysaini.musicplayerapp.service.MusicService
+import com.dhananjaysaini.musicplayerapp.utils.ThemeManager
 import com.dhananjaysaini.musicplayerapp.viewmodel.MainViewModel
 import com.dhananjaysaini.musicplayerapp.viewmodel.PlaylistViewModel
 
@@ -119,6 +120,11 @@ class AllSongsFragment : Fragment() {
                     Log.d("PLAYLIST_ADD", "Adding song ${song.id} to playlist ${playlists[index].songId}")
                 }.show()
         }
+    }
+
+    override fun onResume() {
+        super.onResume()
+        ThemeManager.applyThemeToActivity(requireActivity())
     }
 
 }
