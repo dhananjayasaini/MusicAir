@@ -2,8 +2,8 @@ package com.dhananjaysaini.musicplayerapp.fragments
 
 import android.app.AlertDialog
 import android.content.Intent
+import android.graphics.Color
 import android.os.Bundle
-import android.util.Log
 import android.view.View
 import android.widget.EditText
 import androidx.fragment.app.Fragment
@@ -15,6 +15,7 @@ import com.dhananjaysaini.musicplayerapp.adapter.PlaylistAdapter
 import com.dhananjaysaini.musicplayerapp.databinding.FragmentPlaylistBinding
 import com.dhananjaysaini.musicplayerapp.model.PlaylistEntity
 import com.dhananjaysaini.musicplayerapp.viewmodel.PlaylistViewModel
+import com.google.android.material.dialog.MaterialAlertDialogBuilder
 
 class PlaylistFragment : Fragment(R.layout.fragment_playlist) {
 
@@ -72,22 +73,28 @@ class PlaylistFragment : Fragment(R.layout.fragment_playlist) {
     }
 
     private fun showCreateDialog() {
-        val input = EditText(requireContext())
+        val editText = EditText(requireContext())
 
-        AlertDialog.Builder(requireContext())
+        val dialog = MaterialAlertDialogBuilder(requireContext())
             .setTitle("Create Playlist")
-            .setView(input)
+            .setView(editText)
             .setPositiveButton("Create") { _, _ ->
-                playlistViewModel.createPlaylist(input.text.toString())
+                playlistViewModel.createPlaylist(editText.text.toString())
             }
             .setNegativeButton("Cancel", null)
             .show()
+
+        dialog.getButton(AlertDialog.BUTTON_POSITIVE)
+            .setTextColor(Color.BLACK)
+
+        dialog.getButton(AlertDialog.BUTTON_NEGATIVE)
+            .setTextColor(Color.BLACK)
     }
 
     private fun deletePlaylist(){
         playlistAdapter.onDeleteClick = { playlist ->
 
-            AlertDialog.Builder(requireContext())
+            val dialog = MaterialAlertDialogBuilder(requireContext())
                 .setTitle("Delete playlist")
                 .setMessage("Delete '${playlist.name}'?")
                 .setPositiveButton("Delete") { _, _ ->
@@ -95,30 +102,44 @@ class PlaylistFragment : Fragment(R.layout.fragment_playlist) {
                 }
                 .setNegativeButton("Cancel", null)
                 .show()
+
+            dialog.getButton(AlertDialog.BUTTON_POSITIVE)
+                .setTextColor(Color.BLACK)
+
+            dialog.getButton(AlertDialog.BUTTON_NEGATIVE)
+                .setTextColor(Color.BLACK)
         }
     }
 
     private fun showRenameDialog(playlist: PlaylistEntity) {
 
-        val input = EditText(requireContext()).apply {
+        val editText = EditText(requireContext()).apply {
             setText(playlist.name)
             setSelection(text.length)
         }
 
-        AlertDialog.Builder(requireContext())
+       val dialog =  MaterialAlertDialogBuilder(requireContext())
             .setTitle("Rename playlist")
-            .setView(input)
+            .setView(editText)
             .setPositiveButton("Rename") { _, _ ->
-                val newName = input.text.toString().trim()
-                if (newName.isNotEmpty() && newName != playlist.name) {
+
+                val editName = editText.text.toString().trim()
+
+                if (editName.isNotEmpty() && editName != playlist.name) {
                     playlistViewModel.renamePlaylist(
                         playlist.songId,
-                        newName
+                        editName
                     )
                 }
             }
             .setNegativeButton("Cancel", null)
             .show()
+
+        dialog.getButton(AlertDialog.BUTTON_POSITIVE)
+            .setTextColor(Color.BLACK)
+
+        dialog.getButton(AlertDialog.BUTTON_NEGATIVE)
+            .setTextColor(Color.BLACK)
     }
 
 

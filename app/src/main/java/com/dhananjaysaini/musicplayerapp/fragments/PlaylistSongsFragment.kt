@@ -2,17 +2,14 @@ package com.dhananjaysaini.musicplayerapp.fragments
 
 import android.content.Intent
 import android.os.Bundle
-import android.util.Log
 import android.view.View
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
-import androidx.recyclerview.widget.RecyclerView
 import com.dhananjaysaini.musicplayerapp.R
 import com.dhananjaysaini.musicplayerapp.activities.PlayerActivity
 import com.dhananjaysaini.musicplayerapp.adapter.PlaylistSongsAdapter
 import com.dhananjaysaini.musicplayerapp.constants.Constants
-import com.dhananjaysaini.musicplayerapp.databinding.FragmentPlaylistBinding
 import com.dhananjaysaini.musicplayerapp.databinding.FragmentPlaylistSongsBinding
 import com.dhananjaysaini.musicplayerapp.model.Music
 import com.dhananjaysaini.musicplayerapp.service.MusicService
@@ -25,10 +22,8 @@ class PlaylistSongsFragment : Fragment(R.layout.fragment_playlist_songs) {
     private lateinit var mainVM: MainViewModel
     private lateinit var playlistVM: PlaylistViewModel
     private lateinit var playlistSongsAdapter: PlaylistSongsAdapter
-
     private val songs = ArrayList<Music>()
     private var currentSongIds: List<String> = emptyList()
-
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
@@ -81,6 +76,12 @@ class PlaylistSongsFragment : Fragment(R.layout.fragment_playlist_songs) {
         removeSong()
 
         updateTitle()
+
+//        playlistSongsAdapter.onMenuClick = { song ->
+//            SongOptionsBottomSheet
+//                .newInstance(song, SongMenuType.PLAYLIST)
+//                .show(parentFragmentManager, "SongOptions")
+//        }
     }
 
     private fun updateSongs() {
@@ -115,7 +116,6 @@ class PlaylistSongsFragment : Fragment(R.layout.fragment_playlist_songs) {
                 songId = song.id
             )
         }
-
     }
 
     private fun updateTitle(){

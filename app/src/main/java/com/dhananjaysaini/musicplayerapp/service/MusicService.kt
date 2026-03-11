@@ -37,7 +37,9 @@ class MusicService : Service() {
         var position: Int = 0
         var allSongs: List<Music> = emptyList()
         var musicService: MusicService? = null
-        lateinit var song: Music
+    //    lateinit var song: Music
+         var song: Music? = null
+
     }
 
     private lateinit var receiver: BroadcastReceiver
@@ -169,7 +171,7 @@ class MusicService : Service() {
                     startProgressUpdates()
                     notifyUIAndUpdateNotification()
 
-                    updatePlayHistory(song)
+                    updatePlayHistory(song!!)
                 }
             }
 

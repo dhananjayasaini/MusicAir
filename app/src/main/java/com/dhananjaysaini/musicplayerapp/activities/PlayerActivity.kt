@@ -32,10 +32,10 @@ import com.dhananjaysaini.musicplayerapp.viewmodel.PlayerViewModel
 import java.io.File
 import kotlin.text.*
 
-class PlayerActivity : AppCompatActivity() {
+open class PlayerActivity : AppCompatActivity() {
 
     private lateinit var binding: ActivityPlayerBinding
-    private val viewModel: PlayerViewModel by viewModels()
+    private val playerViewModel: PlayerViewModel by viewModels()
     private lateinit var voiceControl: VoiceControlManager
     private lateinit var musicService: MusicService
     private lateinit var equalizerManager: EqualizerManager
@@ -85,7 +85,7 @@ class PlayerActivity : AppCompatActivity() {
     }
 
     private fun observeViewModel() {
-        viewModel.uiState.observe(this) { state ->
+        playerViewModel.uiState.observe(this) { state ->
 
             val song = state.currentSong ?: return@observe
 
@@ -122,37 +122,37 @@ class PlayerActivity : AppCompatActivity() {
     private fun setupClicks() {
 
         binding.playPauseBtnPA.setOnClickListener {
-            viewModel.playPause()
+            playerViewModel.playPause()
         }
 
         binding.nextBtnPA.setOnClickListener {
-            viewModel.nextSong()
+            playerViewModel.nextSong()
         }
 
         binding.prevBtnPA.setOnClickListener {
-            viewModel.previousSong()
+            playerViewModel.previousSong()
         }
 
         binding.favouriteBtnPA.setOnClickListener {
-            viewModel.toggleFavourite()
+            playerViewModel.toggleFavourite()
 
             val song = MusicService.playlist
                 .getOrNull(MusicService.position)
                 ?: return@setOnClickListener
 
-            // 🔥 SAME ViewModel jo Fragment use kar raha hai
+            // 🔥 SAME playerViewModel jo Fragment use kar raha hai
             ViewModelProvider(this)[FavouriteViewModel::class.java]
                 .toggle(song.id)
         }
 
         binding.repeatBtnPA.setOnClickListener {
-            viewModel.toggleRepeat()
+            playerViewModel.toggleRepeat()
         }
 
         binding.seekBarPA.setOnSeekBarChangeListener(
             object : SeekBar.OnSeekBarChangeListener {
                 override fun onProgressChanged(sb: SeekBar?, p: Int, f: Boolean) {
-                    if (f) viewModel.seekTo(p)
+                    if (f) playerViewModel.seekTo(p)
                 }
 
                 override fun onStartTrackingTouch(sb: SeekBar?) {}

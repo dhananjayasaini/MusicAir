@@ -23,7 +23,6 @@ import androidx.appcompat.app.AppCompatDelegate
 import androidx.appcompat.widget.Toolbar
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
-import androidx.core.view.WindowCompat
 import androidx.core.view.WindowInsetsControllerCompat
 import com.dhananjaysaini.musicplayerapp.R
 import com.dhananjaysaini.musicplayerapp.adapter.ViewPagerAdapter
@@ -32,6 +31,7 @@ import com.dhananjaysaini.musicplayerapp.fragments.MiniPlayerFragment
 import com.dhananjaysaini.musicplayerapp.model.Music
 import com.dhananjaysaini.musicplayerapp.service.MusicService
 import com.dhananjaysaini.musicplayerapp.utils.FavouriteManager
+import com.dhananjaysaini.musicplayerapp.utils.PlaylistManager
 import com.dhananjaysaini.musicplayerapp.utils.ThemeManager
 import com.dhananjaysaini.musicplayerapp.utils.ThemeSelectionBottomSheet
 import com.dhananjaysaini.musicplayerapp.utils.VoiceControlManager
@@ -61,8 +61,8 @@ class MainActivity : AppCompatActivity() {
         setContentView(binding.root)
 
 //        WindowCompat.setDecorFitsSystemWindows(window, false)
-//        val controller = WindowInsetsControllerCompat(window, window.decorView)
-//        controller.isAppearanceLightStatusBars = true  // dark icons
+        val controller = WindowInsetsControllerCompat(window, window.decorView)
+        controller.isAppearanceLightStatusBars = true  // dark icons
 
         toolbar = binding.toolbar
         setSupportActionBar(toolbar)
@@ -73,6 +73,7 @@ class MainActivity : AppCompatActivity() {
       ThemeManager.applyThemeToActivity(this)
 
         FavouriteManager.init(applicationContext)
+        PlaylistManager.init(applicationContext)
 
         setupViewPager()
         setupDrawerMenu()

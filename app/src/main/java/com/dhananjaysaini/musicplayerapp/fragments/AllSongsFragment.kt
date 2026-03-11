@@ -17,7 +17,9 @@ import com.dhananjaysaini.musicplayerapp.adapter.AllSongsAdapter
 import com.dhananjaysaini.musicplayerapp.constants.Constants
 import com.dhananjaysaini.musicplayerapp.databinding.FragmentAllSongsBinding
 import com.dhananjaysaini.musicplayerapp.model.Music
+import com.dhananjaysaini.musicplayerapp.model.SongMenuConfig
 import com.dhananjaysaini.musicplayerapp.service.MusicService
+import com.dhananjaysaini.musicplayerapp.utils.SongOptionsBottomSheet
 import com.dhananjaysaini.musicplayerapp.utils.ThemeManager
 import com.dhananjaysaini.musicplayerapp.viewmodel.MainViewModel
 import com.dhananjaysaini.musicplayerapp.viewmodel.PlaylistViewModel
@@ -25,7 +27,7 @@ import com.dhananjaysaini.musicplayerapp.viewmodel.PlaylistViewModel
 class AllSongsFragment : Fragment() {
 
     private lateinit var binding: FragmentAllSongsBinding
-    private lateinit var adapter: AllSongsAdapter
+    private lateinit var allSongsAdapter: AllSongsAdapter
 
     private val mainViewModel: MainViewModel by activityViewModels()
 
@@ -35,6 +37,8 @@ class AllSongsFragment : Fragment() {
     ): View {
         binding = FragmentAllSongsBinding.inflate(inflater, container, false)
         return binding.root
+
+        allSongsAdapter = AllSongsAdapter(requireContext(), ArrayList() )
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
@@ -42,28 +46,47 @@ class AllSongsFragment : Fragment() {
         setupRecyclerView()
         observeSongs()
 
-        adapter.onAddToPlaylist = { song ->
-            showPlaylistChooser(song)
+//        allSongsAdapter.onAddToPlaylist = { song ->
+//            showPlaylistChooser(song)
+//        }
+//        allSongsAdapter.onMenuClick = { song ->
+//
+//            SongOptionsBottomSheet
+//                .newInstance(song, SongMenuType.ALL_SONGS)
+//                .show(parentFragmentManager, "SongOptions")
+//        }
+
+        allSongsAdapter.onMenuClick = { song ->
+
+            val config = SongMenuConfig(
+                showAddToPlaylist = true,
+                showRemoveFromPlaylist = false,
+                showDelete = true,
+                showRemoveFromFav = false
+            )
+
+            SongOptionsBottomSheet(song, config)
+                .show(parentFragmentManager, "song_menu")
         }
     }
 
     private fun setupRecyclerView() {
-        adapter = AllSongsAdapter(requireContext(), ArrayList())
+        allSongsAdapter = AllSongsAdapter(requireContext(), ArrayList())
 
         binding.musicRV.apply {
             layoutManager = LinearLayoutManager(requireContext())
-            adapter = this@AllSongsFragment.adapter
+            adapter = this@AllSongsFragment.allSongsAdapter
             setHasFixedSize(true)
         }
 
-        adapter.onItemClick = { list, position ->
+        allSongsAdapter.onItemClick = { list, position ->
             playSong(list, position)
         }
     }
 
     private fun observeSongs() {
         mainViewModel.musicListLiveData.observe(viewLifecycleOwner) { list ->
-            adapter.updateList(ArrayList(list))
+            allSongsAdapter.updateList(ArrayList(list))
 
             binding.totalSongsTv.text =
                 if (list.size == 1)
@@ -87,9 +110,7 @@ class AllSongsFragment : Fragment() {
 
         requireContext().sendBroadcast(Intent("SHOW_MINI_PLAYER"))
 
-        startActivity(
-            Intent(requireContext(), PlayerActivity::class.java)
-        )
+        startActivity(Intent(requireContext(), PlayerActivity::class.java))
     }
 
     private fun showPlaylistChooser(song: Music) {

@@ -1,4 +1,5 @@
-<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.constraintlayout.widget.ConstraintLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/playerRoot"
@@ -11,44 +12,44 @@
         android:id="@+id/topLayerPA"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:padding="10dp"
-        android:orientation="horizontal"
         android:layout_weight="1"
+        android:orientation="horizontal"
+        android:padding="10dp"
         tools:ignore="MissingConstraints">
 
         <ImageButton
             android:id="@+id/backBtnPA"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:src="@drawable/back_icon"
-            android:background="@android:color/transparent"
             android:layout_gravity="center"
             android:layout_marginStart="5dp"
+            android:background="@android:color/transparent"
             android:contentDescription="@string/back_btn"
+            android:src="@drawable/back_icon"
             app:tint="@color/bright_yellow" />
 
         <TextView
             android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:text="@string/music_player"
             android:layout_gravity="center"
-            android:gravity="center"
-            android:textSize="20sp"
-            android:textStyle="bold"
-            android:padding="10dp"
-            android:layout_weight="1"
             android:layout_margin="5dp"
-            android:textColor="@color/red" />
+            android:layout_weight="1"
+            android:gravity="center"
+            android:padding="10dp"
+            android:text="@string/music_player"
+            android:textColor="@color/red"
+            android:textSize="20sp"
+            android:textStyle="bold" />
 
         <ImageButton
             android:id="@+id/favouriteBtnPA"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:src="@drawable/favourite_empty_icon"
-            android:background="@android:color/transparent"
             android:layout_gravity="center"
             android:layout_marginEnd="5dp"
+            android:background="@android:color/transparent"
             android:contentDescription="@string/Favourites_btn"
+            android:src="@drawable/favourite_empty_icon"
             app:tint="@color/bright_yellow" />
 
         <ImageButton
@@ -61,19 +62,14 @@
             android:contentDescription="@string/Favourites_btn"
             android:src="@drawable/ic_theme" />
 
-
-
-
         <include
             android:id="@+id/voice_control_pa"
+            layout="@layout/voice_control"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="center"
-
             android:layout_margin="5dp"
-            layout="@layout/voice_control" />
-
-
+            android:visibility="gone" />
 
     </LinearLayout>
 
@@ -81,19 +77,19 @@
         android:id="@+id/songImgPA"
         android:layout_width="240dp"
         android:layout_height="240dp"
+        android:layout_marginTop="60dp"
         android:background="@drawable/circle_gold_border"
+        android:clipToOutline="true"
+        android:contentDescription="@string/album_art"
         android:scaleType="centerCrop"
         android:src="@drawable/itunes"
-        android:contentDescription="@string/album_art"
-        app:layout_constraintTop_toTopOf="parent"
-        android:layout_marginTop="60dp"
-        app:layout_constraintTop_toBottomOf="@+id/topLayerPA"
-        app:layout_constraintBottom_toTopOf="@id/playerControls"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintVertical_bias="0.35"
         android:visibility="visible"
-        android:clipToOutline="true" />
+        app:layout_constraintBottom_toTopOf="@id/playerControls"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/topLayerPA"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="0.35" />
 
     <LinearLayout
         android:id="@+id/playerControls"
@@ -102,95 +98,94 @@
         android:orientation="vertical"
         android:padding="16dp"
         app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toEndOf="parent">
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent">
 
         <TextView
             android:id="@+id/songNamePA"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:gravity="center"
+            android:padding="12dp"
             android:text="@string/song_title"
             android:textColor="@color/bright_yellow"
             android:textSize="18sp"
-            android:padding="12dp"
-            android:gravity="center"
-            android:textStyle="bold"
-            />
+            android:textStyle="bold" />
 
         <TextView
             android:id="@+id/songAlbumPA"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:layout_marginBottom="12dp"
+            android:ellipsize="marquee"
+            android:focusable="true"
+            android:focusableInTouchMode="true"
+            android:gravity="center"
+            android:marqueeRepeatLimit="marquee_forever"
+            android:scrollHorizontally="true"
+            android:singleLine="true"
             android:text="@string/song_album"
             android:textColor="@color/orange"
             android:textSize="18sp"
-            android:gravity="center"
-            android:textStyle="bold"
-            android:ellipsize="marquee"
-            android:singleLine="true"
-            android:marqueeRepeatLimit="marquee_forever"
-            android:scrollHorizontally="true"
-            android:focusable="true"
-            android:focusableInTouchMode="true"
-            android:layout_marginBottom="12dp" />
+            android:textStyle="bold" />
 
 
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:orientation="horizontal"
             android:layout_marginTop="20dp"
-            android:padding="12dp"
+            android:layout_weight="1"
             android:gravity="center"
-            android:layout_weight="1" >
+            android:orientation="horizontal"
+            android:padding="12dp">
 
             <ImageButton
                 android:id="@+id/repeatBtnPA"
                 android:layout_width="48dp"
                 android:layout_height="48dp"
-                android:src="@drawable/repeat_icon"
-                android:contentDescription="@string/repeat_btn"
                 android:layout_weight="1"
                 android:background="@android:color/transparent"
+                android:contentDescription="@string/repeat_btn"
+                android:src="@drawable/repeat_icon"
                 app:tint="@color/bright_yellow" />
 
             <ImageButton
                 android:id="@+id/btnEqualizer"
                 android:layout_width="48dp"
                 android:layout_height="48dp"
-                android:src="@drawable/equalizer_icon"
-                android:contentDescription="@string/equalizer_btn"
                 android:layout_weight="1"
                 android:background="@android:color/transparent"
-                app:tint="@color/bright_yellow"/>
+                android:contentDescription="@string/equalizer_btn"
+                android:src="@drawable/equalizer_icon"
+                app:tint="@color/bright_yellow" />
 
             <LinearLayout
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:orientation="vertical"
+                android:layout_weight="1"
                 android:gravity="center"
-                android:layout_weight="1">
+                android:orientation="vertical">
 
                 <ImageButton
                     android:id="@+id/btnSleepTimer"
                     android:layout_width="48dp"
                     android:layout_height="48dp"
-                    android:src="@drawable/timer_icon"
-                    android:contentDescription="@string/timer_btn"
                     android:background="@android:color/transparent"
-                    app:tint="@color/bright_yellow"/>
+                    android:contentDescription="@string/timer_btn"
+                    android:src="@drawable/timer_icon"
+                    app:tint="@color/bright_yellow" />
 
                 <TextView
                     android:id="@+id/txtTimerStatus"
                     android:layout_width="wrap_content"
                     android:layout_height="12dp"
+                    android:layout_marginTop="-4dp"
+                    android:gravity="center"
                     android:text="00:00"
                     android:textColor="@color/black"
                     android:textSize="9sp"
                     android:textStyle="bold"
-                    android:visibility="gone"
-                    android:gravity="center"
-                    android:layout_marginTop="-4dp"/>
+                    android:visibility="gone" />
 
             </LinearLayout>
 
@@ -198,86 +193,86 @@
                 android:id="@+id/shareBtnPA"
                 android:layout_width="48dp"
                 android:layout_height="48dp"
-                android:src="@drawable/share_icon"
-                android:contentDescription="@string/share_btn"
                 android:layout_weight="1"
                 android:background="@android:color/transparent"
-                app:tint="@color/bright_yellow"/>
+                android:contentDescription="@string/share_btn"
+                android:src="@drawable/share_icon"
+                app:tint="@color/bright_yellow" />
 
         </LinearLayout>
 
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:orientation="horizontal"
+            android:layout_marginTop="16dp"
             android:gravity="center_vertical"
-            android:layout_marginTop="16dp">
+            android:orientation="horizontal">
 
             <TextView
                 android:id="@+id/startTimePA"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:layout_marginEnd="8dp"
                 android:text="00:00"
                 android:textColor="#000000"
-                android:textSize="12sp"
-                android:layout_marginEnd="8dp"/>
+                android:textSize="12sp" />
 
             <SeekBar
                 android:id="@+id/seekBarPA"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
-                android:thumbTint="@color/bright_yellow"
+                android:progressBackgroundTint="#444444"
                 android:progressTint="@color/bright_yellow"
-                android:progressBackgroundTint="#444444" />
+                android:thumbTint="@color/bright_yellow" />
 
             <TextView
                 android:id="@+id/endTimePA"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:layout_marginStart="8dp"
                 android:text="00:00"
                 android:textColor="#000000"
-                android:textSize="12sp"
-                android:layout_marginStart="8dp"/>
+                android:textSize="12sp" />
         </LinearLayout>
 
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:orientation="horizontal"
+            android:layout_marginTop="16dp"
             android:gravity="center"
-            android:layout_marginTop="16dp">
+            android:orientation="horizontal">
 
             <ImageButton
                 android:id="@+id/prevBtnPA"
                 android:layout_width="48dp"
                 android:layout_height="48dp"
-                android:src="@drawable/previous_icon"
                 android:background="@android:color/transparent"
                 android:contentDescription="Previous"
                 android:padding="8dp"
+                android:src="@drawable/previous_icon"
                 app:tint="@color/bright_yellow" />
 
             <ImageButton
                 android:id="@+id/playPauseBtnPA"
                 android:layout_width="64dp"
                 android:layout_height="64dp"
-                android:src="@drawable/ic_play"
+                android:layout_marginHorizontal="24dp"
                 android:background="@android:color/transparent"
                 android:contentDescription="Play/Pause"
-                android:scaleType="fitCenter"
-                android:layout_marginHorizontal="24dp"
                 android:padding="12dp"
-                app:tint="@color/bright_yellow"/>
+                android:scaleType="fitCenter"
+                android:src="@drawable/ic_play"
+                app:tint="@color/bright_yellow" />
 
             <ImageButton
                 android:id="@+id/nextBtnPA"
                 android:layout_width="48dp"
                 android:layout_height="48dp"
-                android:src="@drawable/next_icon"
                 android:background="@android:color/transparent"
                 android:contentDescription="Next"
                 android:padding="8dp"
+                android:src="@drawable/next_icon"
                 app:tint="@color/bright_yellow" />
 
         </LinearLayout>
@@ -285,7 +280,7 @@
         <FrameLayout
             android:id="@+id/fragmentContainer"
             android:layout_width="match_parent"
-            android:layout_height="match_parent"/>
+            android:layout_height="match_parent" />
     </LinearLayout>
 
 </androidx.constraintlayout.widget.ConstraintLayout>

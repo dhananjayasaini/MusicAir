@@ -13,10 +13,11 @@ import com.dhananjaysaini.musicplayerapp.adapter.FavouriteAdapter
 import com.dhananjaysaini.musicplayerapp.constants.Constants
 import com.dhananjaysaini.musicplayerapp.databinding.FragmentFavouriteBinding
 import com.dhananjaysaini.musicplayerapp.model.Music
+import com.dhananjaysaini.musicplayerapp.model.SongMenuConfig
 import com.dhananjaysaini.musicplayerapp.service.MusicService
+import com.dhananjaysaini.musicplayerapp.utils.SongOptionsBottomSheet
 import com.dhananjaysaini.musicplayerapp.viewmodel.FavouriteViewModel
 import com.dhananjaysaini.musicplayerapp.viewmodel.MainViewModel
-
 
 class FavouriteFragment : Fragment(R.layout.fragment_favourite) {
 
@@ -36,6 +37,26 @@ class FavouriteFragment : Fragment(R.layout.fragment_favourite) {
 
         setupRecyclerView()
         observeFavorites()
+
+//        favAdapter.onMenuClick = { song ->
+//
+//            SongOptionsBottomSheet
+//                .newInstance(song, SongMenuType.FAVORITES)
+//                .show(parentFragmentManager, "SongOptions")
+//        }
+
+        favAdapter.onMenuClick = { song ->
+
+            val config = SongMenuConfig(
+                showAddToPlaylist = true,
+                showRemoveFromPlaylist = false,
+                showDelete = false,
+                showRemoveFromFav = false,
+            )
+
+            SongOptionsBottomSheet(song, config)
+                .show(parentFragmentManager, "song_menu")
+        }
     }
 
     private fun setupRecyclerView() {

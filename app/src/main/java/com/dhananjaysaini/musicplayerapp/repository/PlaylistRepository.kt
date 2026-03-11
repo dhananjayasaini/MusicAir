@@ -33,7 +33,7 @@ class PlaylistRepository(
     }
 
     fun getPlaylistById(playlistId: Int): LiveData<PlaylistEntity> {
-        return playlistSongDao.getPlaylistById(playlistId)
+        return playlistDao.getPlaylistById(playlistId)
     }
 
     suspend fun addSongToPlaylist(playlistId: Int, songId: String) {

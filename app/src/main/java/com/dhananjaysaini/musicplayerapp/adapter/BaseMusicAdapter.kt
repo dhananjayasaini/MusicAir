@@ -5,6 +5,7 @@ import android.widget.PopupMenu
 import androidx.recyclerview.widget.RecyclerView
 import com.dhananjaysaini.musicplayerapp.databinding.MusicViewBinding
 import com.dhananjaysaini.musicplayerapp.model.Music
+import com.dhananjaysaini.musicplayerapp.service.MusicService.Companion.song
 
 abstract class BaseMusicAdapter(
     protected val context: Context,
@@ -12,6 +13,7 @@ abstract class BaseMusicAdapter(
 ) : RecyclerView.Adapter<BaseMusicAdapter.MyHolder>() {
 
     var onItemClick: ((ArrayList<Music>, Int) -> Unit)? = null
+    var onMenuClick: ((Music) -> Unit)? = null
     var onAddToPlaylist: ((Music) -> Unit)? = null
     var onRemoveFromPlaylist: ((Music) -> Unit)? = null
 
@@ -33,37 +35,53 @@ abstract class BaseMusicAdapter(
     }
 
     protected fun bindClick(holder: MyHolder, position: Int) {
+
         holder.root.setOnClickListener {
-            onItemClick?.invoke(musicList, position)
-        }
-
-        // 🔥 POPUP MENU
-        holder.menuIcon.setOnClickListener { view ->
-
-            val popup = PopupMenu(context, view)
-
-            popup.menu.add(0, 1, 0, "Add to playlist")
-            popup.menu.add(0, 2, 1, "Remove from playlist")
-
-            popup.setOnMenuItemClickListener { item ->
-                when (item.itemId) {
-
-                    1 -> {
-                        onAddToPlaylist?.invoke(musicList[position])
-                        true
-                    }
-
-                    2 -> {
-                        onRemoveFromPlaylist?.invoke(musicList[position])
-                        true
-                    }
-
-                    else -> false
-                }
+            val pos = holder.bindingAdapterPosition
+            if (pos != RecyclerView.NO_POSITION) {
+                onItemClick?.invoke(musicList, pos)
             }
-
-            popup.show()
         }
+
+//        holder.menuIcon.setOnClickListener {
+//            val song = musicList[position]
+//            onMenuClick?.invoke(song)
+//        }
+
+        holder.menuIcon.setOnClickListener {
+            val pos = holder.bindingAdapterPosition
+            if (pos != RecyclerView.NO_POSITION) {
+                onMenuClick?.invoke(musicList[pos])
+            }
+        }
+
+         // 🔥 POPUP MENU
+//        holder.menuIcon.setOnClickListener { view ->
+//
+//            val popup = PopupMenu(context, view)
+//
+//            popup.menu.add(0, 1, 0, "Add to playlist")
+//            popup.menu.add(0, 2, 1, "Remove from playlist")
+//
+//            popup.setOnMenuItemClickListener { item ->
+//                when (item.itemId) {
+//
+//                    1 -> {
+//                        onAddToPlaylist?.invoke(musicList[position])
+//                        true
+//                    }
+//
+//                    2 -> {
+//                        onRemoveFromPlaylist?.invoke(musicList[position])
+//                        true
+//                    }
+//
+//                    else -> false
+//                }
+//            }
+//
+//            popup.show()
+//        }
 
     }
 
