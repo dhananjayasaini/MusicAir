@@ -1,5 +1,6 @@
 package com.dhananjaysaini.musicplayerapp.utils
 
+import android.annotation.SuppressLint
 import android.app.AlertDialog
 import android.graphics.Color
 import android.os.Bundle
@@ -81,39 +82,13 @@ class PlaylistPickerBottomSheet(
         }
     }
 
-    private fun showCreatePlaylistDialog1() {
-
-        val editText = EditText(requireContext())
-
-    MaterialAlertDialogBuilder(requireContext())
-            .setTitle("Create Playlist")
-            .setView(editText)
-            .setPositiveButton("Create") { _, _ ->
-
-                val name = editText.text.toString().trim()
-
-                if (name.isNotEmpty()) {
-
-                    playlistViewModel.createPlaylist(name)
-
-                    Toast.makeText(
-                        requireContext(),
-                        "Playlist Created",
-                        Toast.LENGTH_SHORT
-                    ).show()
-                }
-            }
-            .setNegativeButton("Cancel", null)
-            .show()
-    }
-
-
+    @SuppressLint("SuspiciousIndentation")
     private fun showCreatePlaylistDialog() {
 
         val editText = EditText(requireContext())
         editText.hint = "Playlist name"
 
-        val dialog = MaterialAlertDialogBuilder(requireContext())
+         val dialog = MaterialAlertDialogBuilder(requireContext())
             .setTitle("Create Playlist")
             .setView(editText)
             .setPositiveButton("Create", null)

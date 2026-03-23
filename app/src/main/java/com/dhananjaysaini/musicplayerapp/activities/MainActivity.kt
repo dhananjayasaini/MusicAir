@@ -70,7 +70,7 @@ class MainActivity : AppCompatActivity() {
 //      supportActionBar?.title = ""
         toolbar.title = ""
 //      AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_NO)
-      ThemeManager.applyThemeToActivity(this)
+        ThemeManager.applyThemeToActivity(this)
 
         FavouriteManager.init(applicationContext)
         PlaylistManager.init(applicationContext)

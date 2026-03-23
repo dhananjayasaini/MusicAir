@@ -14,6 +14,7 @@ import android.os.IBinder
 import android.os.Looper
 import android.provider.MediaStore
 import android.util.Log
+import android.widget.Toast
 import androidx.annotation.RequiresApi
 import androidx.core.app.NotificationCompat
 import androidx.core.net.toUri
@@ -22,7 +23,6 @@ import com.dhananjaysaini.musicplayerapp.activities.PlayerActivity
 import com.dhananjaysaini.musicplayerapp.constants.Constants
 import com.dhananjaysaini.musicplayerapp.database.MusicDatabase
 import com.dhananjaysaini.musicplayerapp.model.Music
-import com.dhananjaysaini.musicplayerapp.model.SongFolder
 import com.dhananjaysaini.musicplayerapp.repository.PlayHistoryRepository
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
@@ -37,9 +37,7 @@ class MusicService : Service() {
         var position: Int = 0
         var allSongs: List<Music> = emptyList()
         var musicService: MusicService? = null
-    //    lateinit var song: Music
-         var song: Music? = null
-
+        var song: Music? = null
     }
 
     private lateinit var receiver: BroadcastReceiver
@@ -68,7 +66,8 @@ class MusicService : Service() {
                     putExtra("artist", playlist.getOrNull(position)?.artist)
                     putExtra("artUri", playlist.getOrNull(position)?.artUri)
                 })
-            } catch (e: Exception) { /* ignore*/ }
+            } catch (e: Exception) { /* ignore*/
+            }
             // schedule next update only if still playing
             if (mediaPlayer?.isPlaying == true) {
                 uiHandler.postDelayed(this, 500) // update every 500ms
@@ -109,21 +108,23 @@ class MusicService : Service() {
 //            isServiceStarted = true
 //        }
 
-        song = Music( path = "",
+        song = Music(
+            path = "",
             title = "",
             album = "",
             duration = 0L,
             artUri = null.toString(),
             artist = "",
             id = "",
-            date = 0L)
+            date = 0L
+        )
 
         if (playlist.isEmpty()) {
             return START_NOT_STICKY
         }
 
 
-        when(intent?.action) {
+        when (intent?.action) {
             Constants.ACTION_TOGGLE_PLAY -> {
                 if (mediaPlayer?.isPlaying == true) {
                     mediaPlayer?.pause()
@@ -150,7 +151,7 @@ class MusicService : Service() {
                     playlist = list
                     position = pos.coerceIn(0, playlist.lastIndex)
                     playAt(position, startForegroundNow = true)
-                   // sendBroadcast(Intent("REQUEST_UI_UPDATE"))
+                    // sendBroadcast(Intent("REQUEST_UI_UPDATE"))
 
                 } else {
                     Log.d("MusicService", "Received empty playlist in ACTION_PLAY_NEW_LIST")
@@ -160,6 +161,7 @@ class MusicService : Service() {
             Constants.ACTION_PLAY -> {
 
                 if (mediaPlayer == null) {
+
                     playAt(position, false)   // fresh start
                 }
                 else if (mediaPlayer?.isPlaying != true) {
@@ -173,6 +175,30 @@ class MusicService : Service() {
 
                     updatePlayHistory(song!!)
                 }
+            }
+
+            Constants.ACTION_PLAY_BOTTOM_SHEET -> {
+
+                val clickedSong = intent.getSerializableExtra("song") as? Music
+
+                if (clickedSong != null) {
+
+                    val index = playlist.indexOfFirst { it.id == clickedSong.id }
+
+                    if (index != -1) {
+
+                        position = index
+
+                    } else {
+
+                        playlist.clear()
+                        playlist.add(clickedSong)
+                        position = 0
+                    }
+                }
+
+                // 🔥 ALWAYS playAt (no resume logic here)
+                playAt(position, false)
             }
 
             Constants.ACTION_PAUSE -> {
@@ -226,6 +252,27 @@ class MusicService : Service() {
             Constants.ACTION_REFRESH_NOTIFICATION -> {
                 buildNotification(mediaPlayer?.isPlaying == true)
             }
+
+            Constants.ACTION_PLAY_BOTTOM_SHEET -> {
+
+                val index = intent.getIntExtra(Constants.EXTRA_INDEX, position)
+
+                playAt(index, true)
+            }
+
+            Constants.ACTION_PLAY_NEXT -> {
+
+                val song = intent.getSerializableExtra(Constants.EXTRA_SONG) as Music
+
+                addToPlayNext(song)
+            }
+
+            Constants.ACTION_ADD_TO_QUEUE -> {
+
+                val song = intent.getSerializableExtra(Constants.EXTRA_SONG) as Music
+
+                addToQueue(song)
+            }
         }
 
         when (intent?.action) {
@@ -247,7 +294,8 @@ class MusicService : Service() {
         super.onDestroy()
         try {
             unregisterReceiver(receiver)
-        } catch (_: Exception) { /* ignore */ }
+        } catch (_: Exception) { /* ignore */
+        }
         mediaPlayer?.release()
         mediaPlayer = null
     }
@@ -257,7 +305,7 @@ class MusicService : Service() {
     // ------------------ Core playback ------------------
 
     @RequiresApi(Build.VERSION_CODES.P)
-    private fun playAt(index: Int, startForegroundNow: Boolean) {
+    fun playAt(index: Int, startForegroundNow: Boolean) {
         if (playlist.isEmpty()) return
         val track = playlist[index]
 
@@ -303,7 +351,6 @@ class MusicService : Service() {
         } catch (e: Exception) {
             Log.e("MusicService", "playAt error: ${e.message}", e)
         }
-
         updatePlayHistory(playlist[index])
     }
 
@@ -522,8 +569,7 @@ class MusicService : Service() {
                 val resolver = applicationContext.contentResolver
                 MediaStore.Images.Media.getBitmap(resolver, it.toUri())
             }
-        }
-        catch (e: IOException) {
+        } catch (e: IOException) {
             e.printStackTrace()
             null
         }
@@ -538,7 +584,7 @@ class MusicService : Service() {
         mediaPlayer?.setAuxEffectSendLevel(1.0f)
     }
 
-     fun startSleepTimer(timeInMillis: Long) {
+    fun startSleepTimer(timeInMillis: Long) {
 
         sleepTimer?.cancel()
         remainingTime = timeInMillis
@@ -559,7 +605,7 @@ class MusicService : Service() {
         }.start()
     }
 
-     fun cancelSleepTimer() {
+    fun cancelSleepTimer() {
         sleepTimer?.cancel()
         sleepTimer = null
         remainingTime = 0L
@@ -586,7 +632,7 @@ class MusicService : Service() {
         sendBroadcast(intent)
     }
 
-     fun updatePlayHistory(song: Music) {
+    fun updatePlayHistory(song: Music) {
 
         CoroutineScope(Dispatchers.IO).launch {
 
@@ -600,6 +646,31 @@ class MusicService : Service() {
         }
     }
 
+    private fun addToPlayNext(song: Music) {
+
+        if (playlist.isEmpty()) return
+
+        playlist.removeAll { it.id == song.id }
+
+        val nextIndex = (position + 1).coerceAtMost(playlist.size)
+
+        playlist.add(nextIndex, song)
+
+        Toast.makeText(this, "it will play next", Toast.LENGTH_SHORT).show()
+    }
+
+    private fun addToQueue(song: Music) {
+
+        // 🔥 avoid duplicates
+        if (playlist.any { it.id == song.id }) {
+
+            Toast.makeText(this, "Already in queue", Toast.LENGTH_SHORT).show()
+            return
+        }
+        playlist.add(song)
+
+        Toast.makeText(this, "Added to queue", Toast.LENGTH_SHORT).show()
+    }
 
 }
 

@@ -45,16 +45,21 @@ class FavouriteFragment : Fragment(R.layout.fragment_favourite) {
 //                .show(parentFragmentManager, "SongOptions")
 //        }
 
-        favAdapter.onMenuClick = { song ->
+        favAdapter.onMenuClick = { song, pos ->
 
             val config = SongMenuConfig(
-                showAddToPlaylist = true,
-                showRemoveFromPlaylist = false,
-                showDelete = false,
-                showRemoveFromFav = false,
+                play = true,
+                playNext = true,
+                addToQueue = true,
+                delete = true,
+                edit = false,
+                addToFav = false,
+                removeFromFav = true,
+                addToPlaylist = true,
+                share = true
             )
 
-            SongOptionsBottomSheet(song, config)
+            SongOptionsBottomSheet(song, pos, config )
                 .show(parentFragmentManager, "song_menu")
         }
     }
@@ -73,15 +78,15 @@ class FavouriteFragment : Fragment(R.layout.fragment_favourite) {
 
             if (list.isNotEmpty()) {
 
-            MusicService.playlist = ArrayList(list)
-            MusicService.position = position
+                MusicService.playlist = ArrayList(list)
+                MusicService.position = position
 
-            requireContext().startService(
-                Intent(requireContext(), MusicService::class.java).apply {
-                    action = Constants.ACTION_PLAY_AT
-                    putExtra("songPosition", position)
-                }
-            )
+                requireContext().startService(
+                    Intent(requireContext(), MusicService::class.java).apply {
+                        action = Constants.ACTION_PLAY_AT
+                        putExtra("songPosition", position)
+                    }
+                )
                 startActivity(Intent(requireContext(), PlayerActivity::class.java))
             }
         }
@@ -103,14 +108,13 @@ class FavouriteFragment : Fragment(R.layout.fragment_favourite) {
                 Log.d("favSongs", "favSongs2 $favouriteSongs")
                 Log.d("favSongs", "favSongs3 $favAdapter")
 
-                if(favouriteSongs.isEmpty())
+                if (favouriteSongs.isEmpty())
                     binding.favFragment.visibility = View.VISIBLE
                 else
                     binding.favFragment.visibility = View.GONE
             }
         }
     }
-
 }
 
 

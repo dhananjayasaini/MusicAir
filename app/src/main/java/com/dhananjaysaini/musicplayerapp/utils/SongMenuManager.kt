@@ -4,11 +4,42 @@ import android.content.Context
 import android.content.Intent
 import android.os.Build
 import androidx.annotation.RequiresApi
+import androidx.core.content.ContextCompat
 import androidx.fragment.app.FragmentManager
+import com.dhananjaysaini.musicplayerapp.constants.Constants
 import com.dhananjaysaini.musicplayerapp.model.Music
+import com.dhananjaysaini.musicplayerapp.service.MusicService
 
 
-object SongMenuManager  {
+object SongMenuManager {
+
+    fun handlePlay(context: Context, song: Music) {
+        val intent = Intent(context, MusicService::class.java).apply {
+            action = Constants.ACTION_PLAY_BOTTOM_SHEET
+            putExtra("song", song)
+        }
+        ContextCompat.startForegroundService(context, intent)
+    }
+
+
+    fun handlePlayNext(context: Context, song: Music) {
+
+        val intent = Intent(context, MusicService::class.java).apply {
+            action = Constants.ACTION_PLAY_NEXT
+            putExtra(Constants.EXTRA_SONG, song)
+        }
+        context.startService(intent)
+    }
+
+    fun handleAddToQueue(context: Context, song: Music) {
+
+        val intent = Intent(context, MusicService::class.java).apply {
+            action = Constants.ACTION_ADD_TO_QUEUE
+            putExtra(Constants.EXTRA_SONG, song)
+        }
+
+        context.startService(intent)
+    }
 
     fun handleAddToPlaylist(fragmentManager: FragmentManager, song: Music) {
         PlaylistPickerBottomSheet(song).show(fragmentManager, "PlaylistPicker")

@@ -1,16 +1,12 @@
 package com.dhananjaysaini.musicplayerapp.fragments
 
-import android.app.AlertDialog
 import android.content.Intent
 import android.os.Bundle
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.Toast
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
-import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.dhananjaysaini.musicplayerapp.activities.PlayerActivity
 import com.dhananjaysaini.musicplayerapp.adapter.AllSongsAdapter
@@ -22,9 +18,8 @@ import com.dhananjaysaini.musicplayerapp.service.MusicService
 import com.dhananjaysaini.musicplayerapp.utils.SongOptionsBottomSheet
 import com.dhananjaysaini.musicplayerapp.utils.ThemeManager
 import com.dhananjaysaini.musicplayerapp.viewmodel.MainViewModel
-import com.dhananjaysaini.musicplayerapp.viewmodel.PlaylistViewModel
 
-class AllSongsFragment : Fragment() {
+open class AllSongsFragment : Fragment() {
 
     private lateinit var binding: FragmentAllSongsBinding
     private lateinit var allSongsAdapter: AllSongsAdapter
@@ -38,7 +33,7 @@ class AllSongsFragment : Fragment() {
         binding = FragmentAllSongsBinding.inflate(inflater, container, false)
         return binding.root
 
-        allSongsAdapter = AllSongsAdapter(requireContext(), ArrayList() )
+        allSongsAdapter = AllSongsAdapter(requireContext(), ArrayList())
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
@@ -56,16 +51,21 @@ class AllSongsFragment : Fragment() {
 //                .show(parentFragmentManager, "SongOptions")
 //        }
 
-        allSongsAdapter.onMenuClick = { song ->
+        allSongsAdapter.onMenuClick = { song, pos ->
 
             val config = SongMenuConfig(
-                showAddToPlaylist = true,
-                showRemoveFromPlaylist = false,
-                showDelete = true,
-                showRemoveFromFav = false
+                play = true,
+                playNext = true,
+                addToQueue = true,
+                delete = true,
+                edit = true,
+                addToFav = true,
+                removeFromFav = false,
+                addToPlaylist = true,
+                share = true
             )
 
-            SongOptionsBottomSheet(song, config)
+            SongOptionsBottomSheet(song, pos,   config)
                 .show(parentFragmentManager, "song_menu")
         }
     }
@@ -96,7 +96,7 @@ class AllSongsFragment : Fragment() {
         }
     }
 
-    private fun playSong(list: ArrayList<Music>, position: Int) {
+     fun playSong(list: ArrayList<Music>, position: Int) {
 
         MusicService.playlist = ArrayList(list)
         MusicService.position = position
@@ -111,36 +111,6 @@ class AllSongsFragment : Fragment() {
         requireContext().sendBroadcast(Intent("SHOW_MINI_PLAYER"))
 
         startActivity(Intent(requireContext(), PlayerActivity::class.java))
-    }
-
-    private fun showPlaylistChooser(song: Music) {
-
-        val playlistVM = ViewModelProvider(requireActivity()).get(PlaylistViewModel::class.java)
-
-        playlistVM.playlists.observe(viewLifecycleOwner) { playlists ->
-
-            if (playlists.isEmpty()) {
-                Toast.makeText(
-                    requireContext(),
-                    "Create a playlist first",
-                    Toast.LENGTH_SHORT
-                ).show()
-                return@observe
-            }
-
-            val names = playlists.map { it.name }.toTypedArray()
-
-            AlertDialog.Builder(requireContext())
-                .setTitle("Add to playlist")
-                .setItems(names) { _, index ->
-                    playlistVM.addSongToPlaylist(
-                        playlists[index].songId,
-                        song.id
-                    )
-
-                    Log.d("PLAYLIST_ADD", "Adding song ${song.id} to playlist ${playlists[index].songId}")
-                }.show()
-        }
     }
 
     override fun onResume() {

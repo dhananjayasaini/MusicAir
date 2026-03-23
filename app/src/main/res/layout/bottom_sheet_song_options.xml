@@ -132,7 +132,7 @@
 
             <!-- Add To Queue -->
             <LinearLayout
-                android:id="@+id/btnAddQueue"
+                android:id="@+id/btnAddToQueue"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:orientation="horizontal"
@@ -267,6 +267,7 @@
                 android:layout_height="wrap_content"
                 android:orientation="horizontal"
                 android:gravity="center_vertical"
+                android:visibility="gone"
                 android:paddingStart="18dp"
                 android:paddingEnd="18dp"
                 android:paddingTop="12dp"

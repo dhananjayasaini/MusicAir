@@ -13,7 +13,7 @@ abstract class BaseMusicAdapter(
 ) : RecyclerView.Adapter<BaseMusicAdapter.MyHolder>() {
 
     var onItemClick: ((ArrayList<Music>, Int) -> Unit)? = null
-    var onMenuClick: ((Music) -> Unit)? = null
+    var onMenuClick: ((Music, Int) -> Unit)? = null
     var onAddToPlaylist: ((Music) -> Unit)? = null
     var onRemoveFromPlaylist: ((Music) -> Unit)? = null
 
@@ -51,7 +51,7 @@ abstract class BaseMusicAdapter(
         holder.menuIcon.setOnClickListener {
             val pos = holder.bindingAdapterPosition
             if (pos != RecyclerView.NO_POSITION) {
-                onMenuClick?.invoke(musicList[pos])
+                onMenuClick?.invoke(musicList[pos], position)
             }
         }
 

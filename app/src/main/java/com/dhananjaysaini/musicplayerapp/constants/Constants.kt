@@ -6,9 +6,13 @@ object Constants {
     const val NOTIFICATION_ID = 1001
 
     const val ACTION_PLAY = "ACTION_PLAY"
+
+    const val ACTION_PLAY_BOTTOM_SHEET = "ACTION_PLAY_BOTTOM_SHEET"
+    const val ACTION_PLAY_NEXT = "ACTION_PLAY_NEXT"
     const val ACTION_PAUSE = "ACTION_PAUSE"
     const val ACTION_NEXT = "ACTION_NEXT"
     const val ACTION_PREVIOUS = "ACTION_PREVIOUS"
+    const val ACTION_ADD_TO_QUEUE = "ACTION_ADD_TO_QUEUE"
 
     const val ACTION_PLAY_NEW_LIST = "ACTION_PLAY_NEW_LIST"
     const val ACTION_PLAY_AT = "ACTION_PLAY_AT"
@@ -25,5 +29,8 @@ object Constants {
     const val EXTRA_TIMER_TIME = "EXTRA_TIMER_TIME"
     const val EXTRA_REMAINING_TIME = "EXTRA_REMAINING_TIME"
     const val ACTION_MUSIC_STOPPED_BY_TIMER = "ACTION_MUSIC_STOPPED_BY_TIMER"
+
+    const val EXTRA_INDEX = "EXTRA_INDEX"
+    const val EXTRA_SONG = "EXTRA_SONG"
 
 }

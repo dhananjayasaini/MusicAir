@@ -12,8 +12,8 @@ import com.google.android.material.bottomsheet.BottomSheetDialogFragment
 
 class SongOptionsBottomSheet(
     private val song: Music,
-    private val config: SongMenuConfig,
-
+    private val position: Int,
+    private val config: SongMenuConfig
 ) : BottomSheetDialogFragment() {
 
     private var binding: BottomSheetSongOptionsBinding? = null
@@ -26,21 +26,48 @@ class SongOptionsBottomSheet(
 
         binding = BottomSheetSongOptionsBinding.inflate(inflater, container, false)
 
-        binding!!.btnAddPlaylist.visibility = if (config.showAddToPlaylist) View.VISIBLE else View.GONE
+        binding!!.btnPlay.visibility = if (config.play) View.VISIBLE else View.GONE
 
-        binding!!.btnRemoveFav.visibility = if (config.showRemoveFromFav) View.VISIBLE else View.GONE
+        binding!!.btnPlayNext.visibility = if (config.playNext) View.VISIBLE else View.GONE
 
-        binding!!.btnRemovePlaylist.visibility = if (config.showRemoveFromPlaylist) View.VISIBLE else View.GONE
+        binding!!.btnAddToQueue.visibility = if (config.addToQueue) View.VISIBLE else View.GONE
 
-        binding!!.btnDeleteSong.visibility = if (config.showDelete) View.VISIBLE else View.GONE
+        binding!!.btnAddFav.visibility = if (config.addToFav) View.VISIBLE else View.GONE
 
-//      binding.btnShare.visibility = if (config.showShare) View.VISIBLE else View.GONE
+        binding!!.btnRemoveFav.visibility = if (config.removeFromFav) View.VISIBLE else View.GONE
+
+        binding!!.btnAddPlaylist.visibility = if (config.addToPlaylist) View.VISIBLE else View.GONE
+
+        binding!!.btnEdit.visibility = if (config.edit) View.VISIBLE else View.GONE
+
+        binding!!.btnDeleteSong.visibility = if (config.delete) View.VISIBLE else View.GONE
+
+        binding!!.btnShare.visibility = if (config.share) View.VISIBLE else View.GONE
 
         clickListeners()
         return binding!!.root
     }
 
     private fun clickListeners() {
+
+        binding!!.btnPlay.setOnClickListener {
+
+            SongMenuManager.handlePlay(requireContext(), song)
+
+            dismiss()
+        }
+
+        binding!!.btnPlayNext.setOnClickListener {
+
+            SongMenuManager.handlePlayNext(requireContext(), song)
+            dismiss()
+        }
+
+        binding!!.btnAddToQueue.setOnClickListener {
+
+            SongMenuManager.handleAddToQueue(requireContext(), song)
+            dismiss()
+        }
 
         binding!!.btnAddPlaylist.setOnClickListener {
 
