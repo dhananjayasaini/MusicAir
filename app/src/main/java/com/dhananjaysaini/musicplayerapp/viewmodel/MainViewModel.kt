@@ -1,7 +1,6 @@
 package com.dhananjaysaini.musicplayerapp.viewmodel
 
 import android.app.Application
-import android.util.Log
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.viewModelScope
@@ -10,7 +9,6 @@ import com.dhananjaysaini.musicplayerapp.model.Music
 import com.dhananjaysaini.musicplayerapp.repository.MusicRepository
 import com.dhananjaysaini.musicplayerapp.service.MusicService
 import kotlinx.coroutines.launch
-import kotlin.math.log
 
 class MainViewModel(application: Application) : AndroidViewModel(application) {
 
@@ -29,15 +27,13 @@ class MainViewModel(application: Application) : AndroidViewModel(application) {
         isLoading.postValue(true)
 
         //   MusicService.playlist = musicListMA
-
-
+        
         viewModelScope.launch {
             try {
                 val songs = loadMusicUseCase()
                 musicListLiveData.postValue(songs)
 
                 MusicService.playlist = ArrayList(songs)
-
 
             } catch (e: Exception) {
                 error.postValue(e.message.toString())

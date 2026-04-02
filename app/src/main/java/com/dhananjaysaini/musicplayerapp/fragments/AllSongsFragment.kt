@@ -1,6 +1,9 @@
 package com.dhananjaysaini.musicplayerapp.fragments
 
+import android.content.BroadcastReceiver
+import android.content.Context
 import android.content.Intent
+import android.content.IntentFilter
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -116,6 +119,26 @@ open class AllSongsFragment : Fragment() {
     override fun onResume() {
         super.onResume()
         ThemeManager.applyThemeToActivity(requireActivity())
+
+        requireContext().registerReceiver(
+            refreshReceiver,
+            IntentFilter("REFRESH_LIBRARY"))
     }
 
+    override fun onPause() {
+        super.onPause()
+
+        requireContext().unregisterReceiver(refreshReceiver)
+    }
+
+    private val refreshReceiver = object : BroadcastReceiver() {
+
+        override fun onReceive(context: Context?, intent: Intent?) {
+
+            if (intent?.action == "REFRESH_LIBRARY") {
+
+                mainViewModel.loadMusic()   // ya viewModel.reload()
+            }
+        }
+    }
 }

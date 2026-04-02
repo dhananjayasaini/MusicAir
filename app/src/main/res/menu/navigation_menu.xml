@@ -5,23 +5,23 @@
 
     <item
         android:id="@+id/navFeedback"
-        android:title="Feedback"
+        android:title="@string/feedback"
         android:icon="@drawable/feedback_icon"/>
     <item
         android:id="@+id/navSetting"
-        android:title="Setting"
+        android:title="@string/setting"
         android:icon="@drawable/setting_icon"/>
     <item
         android:id="@+id/navAbout"
-        android:title="About"
+        android:title="@string/about"
         android:icon="@drawable/about_icon"/>
     <item
         android:id="@+id/navExit"
-        android:title="Exit"
+        android:title="@string/exit"
         android:icon="@drawable/exit_icon"/>
     <item
         android:id="@+id/media_route_menu_item"
-        android:title="Cast"
+        android:title="@string/cast"
         tools:icon="@drawable/mr_button_dark"
         app:actionProviderClass="androidx.mediarouter.app.MediaRouteActionProvider"
          />

@@ -19,7 +19,7 @@
             android:id="@+id/totalSongsTv"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="0 Song"
+            android:text="@string/_0_song"
             android:textColor="@color/black"
             android:padding="12dp"
             android:textSize="18sp"

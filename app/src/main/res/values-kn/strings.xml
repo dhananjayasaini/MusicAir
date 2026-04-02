@@ -1,0 +1,78 @@
+<resources>
+    <string name="app_name">ಮ್ಯೂಸಿಕ್ ಪ್ಲೇಯರ್</string>
+    <string name="shuffle_btn">ಶಫಲ್</string>
+    <string name="playlist_btn">ಪ್ಲೇಲಿಸ್ಟ್</string>
+    <string name="Favourites_btn">ಇಷ್ಟವಾದವು</string>
+    <string name="total_songs" translatable="false">Total Songs :</string>
+    <string name="music_player">ಮ್ಯೂಸಿಕ್ ಪ್ಲೇಯರ್</string>
+    <string name="song_name">ಹಾಡಿನ ಹೆಸರು</string>
+    <string name="back_btn">ಹಿಂದೆ</string>
+    <string name="previous_song">ಹಿಂದಿನ ಹಾಡು</string>
+    <string name="next_song">ಮುಂದಿನ ಹಾಡು</string>
+    <string name="play_pause">ಹಾಡು ಚಾಲನೆ</string>
+    <string name="start_tv">00:00</string>
+    <string name="end_tv">00:00</string>
+    <string name="repeat_btn">ಮತ್ತೆ</string>
+    <string name="equalizer_btn">ಈಕ್ವಲೈಜರ್</string>
+    <string name="share_btn">ಹಂಚಿಕೊಳ್ಳಿ</string>
+    <string name="timer_btn">ಟೈಮರ್</string>
+    <string name="open">ತೆರೆಯಿರಿ</string>
+    <string name="close">ಮುಚ್ಚಿರಿ</string>
+    <string name="icon">ಐಕಾನ್</string>
+    <string name="nav_text">ಮ್ಯೂಸಿಕ್ ಪ್ಲೇಯರ್ \nಲೋಕಕ್ಕೆ ಸ್ವಾಗತ</string>
+    <string name="nav_feedback">ಪ್ರತಿಕ್ರಿಯೆ</string>
+    <string name="nav_setting">ಸೆಟ್ಟಿಂಗ್</string>
+    <string name="nav_about">ನಮ್ಮ ಬಗ್ಗೆ</string>
+    <string name="nav_exit">ನಿರ್ಗಮಿಸಿ</string>
+    <string name="song_album">ಹಾಡು ಆಲ್ಬಮ್</string>
+    <string name="album_art">ಆಲ್ಬಮ್ ಆರ್ಟ್</string>
+    <string name="song_title">ಹಾಡು ಶೀರ್ಷಿಕೆ</string>
+
+    <string name="hello_blank_fragment">ಹಲೋ ಖಾಲಿ ಫ್ರಾಗ್ಮೆಂಟ್</string>
+    <string name="home_fragment">ಹೋಮ್</string>
+    <string name="favourite_fragment">ಇಷ್ಟವಾದವು</string>
+    <string name="playlist_fragment">ಪ್ಲೇಲಿಸ್ಟ್</string>
+    <string name="folder_fragment">ಫೋಲ್ಡರ್</string>
+    <string name="create_playlist">ಪ್ಲೇಲಿಸ್ಟ್ ರಚಿಸಿ</string>
+
+    <string name="_0_album">0 ಆಲ್ಬಮ್</string>
+    <string name="shuffle">ಶಫಲ್</string>
+    <string name="_0_song">0 ಹಾಡು</string>
+    <string name="_0_artist">0 ಕಲಾವಿದ</string>
+    <string name="artists">ಕಲಾವಿದರು</string>
+    <string name="play">ಪ್ಲೇ</string>
+    <string name="_0_folder">0 ಫೋಲ್ಡರ್</string>
+    <string name="recently_played">ಇತ್ತೀಚೆಗೆ ಪ್ಲೇ ಮಾಡಲಾಗಿದೆ</string>
+    <string name="top_tracks">ಟಾಪ್ ಟ್ರ್ಯಾಕ್‌ಗಳು</string>
+    <string name="recently_added">ಇತ್ತೀಚೆಗೆ ಸೇರಿಸಲಾಗಿದೆ</string>
+    <string name="title">ಶೀರ್ಷಿಕೆ</string>
+    <string name="_0_playlist">0 ಪ್ಲೇಲಿಸ್ಟ್</string>
+    <string name="playlist">ಪ್ಲೇಲಿಸ್ಟ್</string>
+    <string name="next">ಮುಂದಿನ</string>
+    <string name="previous">ಹಿಂದಿನ</string>
+    <string name="_00_00">00:00</string>
+    <string name="audio_track">ಆಡಿಯೋ ಟ್ರ್ಯಾಕ್...</string>
+    <string name="play_next">ಮುಂದೆ ಪ್ಲೇ ಮಾಡಿ</string>
+    <string name="add_to_queue">ಕ್ಯೂಗೆ ಸೇರಿಸಿ</string>
+    <string name="add_to_favourite">ಇಷ್ಟಗಳಿಗೆ ಸೇರಿಸಿ</string>
+    <string name="remove_from_favourite">ಇಷ್ಟಗಳಿಂದ ತೆಗೆದುಹಾಕಿ</string>
+    <string name="add_to_playlist">ಪ್ಲೇಲಿಸ್ಟ್‌ಗೆ ಸೇರಿಸಿ</string>
+    <string name="remove_from_playlist">ಪ್ಲೇಲಿಸ್ಟ್‌ನಿಂದ ತೆಗೆದುಹಾಕಿ</string>
+    <string name="edit">ತಿದ್ದುಪಡಿ</string>
+    <string name="delete">ಅಳಿಸಿ</string>
+
+    <string name="home">ಮುಖಪುಟ</string>
+    <string name="songs">ಹಾಡುಗಳು</string>
+    <string name="favourite">ಇಷ್ಟ</string>
+    <string name="playlists">ಪ್ಲೇಲಿಸ್ಟ್‌ಗಳು</string>
+    <string name="artist">ಕಲಾವಿದ</string>
+    <string name="albums">ಆಲ್ಬಮ್‌ಗಳು</string>
+    <string name="folder">ಫೋಲ್ಡರ್</string>
+
+    <string name="feedback">ಪ್ರತಿಕ್ರಿಯೆ</string>
+    <string name="setting">ಸೆಟ್ಟಿಂಗ್</string>
+    <string name="about">ನಮ್ಮ ಬಗ್ಗೆ</string>
+    <string name="exit">ನಿರ್ಗಮಿಸಿ</string>
+    <string name="cast">ಕಾಸ್ಟ್</string>
+
+</resources>

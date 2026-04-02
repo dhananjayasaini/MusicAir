@@ -22,7 +22,7 @@
         android:layout_toEndOf="@id/mini_art"
         android:layout_marginStart="8dp"
         android:textColor="@color/black"
-        android:text="Title"
+        android:text="@string/title"
         android:textSize="14sp"
         android:ellipsize="end"
         android:maxLines="1" />
@@ -35,7 +35,7 @@
         android:layout_below="@id/mini_title"
         android:layout_marginStart="8dp"
         android:textColor="@color/black"
-        android:text="Artist"
+        android:text="@string/artist"
         android:textSize="12sp"
         android:ellipsize="end"
         android:maxLines="1" />

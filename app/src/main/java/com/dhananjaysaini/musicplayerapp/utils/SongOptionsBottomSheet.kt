@@ -5,6 +5,7 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.annotation.RequiresApi
 import com.dhananjaysaini.musicplayerapp.databinding.BottomSheetSongOptionsBinding
 import com.dhananjaysaini.musicplayerapp.model.Music
 import com.dhananjaysaini.musicplayerapp.model.SongMenuConfig
@@ -18,6 +19,7 @@ class SongOptionsBottomSheet(
 
     private var binding: BottomSheetSongOptionsBinding? = null
 
+    @RequiresApi(Build.VERSION_CODES.Q)
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
@@ -48,6 +50,7 @@ class SongOptionsBottomSheet(
         return binding!!.root
     }
 
+    @RequiresApi(Build.VERSION_CODES.Q)
     private fun clickListeners() {
 
         binding!!.btnPlay.setOnClickListener {
@@ -95,9 +98,8 @@ class SongOptionsBottomSheet(
 
         binding!!.btnDeleteSong.setOnClickListener {
 
-            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
-                SongMenuManager.handleDelete(requireContext(), song)
-            }
+                SongMenuManager.handleDelete(requireActivity(), song)
+
             dismiss()
         }
 

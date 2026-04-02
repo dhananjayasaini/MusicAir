@@ -1,0 +1,78 @@
+<resources>
+    <string name="app_name">संगीत वादक</string>
+    <string name="shuffle_btn">यादृच्छिक</string>
+    <string name="playlist_btn">गीतसूची</string>
+    <string name="Favourites_btn">प्रियाणि</string>
+    <string name="total_songs" translatable="false">Total Songs :</string>
+    <string name="music_player">संगीत वादक</string>
+    <string name="song_name">गीतस्य नाम</string>
+    <string name="back_btn">पृष्ठे गच्छ</string>
+    <string name="previous_song">पूर्व गीतम्</string>
+    <string name="next_song">अग्र गीतम्</string>
+    <string name="play_pause">गीतं चालय</string>
+    <string name="start_tv">00:00</string>
+    <string name="end_tv">00:00</string>
+    <string name="repeat_btn">पुनरावृत्तिः</string>
+    <string name="equalizer_btn">समस्वरकः</string>
+    <string name="share_btn">साझा कुरु</string>
+    <string name="timer_btn">कालमापकः</string>
+    <string name="open">उद्घाटय</string>
+    <string name="close">पिधत</string>
+    <string name="icon">चिह्नम्</string>
+    <string name="nav_text">संगीतस्य विश्वे \nस्वागतम्</string>
+    <string name="nav_feedback">प्रतिसादः</string>
+    <string name="nav_setting">विन्यासः</string>
+    <string name="nav_about">परिचयः</string>
+    <string name="nav_exit">निर्गच्छ</string>
+    <string name="song_album">गीतसंग्रहः</string>
+    <string name="album_art">संग्रह चित्रम्</string>
+    <string name="song_title">गीत शीर्षकः</string>
+
+    <string name="hello_blank_fragment">नमस्ते शून्य खण्डः</string>
+    <string name="home_fragment">गृह खण्डः</string>
+    <string name="favourite_fragment">प्रिय खण्डः</string>
+    <string name="playlist_fragment">गीतसूची खण्डः</string>
+    <string name="folder_fragment">सञ्चिका खण्डः</string>
+    <string name="create_playlist">गीतसूची निर्मातुम्</string>
+
+    <string name="_0_album">0 सङ्ग्रहः</string>
+    <string name="shuffle">यादृच्छिक</string>
+    <string name="_0_song">0 गीतानि</string>
+    <string name="_0_artist">0 कलाकारः</string>
+    <string name="artists">कलाकाराः</string>
+    <string name="play">चालय</string>
+    <string name="_0_folder">0 सञ्चिका</string>
+    <string name="recently_played">अद्यतनं चालितानि</string>
+    <string name="top_tracks">श्रेष्ठ ट्र्याकाः</string>
+    <string name="recently_added">अद्यतनं योजितानि</string>
+    <string name="title">शीर्षकम्</string>
+    <string name="_0_playlist">0 गीतसूची</string>
+    <string name="playlist">गीतसूची</string>
+    <string name="next">अग्रिमम्</string>
+    <string name="previous">पूर्वम्</string>
+    <string name="_00_00">00:00</string>
+    <string name="audio_track">श्रव्य ट्र्याक...</string>
+    <string name="play_next">अग्रिमं चालय</string>
+    <string name="add_to_queue">पङ्क्तौ योजय</string>
+    <string name="add_to_favourite">प्रियेषु योजय</string>
+    <string name="remove_from_favourite">प्रियात् अपाकुरु</string>
+    <string name="add_to_playlist">गीतसूच्यां योजय</string>
+    <string name="remove_from_playlist">गीतसूच्यात् अपाकुरु</string>
+    <string name="edit">सम्पादय</string>
+    <string name="delete">अपाकुरु</string>
+
+    <string name="home">गृहम्</string>
+    <string name="songs">गीतानि</string>
+    <string name="favourite">प्रियाणि</string>
+    <string name="playlists">गीतसूचयः</string>
+    <string name="artist">कलाकारः</string>
+    <string name="albums">सङ्ग्रहाः</string>
+    <string name="folder">सञ्चिका</string>
+
+    <string name="feedback">प्रतिसादः</string>
+    <string name="setting">विन्यासः</string>
+    <string name="about">परिचयः</string>
+    <string name="exit">निर्गच्छ</string>
+    <string name="cast">पात्राणि</string>
+
+</resources>

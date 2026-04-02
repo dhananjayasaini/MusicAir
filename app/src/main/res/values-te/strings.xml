@@ -1,0 +1,78 @@
+<resources>
+    <string name="app_name">మ్యూజిక్ ప్లేయర్</string>
+    <string name="shuffle_btn">షఫుల్</string>
+    <string name="playlist_btn">ప్లేలిస్ట్</string>
+    <string name="Favourites_btn">ఇష్టమైనవి</string>
+    <string name="total_songs" translatable="false">Total Songs :</string>
+    <string name="music_player">మ్యూజిక్ ప్లేయర్</string>
+    <string name="song_name">పాట పేరు</string>
+    <string name="back_btn">వెనుకకు</string>
+    <string name="previous_song">మునుపటి పాట</string>
+    <string name="next_song">తదుపరి పాట</string>
+    <string name="play_pause">పాట ప్లే చేయండి</string>
+    <string name="start_tv">00:00</string>
+    <string name="end_tv">00:00</string>
+    <string name="repeat_btn">మళ్లీ</string>
+    <string name="equalizer_btn">ఈక్వలైజర్</string>
+    <string name="share_btn">పంచుకోండి</string>
+    <string name="timer_btn">టైమర్</string>
+    <string name="open">తెరవండి</string>
+    <string name="close">మూసివేయండి</string>
+    <string name="icon">ఐకాన్</string>
+    <string name="nav_text">మ్యూజిక్ ప్లేయర్ \nలోకానికి స్వాగతం</string>
+    <string name="nav_feedback">అభిప్రాయం</string>
+    <string name="nav_setting">సెట్టింగ్</string>
+    <string name="nav_about">మా గురించి</string>
+    <string name="nav_exit">నిష్క్రమించు</string>
+    <string name="song_album">పాట ఆల్బమ్</string>
+    <string name="album_art">ఆల్బమ్ ఆర్ట్</string>
+    <string name="song_title">పాట శీర్షిక</string>
+
+    <string name="hello_blank_fragment">హలో ఖాళీ ఫ్రాగ్మెంట్</string>
+    <string name="home_fragment">హోమ్</string>
+    <string name="favourite_fragment">ఇష్టమైనవి</string>
+    <string name="playlist_fragment">ప్లేలిస్ట్</string>
+    <string name="folder_fragment">ఫోల్డర్</string>
+    <string name="create_playlist">ప్లేలిస్ట్ సృష్టించండి</string>
+
+    <string name="_0_album">0 ఆల్బమ్</string>
+    <string name="shuffle">షఫుల్</string>
+    <string name="_0_song">0 పాటలు</string>
+    <string name="_0_artist">0 కళాకారుడు</string>
+    <string name="artists">కళాకారులు</string>
+    <string name="play">ప్లే</string>
+    <string name="_0_folder">0 ఫోల్డర్</string>
+    <string name="recently_played">ఇటీవల ప్లే చేసినవి</string>
+    <string name="top_tracks">టాప్ ట్రాక్స్</string>
+    <string name="recently_added">ఇటీవల చేర్చినవి</string>
+    <string name="title">శీర్షిక</string>
+    <string name="_0_playlist">0 ప్లేలిస్ట్</string>
+    <string name="playlist">ప్లేలిస్ట్</string>
+    <string name="next">తదుపరి</string>
+    <string name="previous">మునుపటి</string>
+    <string name="_00_00">00:00</string>
+    <string name="audio_track">ఆడియో ట్రాక్...</string>
+    <string name="play_next">తదుపరి ప్లే చేయండి</string>
+    <string name="add_to_queue">క్యూలో చేర్చండి</string>
+    <string name="add_to_favourite">ఇష్టాలలో చేర్చండి</string>
+    <string name="remove_from_favourite">ఇష్టాల నుండి తొలగించండి</string>
+    <string name="add_to_playlist">ప్లేలిస్ట్‌లో చేర్చండి</string>
+    <string name="remove_from_playlist">ప్లేలిస్ట్ నుండి తొలగించండి</string>
+    <string name="edit">సవరించండి</string>
+    <string name="delete">తొలగించండి</string>
+
+    <string name="home">హోమ్</string>
+    <string name="songs">పాటలు</string>
+    <string name="favourite">ఇష్టాలు</string>
+    <string name="playlists">ప్లేలిస్ట్లు</string>
+    <string name="artist">కళాకారుడు</string>
+    <string name="albums">ఆల్బమ్‌లు</string>
+    <string name="folder">ఫోల్డర్</string>
+
+    <string name="feedback">అభిప్రాయం</string>
+    <string name="setting">సెట్టింగ్‌లు</string>
+    <string name="about">మా గురించి</string>
+    <string name="exit">నిష్క్రమించండి</string>
+    <string name="cast">నటీనటులు</string>
+
+</resources>

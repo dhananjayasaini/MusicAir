@@ -22,7 +22,7 @@
             android:id="@+id/totalPlaylist"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="0 Playlist"
+            android:text="@string/_0_playlist"
             android:textColor="@android:color/black"
             android:textSize="18sp"
             android:textStyle="bold"/>

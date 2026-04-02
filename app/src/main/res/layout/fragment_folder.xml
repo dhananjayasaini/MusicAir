@@ -22,7 +22,7 @@
             android:id="@+id/totalFolder"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="0 Folder"
+            android:text="@string/_0_folder"
             android:textColor="@android:color/black"
             android:textSize="18sp"
             android:textStyle="bold"/>

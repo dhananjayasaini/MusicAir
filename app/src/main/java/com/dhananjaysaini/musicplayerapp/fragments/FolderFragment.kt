@@ -1,5 +1,6 @@
 package com.dhananjaysaini.musicplayerapp.fragments
 
+import android.annotation.SuppressLint
 import android.content.Intent
 import android.os.Bundle
 import androidx.fragment.app.Fragment
@@ -25,6 +26,7 @@ class FolderFragment : Fragment(R.layout.fragment_folder) {
     private lateinit var folderAdapter: FolderAdapter
     private lateinit var folderViewModel: FolderViewModel
 
+    @SuppressLint("SuspiciousIndentation")
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 

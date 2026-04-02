@@ -1,0 +1,78 @@
+<resources>
+    <string name="app_name">म्यूजिक प्लेयर</string>
+    <string name="shuffle_btn">शफल</string>
+    <string name="playlist_btn">प्लेलिस्ट</string>
+    <string name="Favourites_btn">पसंदीदा</string>
+    <string name="total_songs" translatable="false">Total Songs :</string>
+    <string name="music_player">म्यूजिक प्लेयर</string>
+    <string name="song_name">गाना के नाम</string>
+    <string name="back_btn">पीछे जाएं</string>
+    <string name="previous_song">पिछला गाना</string>
+    <string name="next_song">अगिला गाना</string>
+    <string name="play_pause">गाना चलाईं</string>
+    <string name="start_tv">00:00</string>
+    <string name="end_tv">00:00</string>
+    <string name="repeat_btn">दोहोराईं</string>
+    <string name="equalizer_btn">इक्वलाइजर</string>
+    <string name="share_btn">साझा करीं</string>
+    <string name="timer_btn">टाइमर</string>
+    <string name="open">खोलीं</string>
+    <string name="close">बंद करीं</string>
+    <string name="icon">आइकन</string>
+    <string name="nav_text">म्यूजिक प्लेयर के \nदुनिया में रउआ के स्वागत बा</string>
+    <string name="nav_feedback">फीडबैक</string>
+    <string name="nav_setting">सेटिंग</string>
+    <string name="nav_about">हमनी के बारे में</string>
+    <string name="nav_exit">बाहर निकलीं</string>
+    <string name="song_album">गाना एल्बम</string>
+    <string name="album_art">एल्बम आर्ट</string>
+    <string name="song_title">गाना शीर्षक</string>
+
+    <string name="hello_blank_fragment">हेलो ब्लैंक फ्रैगमेंट</string>
+    <string name="home_fragment">होम</string>
+    <string name="favourite_fragment">पसंदीदा</string>
+    <string name="playlist_fragment">प्लेलिस्ट</string>
+    <string name="folder_fragment">फोल्डर</string>
+    <string name="create_playlist">प्लेलिस्ट बनाईं</string>
+
+    <string name="_0_album">0 एल्बम</string>
+    <string name="shuffle">शफल</string>
+    <string name="_0_song">0 गाना</string>
+    <string name="_0_artist">0 कलाकार</string>
+    <string name="artists">कलाकार</string>
+    <string name="play">चलाईं</string>
+    <string name="_0_folder">0 फोल्डर</string>
+    <string name="recently_played">हाल में चलावल गइल</string>
+    <string name="top_tracks">टॉप ट्रैक</string>
+    <string name="recently_added">हाल में जोड़ल गइल</string>
+    <string name="title">शीर्षक</string>
+    <string name="_0_playlist">0 प्लेलिस्ट</string>
+    <string name="playlist">प्लेलिस्ट</string>
+    <string name="next">अगिला</string>
+    <string name="previous">पिछला</string>
+    <string name="_00_00">00:00</string>
+    <string name="audio_track">ऑडियो ट्रैक...</string>
+    <string name="play_next">अगिला चलाईं</string>
+    <string name="add_to_queue">क्यू में जोड़ीं</string>
+    <string name="add_to_favourite">पसंदीदा में जोड़ीं</string>
+    <string name="remove_from_favourite">पसंदीदा से हटाईं</string>
+    <string name="add_to_playlist">प्लेलिस्ट में जोड़ीं</string>
+    <string name="remove_from_playlist">प्लेलिस्ट से हटाईं</string>
+    <string name="edit">संपादित करीं</string>
+    <string name="delete">हटाईं</string>
+
+<!--    <string name="home">होम</string>-->
+<!--    <string name="songs">गाना</string>-->
+    <string name="favourite">पसंदीदा</string>
+    <string name="playlists">प्लेलिस्ट</string>
+    <string name="artist">कलाकार</string>
+    <string name="albums">एल्बम</string>
+    <string name="folder">फोल्डर</string>
+
+    <string name="feedback">फीडबैक</string>
+    <string name="setting">सेटिंग</string>
+    <string name="about">हमनी के बारे में</string>
+    <string name="exit">बाहर निकलीं</string>
+    <string name="cast">कास्ट</string>
+
+</resources>

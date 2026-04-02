@@ -1,6 +1,5 @@
 package com.dhananjaysaini.musicplayerapp.utils
 
-
 import android.app.Activity
 import android.app.RecoverableSecurityException
 import android.content.ContentUris

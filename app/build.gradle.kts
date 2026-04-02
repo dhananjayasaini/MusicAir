@@ -16,6 +16,21 @@ android {
         versionName = "1.0"
 
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
+
+            lint {
+                abortOnError = true
+                checkReleaseBuilds = true
+
+                enable += setOf(
+                    "HardcodedText",
+                    "MissingTranslation",
+                    "ExtraTranslation",
+                    "UnusedResources",
+                    "StringFormatInvalid",
+                    "StringFormatCount"
+                )
+            }
+
     }
 
     buildTypes {
@@ -39,6 +54,13 @@ android {
     }
     kotlinOptions {
         jvmTarget = "1.8"
+    }
+    sourceSets {
+        getByName("main") {
+            assets {
+                srcDirs("src/main/assets", "src/main/assets/values-sa")
+            }
+        }
     }
 }
 
@@ -77,5 +99,5 @@ dependencies {
 
     implementation ("androidx.fragment:fragment-ktx:1.6.2")
 
-
+    implementation("androidx.appcompat:appcompat:1.6.1")
 }

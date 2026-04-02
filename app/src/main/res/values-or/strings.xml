@@ -1,0 +1,78 @@
+<resources>
+    <string name="app_name">ମ୍ୟୁଜିକ୍ ପ୍ଲେୟର</string>
+    <string name="shuffle_btn">ଶଫଲ୍</string>
+    <string name="playlist_btn">ପ୍ଲେଲିଷ୍ଟ</string>
+    <string name="Favourites_btn">ପସନ୍ଦ</string>
+    <string name="total_songs" translatable="false">Total Songs :</string>
+    <string name="music_player">ମ୍ୟୁଜିକ୍ ପ୍ଲେୟର</string>
+    <string name="song_name">ଗୀତ ନାମ</string>
+    <string name="back_btn">ପଛକୁ</string>
+    <string name="previous_song">ପୂର୍ବ ଗୀତ</string>
+    <string name="next_song">ପରବର୍ତ୍ତୀ ଗୀତ</string>
+    <string name="play_pause">ଗୀତ ଚାଲୁ କରନ୍ତୁ</string>
+    <string name="start_tv">00:00</string>
+    <string name="end_tv">00:00</string>
+    <string name="repeat_btn">ପୁନରାବୃତ୍ତି</string>
+    <string name="equalizer_btn">ଇକ୍ୱଲାଇଜର</string>
+    <string name="share_btn">ସେୟାର କରନ୍ତୁ</string>
+    <string name="timer_btn">ଟାଇମର</string>
+    <string name="open">ଖୋଲନ୍ତୁ</string>
+    <string name="close">ବନ୍ଦ କରନ୍ତୁ</string>
+    <string name="icon">ଆଇକନ</string>
+    <string name="nav_text">ମ୍ୟୁଜିକ୍ ପ୍ଲେୟର \nଜଗତକୁ ସ୍ୱାଗତ</string>
+    <string name="nav_feedback">ମତାମତ</string>
+    <string name="nav_setting">ସେଟିଂ</string>
+    <string name="nav_about">ଆମ ବିଷୟରେ</string>
+    <string name="nav_exit">ବାହାରିବେ</string>
+    <string name="song_album">ଗୀତ ଆଲବମ୍</string>
+    <string name="album_art">ଆଲବମ୍ ଆର୍ଟ</string>
+    <string name="song_title">ଗୀତ ଶିରୋନାମ</string>
+
+    <string name="hello_blank_fragment">ହେଲୋ ବ୍ଲାଙ୍କ ଫ୍ରାଗମେଣ୍ଟ</string>
+    <string name="home_fragment">ହୋମ</string>
+    <string name="favourite_fragment">ପସନ୍ଦ</string>
+    <string name="playlist_fragment">ପ୍ଲେଲିଷ୍ଟ</string>
+    <string name="folder_fragment">ଫୋଲ୍ଡର</string>
+    <string name="create_playlist">ପ୍ଲେଲିଷ୍ଟ ସୃଷ୍ଟି କରନ୍ତୁ</string>
+
+    <string name="_0_album">0 ଆଲବମ୍</string>
+    <string name="shuffle">ଶଫଲ୍</string>
+    <string name="_0_song">0 ଗୀତ</string>
+    <string name="_0_artist">0 ଶିଳ୍ପୀ</string>
+    <string name="artists">ଶିଳ୍ପୀମାନେ</string>
+    <string name="play">ଚାଲୁ କରନ୍ତୁ</string>
+    <string name="_0_folder">0 ଫୋଲ୍ଡର</string>
+    <string name="recently_played">ସମ୍ପ୍ରତି ଚାଲୁ ହୋଇଥିବା</string>
+    <string name="top_tracks">ଶୀର୍ଷ ଟ୍ରାକ୍</string>
+    <string name="recently_added">ସମ୍ପ୍ରତି ଯୋଡାଯାଇଛି</string>
+    <string name="title">ଶୀର୍ଷକ</string>
+    <string name="_0_playlist">0 ପ୍ଲେଲିଷ୍ଟ</string>
+    <string name="playlist">ପ୍ଲେଲିଷ୍ଟ</string>
+    <string name="next">ପରବର୍ତ୍ତୀ</string>
+    <string name="previous">ପୂର୍ବବର୍ତ୍ତୀ</string>
+    <string name="_00_00">00:00</string>
+    <string name="audio_track">ଅଡିଓ ଟ୍ରାକ୍...</string>
+    <string name="play_next">ପରବର୍ତ୍ତୀ ଚାଲୁ କରନ୍ତୁ</string>
+    <string name="add_to_queue">କ୍ୟୁରେ ଯୋଡନ୍ତୁ</string>
+    <string name="add_to_favourite">ପସନ୍ଦରେ ଯୋଡନ୍ତୁ</string>
+    <string name="remove_from_favourite">ପସନ୍ଦରୁ ହଟାନ୍ତୁ</string>
+    <string name="add_to_playlist">ପ୍ଲେଲିଷ୍ଟରେ ଯୋଡନ୍ତୁ</string>
+    <string name="remove_from_playlist">ପ୍ଲେଲିଷ୍ଟରୁ ହଟାନ୍ତୁ</string>
+    <string name="edit">ସମ୍ପାଦନା</string>
+    <string name="delete">ହଟାନ୍ତୁ</string>
+
+    <string name="home">ହୋମ</string>
+    <string name="songs">ଗୀତ</string>
+    <string name="favourite">ପସନ୍ଦ</string>
+    <string name="playlists">ପ୍ଲେଲିଷ୍ଟ</string>
+    <string name="artist">ଶିଳ୍ପୀ</string>
+    <string name="albums">ଆଲବମ୍</string>
+    <string name="folder">ଫୋଲ୍ଡର</string>
+
+    <string name="feedback">ମତାମତ</string>
+    <string name="setting">ସେଟିଂ</string>
+    <string name="about">ଆମ ବିଷୟରେ</string>
+    <string name="exit">ବାହାରିବେ</string>
+    <string name="cast">କାଷ୍ଟ</string>
+
+</resources>

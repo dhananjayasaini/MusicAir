@@ -3,7 +3,7 @@
     <string name="shuffle_btn">Shuffle</string>
     <string name="playlist_btn">Playlist</string>
     <string name="Favourites_btn">Favourites</string>
-    <string name="total_songs">Total Songs :</string>
+    <string name="total_songs" translatable="false">Total Songs :</string>
     <string name="music_player">Music Player</string>
     <string name="song_name">Song Name</string>
     <string name="back_btn">Back Button</string>
@@ -28,7 +28,6 @@
     <string name="album_art">Album Art</string>
     <string name="song_title">Song Title</string>
 
-    <!-- TODO: Remove or change this placeholder text -->
     <string name="hello_blank_fragment">Hello blank fragment</string>
     <string name="home_fragment">Home Fragment</string>
     <string name="favourite_fragment">Favourite Fragment</string>
@@ -36,7 +35,46 @@
     <string name="folder_fragment">Folder Fragment</string>
     <string name="create_playlist">Create Playlist</string>
 
-    <!-- TODO: Remove or change this placeholder text -->
+    <string name="_0_album">0 Album</string>
+    <string name="shuffle">Shuffle</string>
+    <string name="_0_song">0 song</string>
+    <string name="_0_artist">0 Artist</string>
+    <string name="artists">Artists</string>
+    <string name="play">Play</string>
+    <string name="_0_folder">0 Folder</string>
+    <string name="recently_played">Recently Played</string>
+    <string name="top_tracks">Top Tracks</string>
+    <string name="recently_added">Recently Added</string>
+    <string name="title">Title</string>
+    <string name="_0_playlist">0 Playlist</string>
+    <string name="playlist">Playlist</string>
+    <string name="next">Next</string>
+    <string name="previous">Previous</string>
+    <string name="_00_00">00:00</string>
+    <string name="audio_track">Audio Track...</string>
+    <string name="play_next">Play next</string>
+    <string name="add_to_queue">Add To Queue</string>
+    <string name="add_to_favourite">Add to favourite</string>
+    <string name="remove_from_favourite">Remove from favourite</string>
+    <string name="add_to_playlist">Add to playlist</string>
+    <string name="remove_from_playlist">Remove from playlist</string>
+    <string name="edit">Edit</string>
+    <string name="delete">Delete</string>
 
+    <string name="home">Home</string>
+    <string name="songs">Songs</string>
+    <string name="favourite">Favourite</string>
+    <string name="playlists">Playlists</string>
+    <string name="artist">Artist</string>
+    <string name="albums">Albums</string>
+    <string name="folder">Folder</string>
+
+    <string name="feedback">Feedback</string>
+    <string name="setting">Setting</string>
+    <string name="about">About</string>
+    <string name="exit">Exit</string>
+    <string name="cast">Cast</string>
 
 </resources>
+
+<!--Bhojpuri,Bengali,Hindi,Kannada,Marathi,Odia,Punjabi,Sanskrit,Tamil,Telugu-->

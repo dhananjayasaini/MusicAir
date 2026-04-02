@@ -1,0 +1,78 @@
+<resources>
+    <string name="app_name">ミュージックプレーヤー</string>
+    <string name="shuffle_btn">シャッフル</string>
+    <string name="playlist_btn">プレイリスト</string>
+    <string name="Favourites_btn">お気に入り</string>
+    <string name="total_songs" translatable="false">Total Songs :</string>
+    <string name="music_player">ミュージックプレーヤー</string>
+    <string name="song_name">曲名</string>
+    <string name="back_btn">戻る</string>
+    <string name="previous_song">前の曲</string>
+    <string name="next_song">次の曲</string>
+    <string name="play_pause">再生</string>
+    <string name="start_tv">00:00</string>
+    <string name="end_tv">00:00</string>
+    <string name="repeat_btn">リピート</string>
+    <string name="equalizer_btn">イコライザー</string>
+    <string name="share_btn">共有</string>
+    <string name="timer_btn">タイマー</string>
+    <string name="open">開く</string>
+    <string name="close">閉じる</string>
+    <string name="icon">アイコン</string>
+    <string name="nav_text">ミュージックプレーヤーの\n世界へようこそ</string>
+    <string name="nav_feedback">フィードバック</string>
+    <string name="nav_setting">設定</string>
+    <string name="nav_about">情報</string>
+    <string name="nav_exit">終了</string>
+    <string name="song_album">アルバム</string>
+    <string name="album_art">アルバムアート</string>
+    <string name="song_title">曲タイトル</string>
+
+    <string name="hello_blank_fragment">空のフラグメント</string>
+    <string name="home_fragment">ホーム</string>
+    <string name="favourite_fragment">お気に入り</string>
+    <string name="playlist_fragment">プレイリスト</string>
+    <string name="folder_fragment">フォルダ</string>
+    <string name="create_playlist">プレイリスト作成</string>
+
+    <string name="_0_album">0 アルバム</string>
+    <string name="shuffle">シャッフル</string>
+    <string name="_0_song">0 曲</string>
+    <string name="_0_artist">0 アーティスト</string>
+    <string name="artists">アーティスト</string>
+    <string name="play">再生</string>
+    <string name="_0_folder">0 フォルダ</string>
+    <string name="recently_played">最近再生</string>
+    <string name="top_tracks">人気トラック</string>
+    <string name="recently_added">最近追加</string>
+    <string name="title">タイトル</string>
+    <string name="_0_playlist">0 プレイリスト</string>
+    <string name="playlist">プレイリスト</string>
+    <string name="next">次へ</string>
+    <string name="previous">前へ</string>
+    <string name="_00_00">00:00</string>
+    <string name="audio_track">オーディオトラック…</string>
+    <string name="play_next">次に再生</string>
+    <string name="add_to_queue">キューに追加</string>
+    <string name="add_to_favourite">お気に入りに追加</string>
+    <string name="remove_from_favourite">お気に入りから削除</string>
+    <string name="add_to_playlist">プレイリストに追加</string>
+    <string name="remove_from_playlist">プレイリストから削除</string>
+    <string name="edit">編集</string>
+    <string name="delete">削除</string>
+
+    <string name="home">ホーム</string>
+    <string name="songs">曲</string>
+    <string name="favourite">お気に入り</string>
+    <string name="playlists">プレイリスト</string>
+    <string name="artist">アーティスト</string>
+    <string name="albums">アルバム</string>
+    <string name="folder">フォルダ</string>
+
+    <string name="feedback">フィードバック</string>
+    <string name="setting">設定</string>
+    <string name="about">情報</string>
+    <string name="exit">終了</string>
+    <string name="cast">キャスト</string>
+
+</resources>

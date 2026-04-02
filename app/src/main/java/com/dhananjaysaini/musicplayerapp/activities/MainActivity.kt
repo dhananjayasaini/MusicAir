@@ -30,6 +30,7 @@ import com.dhananjaysaini.musicplayerapp.databinding.ActivityMainBinding
 import com.dhananjaysaini.musicplayerapp.fragments.MiniPlayerFragment
 import com.dhananjaysaini.musicplayerapp.model.Music
 import com.dhananjaysaini.musicplayerapp.service.MusicService
+import com.dhananjaysaini.musicplayerapp.utils.DeleteManager
 import com.dhananjaysaini.musicplayerapp.utils.FavouriteManager
 import com.dhananjaysaini.musicplayerapp.utils.PlaylistManager
 import com.dhananjaysaini.musicplayerapp.utils.ThemeManager
@@ -46,7 +47,7 @@ class MainActivity : AppCompatActivity() {
     private lateinit var toggle: ActionBarDrawerToggle
     private lateinit var toolbar: Toolbar
     private lateinit var voiceControl: VoiceControlManager
-     private val mainViewModel: MainViewModel by viewModels()
+    private val mainViewModel: MainViewModel by viewModels()
 
     companion object {
         var musicListMA = ArrayList<Music>()
@@ -100,27 +101,27 @@ class MainActivity : AppCompatActivity() {
 
     // -------------------- ViewPager --------------------
 
-/*
-    private fun setupViewPager() {
-        binding.viewPager.adapter = ViewPagerAdapter(this)
-        binding.viewPager.offscreenPageLimit = 7
+    /*
+        private fun setupViewPager() {
+            binding.viewPager.adapter = ViewPagerAdapter(this)
+            binding.viewPager.offscreenPageLimit = 7
 
-        binding.viewPager.setCurrentItem(1, false)
+            binding.viewPager.setCurrentItem(1, false)
 
-        TabLayoutMediator(binding.tabLayout, binding.viewPager) { tab, position ->
-            tab.text = when (position) {
-                0 -> "Home"
-                1 -> "Songs"
-                2 -> "Favourite"
-                3 -> "Playlists"
-                4 -> "Artist"
-                5 -> "Albums"
-                6 -> "Folder"
-                else -> "Songs"
-            }
-        }.attach()
-    }
-*/
+            TabLayoutMediator(binding.tabLayout, binding.viewPager) { tab, position ->
+                tab.text = when (position) {
+                    0 -> "Home"
+                    1 -> "Songs"
+                    2 -> "Favourite"
+                    3 -> "Playlists"
+                    4 -> "Artist"
+                    5 -> "Albums"
+                    6 -> "Folder"
+                    else -> "Songs"
+                }
+            }.attach()
+        }
+    */
 
     private fun setupViewPager() {
 
@@ -130,9 +131,17 @@ class MainActivity : AppCompatActivity() {
         binding.viewPager.setCurrentItem(defaultPosition, false)
         binding.tabLayout.getTabAt(defaultPosition)?.select()
 
-      //  binding.viewPager.setCurrentItem(1, false)
+        //  binding.viewPager.setCurrentItem(1, false)
 
-        val titles = listOf("Home", "Songs", "Favourite", "Playlists", "Artist", "Albums", "Folder")
+        val titles = listOf(
+            R.string.home,
+            R.string.songs,
+            R.string.favourite,
+            R.string.playlists,
+            R.string.artist,
+            R.string.albums,
+            R.string.folder
+        )
 
         TabLayoutMediator(binding.tabLayout, binding.viewPager) { tab, position ->
 
@@ -149,7 +158,7 @@ class MainActivity : AppCompatActivity() {
 
             val view = layoutInflater.inflate(R.layout.item_viewpager_tab, null)
             val text = view.findViewById<TextView>(R.id.tabText)
-            text.text = titles[position]
+            text.text = getString(titles[position])
 
             tab.customView = view
 
@@ -241,10 +250,10 @@ class MainActivity : AppCompatActivity() {
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
         when (item.itemId) {
             R.id.action_theme -> {
-             //   toggleTheme()
+                //   toggleTheme()
                 themeClick()
                 return true
-                }
+            }
         }
         return super.onOptionsItemSelected(item) || super.onOptionsItemSelected(item)
     }
@@ -327,21 +336,22 @@ class MainActivity : AppCompatActivity() {
         Toast.makeText(this, msg, Toast.LENGTH_SHORT).show()
     }
 
-     private fun mainSongsVM(){
+    private fun mainSongsVM() {
 
-         mainViewModel.musicListLiveData.observe(this) { songs ->
-             MusicService.allSongs = songs
-         }
+        mainViewModel.musicListLiveData.observe(this) { songs ->
+            MusicService.allSongs = songs
+        }
 
 
-     }
+    }
 
     private fun sendFeedback(context: Context) {
         val intent = Intent(Intent.ACTION_SENDTO).apply {
             data = Uri.parse("mailto:") // only email apps will open
             putExtra(Intent.EXTRA_EMAIL, arrayOf("support@musicplayer.com"))
             putExtra(Intent.EXTRA_SUBJECT, "Feedback - Music Player App")
-            putExtra(Intent.EXTRA_TEXT,
+            putExtra(
+                Intent.EXTRA_TEXT,
                 "Write your feedback here...\n\n" +
                         "---- Device Info ----\n" +
                         "Device: ${Build.MANUFACTURER} ${Build.MODEL}\n" +
@@ -377,24 +387,24 @@ class MainActivity : AppCompatActivity() {
 
         if (isDark) {
             AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_NO)
-        //    sharedPref.edit().putBoolean("dark_mode", false).apply()
+            //    sharedPref.edit().putBoolean("dark_mode", false).apply()
 
         } else {
             AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_YES)
-      //      sharedPref.edit().putBoolean("dark_mode", true).apply()
+            //      sharedPref.edit().putBoolean("dark_mode", true).apply()
 
         }
 
-     //   sharedPref.edit().putBoolean("dark_mode", !isDark).apply()
+        //   sharedPref.edit().putBoolean("dark_mode", !isDark).apply()
         recreate()
     }
 
-    private fun themeClick(){
+    private fun themeClick() {
 
-            ThemeManager.saveTheme(this, 0)
+        ThemeManager.saveTheme(this, 0)
 
-            val themeSheet = ThemeSelectionBottomSheet()
-            themeSheet.show(supportFragmentManager, "ThemeSheet")
+        val themeSheet = ThemeSelectionBottomSheet()
+        themeSheet.show(supportFragmentManager, "ThemeSheet")
 
     }
 
@@ -403,5 +413,21 @@ class MainActivity : AppCompatActivity() {
         ThemeManager.applyThemeToActivity(this)
     }
 
+    override fun onActivityResult(
+        requestCode: Int,
+        resultCode: Int,
+        data: Intent?
+    ) {
+        super.onActivityResult(requestCode, resultCode, data)
+
+        if (requestCode == DeleteManager.DELETE_REQUEST_CODE &&
+            resultCode == RESULT_OK
+        ) {
+            Toast.makeText(this, "Song deleted", Toast.LENGTH_SHORT).show()
+
+            sendBroadcast(Intent("REFRESH_LIBRARY"))
+
+        }
+    }
 
 }

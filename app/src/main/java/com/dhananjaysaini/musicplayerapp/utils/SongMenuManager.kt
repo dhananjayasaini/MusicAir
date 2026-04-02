@@ -1,5 +1,6 @@
 package com.dhananjaysaini.musicplayerapp.utils
 
+import android.app.Activity
 import android.content.Context
 import android.content.Intent
 import android.os.Build
@@ -58,8 +59,8 @@ object SongMenuManager {
     }
 
     @RequiresApi(Build.VERSION_CODES.Q)
-    fun handleDelete(context: Context, song: Music) {
-        DeleteManager.deleteSong(context, song)
+    fun handleDelete(activity: Activity, song: Music) {
+        DeleteManager.deleteFromDevice(activity, song)
     }
 
     fun handleShare(context: Context, song: Music) {
